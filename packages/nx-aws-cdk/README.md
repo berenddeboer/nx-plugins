@@ -72,7 +72,8 @@ nx destroy myApp
 
 ## Maintainers
 
-[@efacity](https://github.com/therk)
+[@therk](https://github.com/therk)
+[@tienne](https://github.com/tienne) Used to maintain the original plugin under Codebrew
 
 ## Contributing
 

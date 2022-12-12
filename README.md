@@ -25,7 +25,8 @@ Codebrew no longer maintained the plugin and accepts pull requests to continue t
 
 ## Maintainers
 
-[@efacity](https://github.com/efacity)
+[@therk](https://github.com/therk)
+[@tienne](https://github.com/tienne) Used to maintain the original plugin under Codebrew
 
 ## Contributing
 
