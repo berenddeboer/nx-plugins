@@ -116,6 +116,10 @@ export async function applicationGenerator(host: Tree, options: ApplicationSchem
     projectType: "application",
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
+      synth: {
+        executor: "@berenddeboer/nx-aws-cdk:synth",
+        options: {},
+      },
       deploy: {
         executor: "@berenddeboer/nx-aws-cdk:deploy",
         options: {},
