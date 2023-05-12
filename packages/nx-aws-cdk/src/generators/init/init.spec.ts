@@ -17,6 +17,7 @@ describe("init", () => {
     const packageJson = readJson(tree, "package.json")
 
     expect(packageJson.dependencies["aws-cdk-lib"]).toBeDefined()
-    expect(packageJson.dependencies["aws-cdk"]).toBeDefined()
+    expect(packageJson.dependencies["constructs"]).toBeDefined()
+    expect(packageJson.devDependencies["aws-cdk"]).toBeDefined()
   })
 })
