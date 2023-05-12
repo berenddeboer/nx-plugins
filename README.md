@@ -3,25 +3,21 @@
 
 <hr>
 
-# Nx Plugins
+# Nx plugin to generate an AWS cdk v2 package
 
-A collection of third-party Nx plugins based on Codebrew (https://github.com/codebrewlab/nx-plugins) and Efacity (https://github.com/efacity/nx-plugins)
-Codebrew no longer maintains the plugin or accepts pull requests.
+A plugin to generate an AWS CDK v2 package. This code was based on a
+collection of third-party Nx plugins based on Codebrew
+(https://github.com/codebrewlab/nx-plugins) and Efacity
+(https://github.com/efacity/nx-plugins). Codebrew no longer maintains
+the plugin or accepts pull requests.
 
 ## Table of Contents
 
 - [AWS CDK Nx Plugins](#aws-cdk-nx-plugins)
   - [Table of Contents](#table-of-contents)
-  - [Plugins](#plugins)
   - [Maintainers](#maintainers)
   - [Contributing](#contributing)
   - [License](#license)
-
-## Plugins
-
-| Plugin                                                        | Description                                                                                   |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| [`@berenddeboer/nx-aws-cdk`](./packages/nx-aws-cdk/README.md) | An Nx plugin for developing [aws-cdk](https://docs.aws.amazon.com/cdk/latest/guide/home.html) |
 
 ## Maintainers
 
