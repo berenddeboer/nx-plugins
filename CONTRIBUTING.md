@@ -76,13 +76,13 @@ npm link
 Finally, in the project that you want to test, run:
 
 ```
-yarn link @efacity/{plugin}
+yarn link @berenddeboer/{plugin}
 ```
 
 Or:
 
 ```
-npm link @efacity/{plugin}
+npm link @berenddeboer/{plugin}
 ```
 
 # Pull Requests
