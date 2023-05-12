@@ -1,43 +1,46 @@
-import * as path from 'path';
-import * as childProcess from 'child_process';
-import { logger } from '@nx/devkit';
+import * as path from "path"
+import * as childProcess from "child_process"
+import { logger } from "@nx/devkit"
 
-import executor from './deploy';
-import { DeployExecutorSchema } from './schema';
-import { LARGE_BUFFER } from '../../utils/executor.util';
-import { mockExecutorContext } from '../../utils/testing';
+import executor from "./deploy"
+import { DeployExecutorSchema } from "./schema"
+import { LARGE_BUFFER } from "../../utils/executor.util"
+import { mockExecutorContext } from "../../utils/testing"
 
-const options: DeployExecutorSchema = {};
+const options: DeployExecutorSchema = {}
 
-describe('nx-aws-cdk deploy Executor', () => {
-  const context = mockExecutorContext('deploy');
+describe("nx-aws-cdk deploy Executor", () => {
+  const context = mockExecutorContext("deploy")
 
   beforeEach(async () => {
-    jest.spyOn(logger, 'debug');
-    jest.spyOn(childProcess, 'exec');
-  });
+    jest.spyOn(logger, "debug")
+    jest.spyOn(childProcess, "exec")
+  })
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => jest.clearAllMocks())
 
-  it('run cdk deploy command', async () => {
-    await executor(options, context);
+  it("run cdk deploy command", async () => {
+    await executor(options, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      'cdk deploy',
+      "cdk deploy",
       expect.objectContaining({
-        cwd: expect.stringContaining(path.join(context.root, context.workspace.projects['proj'].root)),
+        cwd: expect.stringContaining(
+          path.join(context.root, context.workspace.projects["proj"].root)
+        ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
       })
-    );
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk deploy`);
-  });
+    )
+    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk deploy`)
+  })
 
-  it('run cdk deploy command stack', async () => {
-    const option: any = Object.assign({}, options);
-    const stackName = 'test';
-    option['stacks'] = stackName;
-    await executor(option, context);
+  it("run cdk deploy command stack", async () => {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const option: any = Object.assign({}, options)
+    const stackName = "test"
+    option["stacks"] = stackName
+    await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
       `cdk deploy ${stackName}`,
@@ -45,16 +48,19 @@ describe('nx-aws-cdk deploy Executor', () => {
         env: process.env,
         maxBuffer: LARGE_BUFFER,
       })
-    );
+    )
 
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk deploy ${stackName}`);
-  });
+    expect(logger.debug).toHaveBeenLastCalledWith(
+      `Executing command: cdk deploy ${stackName}`
+    )
+  })
 
-  it('run cdk deploy command context options', async () => {
-    const option: any = Object.assign({}, options);
-    const contextOptionString = 'key=value';
-    option['context'] = contextOptionString;
-    await executor(option, context);
+  it("run cdk deploy command context options", async () => {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const option: any = Object.assign({}, options)
+    const contextOptionString = "key=value"
+    option["context"] = contextOptionString
+    await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
       `cdk deploy --context ${contextOptionString}`,
@@ -62,8 +68,10 @@ describe('nx-aws-cdk deploy Executor', () => {
         env: process.env,
         maxBuffer: LARGE_BUFFER,
       })
-    );
+    )
 
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk deploy --context ${contextOptionString}`);
-  });
-});
+    expect(logger.debug).toHaveBeenLastCalledWith(
+      `Executing command: cdk deploy --context ${contextOptionString}`
+    )
+  })
+})

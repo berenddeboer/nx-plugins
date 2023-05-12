@@ -1,45 +1,48 @@
-import * as childProcess from 'child_process';
-import * as path from 'path';
+import * as childProcess from "child_process"
+import * as path from "path"
 
-import { logger } from '@nx/devkit';
+import { logger } from "@nx/devkit"
 
-import { DestroyExecutorSchema } from './schema';
-import executor from './destroy';
-import { LARGE_BUFFER } from '../../utils/executor.util';
-import { mockExecutorContext } from '../../utils/testing';
+import { DestroyExecutorSchema } from "./schema"
+import executor from "./destroy"
+import { LARGE_BUFFER } from "../../utils/executor.util"
+import { mockExecutorContext } from "../../utils/testing"
 
-const options: DestroyExecutorSchema = {};
+const options: DestroyExecutorSchema = {}
 
-describe('nx-aws-cdk Destroy Executor', () => {
-  const context = mockExecutorContext('destroy');
+describe("nx-aws-cdk Destroy Executor", () => {
+  const context = mockExecutorContext("destroy")
 
   beforeEach(async () => {
-    jest.spyOn(logger, 'debug');
-    jest.spyOn(childProcess, 'exec');
-  });
+    jest.spyOn(logger, "debug")
+    jest.spyOn(childProcess, "exec")
+  })
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => jest.clearAllMocks())
 
-  it('run cdk destroy command', async () => {
-    await executor(options, context);
+  it("run cdk destroy command", async () => {
+    await executor(options, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      'cdk destroy',
+      "cdk destroy",
       expect.objectContaining({
-        cwd: expect.stringContaining(path.join(context.root, context.workspace.projects['proj'].root)),
+        cwd: expect.stringContaining(
+          path.join(context.root, context.workspace.projects["proj"].root)
+        ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
       })
-    );
+    )
 
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk destroy`);
-  });
+    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk destroy`)
+  })
 
-  it('run cdk destroy command stack', async () => {
-    const option: any = Object.assign({}, options);
-    const stackName = 'test';
-    option['stacks'] = stackName;
-    await executor(option, context);
+  it("run cdk destroy command stack", async () => {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const option: any = Object.assign({}, options)
+    const stackName = "test"
+    option["stacks"] = stackName
+    await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
       `cdk destroy ${stackName}`,
@@ -47,8 +50,10 @@ describe('nx-aws-cdk Destroy Executor', () => {
         env: process.env,
         maxBuffer: LARGE_BUFFER,
       })
-    );
+    )
 
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk destroy ${stackName}`);
-  });
-});
+    expect(logger.debug).toHaveBeenLastCalledWith(
+      `Executing command: cdk destroy ${stackName}`
+    )
+  })
+})
