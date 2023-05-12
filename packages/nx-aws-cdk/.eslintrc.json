@@ -7,7 +7,8 @@
       "rules": {}
     },
     {
-      "files": ["*.ts", "*.tsx"],
+      "files": ["*.ts__template__"],
+      "extends": ["plugin:@nx/typescript", "plugin:prettier/recommended"],
       "rules": {}
     },
     {
