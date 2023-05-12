@@ -3,9 +3,9 @@
 
 <hr>
 
-# Efacity Nx Plugins
+# Nx Plugins
 
-A collection of third-party Nx plugins based on Codebrew (https://github.com/codebrewlab/nx-plugins)
+A collection of third-party Nx plugins based on Codebrew (https://github.com/codebrewlab/nx-plugins) and Efacity (https://github.com/efacity/nx-plugins)
 Codebrew no longer maintains the plugin or accepts pull requests.
 
 ## Table of Contents
