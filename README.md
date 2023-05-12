@@ -1,4 +1,4 @@
-![NPM](https://img.shields.io/npm/l/@efacity/nx-aws-cdk)
+![NPM](https://img.shields.io/npm/l/@berenddeboer/nx-aws-cdk)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 <hr>
@@ -6,7 +6,7 @@
 # Efacity Nx Plugins
 
 A collection of third-party Nx plugins based on Codebrew (https://github.com/codebrewlab/nx-plugins)
-Codebrew no longer maintained the plugin and accepts pull requests to continue the development.
+Codebrew no longer maintains the plugin or accepts pull requests.
 
 ## Table of Contents
 
@@ -19,14 +19,13 @@ Codebrew no longer maintained the plugin and accepts pull requests to continue t
 
 ## Plugins
 
-| Plugin                                                   | Description                                                                                   |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| [`@efacity/nx-aws-cdk`](./packages/nx-aws-cdk/README.md) | An Nx plugin for developing [aws-cdk](https://docs.aws.amazon.com/cdk/latest/guide/home.html) |
+| Plugin                                                        | Description                                                                                   |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [`@berenddeboer/nx-aws-cdk`](./packages/nx-aws-cdk/README.md) | An Nx plugin for developing [aws-cdk](https://docs.aws.amazon.com/cdk/latest/guide/home.html) |
 
 ## Maintainers
 
-[@therk](https://github.com/therk)
-[@tienne](https://github.com/tienne) Used to maintain the original plugin under Codebrew
+[@berenddeboer](https://github.com/berenddeboer)
 
 ## Contributing
 

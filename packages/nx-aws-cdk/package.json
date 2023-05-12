@@ -1,6 +1,6 @@
 {
-  "name": "@efacity/nx-aws-cdk",
-  "version": "2.0.0",
+  "name": "@berenddeboer/nx-aws-cdk",
+  "version": "0.1.1",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
@@ -11,14 +11,10 @@
     "aws cdk",
     "Node"
   ],
-  "ng-update": {
-    "requirements": {},
-    "migrations": "./migrations.json"
-  },
-  "author": "David Kwon",
+  "author": "Berend de Boer",
   "repository": {
     "type": "git",
-    "url": "git@github.com:codebrewlab/nx-plugins.git"
+    "url": "git@github.com:berenddeboer/nx-plugins.git"
   },
   "license": "MIT"
 }

@@ -1,4 +1,4 @@
-import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
+import { ExecutorContext } from '@nx/devkit';
 
 export function mockExecutorContext(executorName: string, workspaceVersion = 2): ExecutorContext {
   return {
@@ -12,14 +12,14 @@ export function mockExecutorContext(executorName: string, workspaceVersion = 2):
           root: 'apps/proj',
           targets: {
             test: {
-              executor: `@efacity/nx-aws-cdk:${executorName}`,
+              executor: `@berenddeboer/nx-aws-cdk:${executorName}`,
             },
           },
         },
       },
     },
     target: {
-      executor: `@efacity/nx-aws-cdk:${executorName}`,
+      executor: `@berenddeboer/nx-aws-cdk:${executorName}`,
     },
     isVerbose: true,
   };

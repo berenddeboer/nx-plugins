@@ -1,13 +1,13 @@
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![@efacity/nx-aws-cdk](https://img.shields.io/badge/%therk-nx--aws--cdk-green)](https://github.com/therk/nx-plugins/tree/master/packages/nx-aws-cdk)
+[![@berenddeboer/nx-aws-cdk](https://img.shields.io/badge/%therk-nx--aws--cdk-green)](https://github.com/therk/nx-plugins/tree/master/packages/nx-aws-cdk)
 [![Typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label)](https://www.typescriptlang.org/)
-[![LICENSE](https://img.shields.io/npm/l/@codebrew/nx-aws-cdk.svg)](https://www.npmjs.com/package/@efacity/nx-aws-cdk)
-[![npm version](https://img.shields.io/npm/v/@codebrew/nx-aws-cdk.svg)](https://www.npmjs.com/package/@efacity/nx-aws-cdk)
-[![Downloads](https://img.shields.io/npm/dm/@codebrew/nx-aws-cdk.svg)](https://www.npmjs.com/package/@efacity/nx-aws-cdk)
+[![LICENSE](https://img.shields.io/npm/l/@codebrew/nx-aws-cdk.svg)](https://www.npmjs.com/package/@berenddeboer/nx-aws-cdk)
+[![npm version](https://img.shields.io/npm/v/@codebrew/nx-aws-cdk.svg)](https://www.npmjs.com/package/@berenddeboer/nx-aws-cdk)
+[![Downloads](https://img.shields.io/npm/dm/@codebrew/nx-aws-cdk.svg)](https://www.npmjs.com/package/@berenddeboer/nx-aws-cdk)
 
 <hr>
 
-# @efacity/nx-aws-cdk
+# @berenddeboer/nx-aws-cdk
 
 An Nx plugin for developing [aws-cdk](https://docs.aws.amazon.com/cdk/latest/guide/home.html)
 Based on !codebrew/nx-aws-cdk
@@ -26,10 +26,10 @@ Based on !codebrew/nx-aws-cdk
 
 ```shell
 # npm
-npm install --save-dev @efacity/nx-aws-cdk
+npm install --save-dev @berenddeboer/nx-aws-cdk
 
 # yarn
-yarn add --dev @efacity/nx-aws-cdk
+yarn add --dev @berenddeboer/nx-aws-cdk
 ```
 
 ## Usage
@@ -41,13 +41,13 @@ Create AWS CDK v2 Application
 More details on AWS CDK v2 can be found on https://docs.aws.amazon.com/cdk/v2/guide/home.html
 
 ```shell
-nx generate @efacity/nx-aws-cdk:application myApp
+nx generate @berenddeboer/nx-aws-cdk:application myApp
 ```
 
 you can customize it further by passing these options:
 
 ```
-nx generate @efacity/nx-aws-cdk:application [name] [options,...]
+nx generate @berenddeboer/nx-aws-cdk:application [name] [options,...]
 
 Options:
   --tags                     Add tags to the project (used for linting)

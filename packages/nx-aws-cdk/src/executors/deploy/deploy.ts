@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
+import { ExecutorContext } from '@nx/devkit';
 
 import { DeployExecutorSchema } from './schema';
 import { createCommand, runCommandProcess, parseArgs } from '../../utils/executor.util';
