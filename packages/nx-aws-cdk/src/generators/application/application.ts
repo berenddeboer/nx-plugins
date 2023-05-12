@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from "path"
 import {
   addProjectConfiguration,
   convertNxGenerator,
@@ -14,27 +14,29 @@ import {
   Tree,
   updateJson,
   updateWorkspaceConfiguration,
-} from '@nx/devkit';
-import { jestProjectGenerator } from '@nx/jest';
-import { Linter, lintProjectGenerator } from '@nx/linter';
-import { runTasksInSerial } from '@nx/workspace/src/utilities/run-tasks-in-serial';
+} from "@nx/devkit"
+import { jestProjectGenerator } from "@nx/jest"
+import { Linter, lintProjectGenerator } from "@nx/linter"
+import { runTasksInSerial } from "@nx/workspace/src/utilities/run-tasks-in-serial"
 
-import { ApplicationSchema } from './schema';
-import { initGenerator } from '../init/init';
+import { ApplicationSchema } from "./schema"
+import { initGenerator } from "../init/init"
 
 interface NormalizedSchema extends ApplicationSchema {
-  projectName: string;
-  projectRoot: string;
-  projectDirectory: string;
-  parsedTags: string[];
+  projectName: string
+  projectRoot: string
+  projectDirectory: string
+  parsedTags: string[]
 }
 
 function normalizeOptions(host: Tree, options: ApplicationSchema): NormalizedSchema {
-  const name = names(options.name).fileName;
-  const projectDirectory = options.directory ? `${names(options.directory).fileName}/${name}` : name;
-  const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
-  const projectRoot = `${getWorkspaceLayout(host).appsDir}/${projectDirectory}`;
-  const parsedTags = options.tags ? options.tags.split(',').map((s) => s.trim()) : [];
+  const name = names(options.name).fileName
+  const projectDirectory = options.directory
+    ? `${names(options.directory).fileName}/${name}`
+    : name
+  const projectName = projectDirectory.replace(new RegExp("/", "g"), "-")
+  const projectRoot = `${getWorkspaceLayout(host).appsDir}/${projectDirectory}`
+  const parsedTags = options.tags ? options.tags.split(",").map((s) => s.trim()) : []
 
   return {
     ...options,
@@ -43,8 +45,8 @@ function normalizeOptions(host: Tree, options: ApplicationSchema): NormalizedSch
     projectDirectory,
     parsedTags,
     linter: options.linter ?? Linter.EsLint,
-    unitTestRunner: options.unitTestRunner ?? 'jest',
-  };
+    unitTestRunner: options.unitTestRunner ?? "jest",
+  }
 }
 
 function addFiles(host: Tree, options: NormalizedSchema) {
@@ -52,10 +54,10 @@ function addFiles(host: Tree, options: NormalizedSchema) {
     ...options,
     ...names(options.projectName),
     offsetFromRoot: offsetFromRoot(options.projectRoot),
-    template: '',
-  };
+    template: "",
+  }
 
-  generateFiles(host, path.join(__dirname, 'files'), options.projectRoot, templateOptions);
+  generateFiles(host, path.join(__dirname, "files"), options.projectRoot, templateOptions)
 }
 
 function addJestFiles(host: Tree, options: NormalizedSchema) {
@@ -63,91 +65,99 @@ function addJestFiles(host: Tree, options: NormalizedSchema) {
     ...options,
     ...names(options.projectName),
     offsetFromRoot: offsetFromRoot(options.projectRoot),
-    template: '',
-  };
-  generateFiles(host, path.join(__dirname, 'jest-files'), options.projectRoot, templateOptions);
+    template: "",
+  }
+  generateFiles(
+    host,
+    path.join(__dirname, "jest-files"),
+    options.projectRoot,
+    templateOptions
+  )
 }
-async function addLintingToApplication(tree: Tree, options: NormalizedSchema): Promise<GeneratorCallback> {
+async function addLintingToApplication(
+  tree: Tree,
+  options: NormalizedSchema
+): Promise<GeneratorCallback> {
   return await lintProjectGenerator(tree, {
     linter: options.linter,
     project: options.projectName,
-    tsConfigPaths: [joinPathFragments(options.projectRoot, 'tsconfig.*?.json')],
+    tsConfigPaths: [joinPathFragments(options.projectRoot, "tsconfig.*?.json")],
     eslintFilePatterns: [`${options.projectRoot}/**/*.ts`],
     skipFormat: true,
     setParserOptionsProject: options.setParserOptionsProject,
-  });
+  })
 }
 
 function updateLintConfig(tree: Tree, options: NormalizedSchema) {
   updateJson(tree, `${options.projectRoot}/.eslintrc.json`, (json) => {
-    json.plugins = json?.plugins || [];
-    const plugins: string[] = json.plugins;
+    json.plugins = json?.plugins || []
+    const plugins: string[] = json.plugins
 
-    const hasCdkPlugin = plugins.findIndex((row) => row === 'cdk') >= 0;
+    const hasCdkPlugin = plugins.findIndex((row) => row === "cdk") >= 0
     if (!hasCdkPlugin) {
-      plugins.push('cdk');
+      plugins.push("cdk")
     }
-    return json;
-  });
+    return json
+  })
 }
 
 export async function applicationGenerator(host: Tree, options: ApplicationSchema) {
-  const tasks: GeneratorCallback[] = [];
-  const normalizedOptions = normalizeOptions(host, options);
+  const tasks: GeneratorCallback[] = []
+  const normalizedOptions = normalizeOptions(host, options)
   const initTask = await initGenerator(host, {
     ...options,
     skipFormat: true,
-  });
+  })
 
-  tasks.push(initTask);
+  tasks.push(initTask)
 
   const project: ProjectConfiguration = {
     root: normalizedOptions.projectRoot,
-    projectType: 'application',
+    projectType: "application",
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       deploy: {
-        executor: '@efacity/nx-aws-cdk:deploy',
+        executor: "@efacity/nx-aws-cdk:deploy",
         options: {},
       },
       destroy: {
-        executor: '@efacity/nx-aws-cdk:destroy',
+        executor: "@efacity/nx-aws-cdk:destroy",
         options: {},
       },
     },
     tags: normalizedOptions.parsedTags,
-  };
-  addProjectConfiguration(host, normalizedOptions.projectName, project);
-  const workspace = readWorkspaceConfiguration(host);
+  }
+  addProjectConfiguration(host, normalizedOptions.projectName, project)
+  const workspace = readWorkspaceConfiguration(host)
 
-  updateWorkspaceConfiguration(host, workspace);
-  addFiles(host, normalizedOptions);
+  updateWorkspaceConfiguration(host, workspace)
+  addFiles(host, normalizedOptions)
 
   if (normalizedOptions.linter !== Linter.None) {
-    const lintTask = await addLintingToApplication(host, normalizedOptions);
-    tasks.push(lintTask);
-    updateLintConfig(host, normalizedOptions);
+    const lintTask = await addLintingToApplication(host, normalizedOptions)
+    tasks.push(lintTask)
+    updateLintConfig(host, normalizedOptions)
   }
 
-  if (normalizedOptions.unitTestRunner === 'jest') {
+  if (normalizedOptions.unitTestRunner === "jest") {
     const jestTask = await jestProjectGenerator(host, {
       project: normalizedOptions.projectName,
-      setupFile: 'none',
+      setupFile: "none",
       skipSerializers: true,
       supportTsx: false,
       babelJest: false,
-      testEnvironment: 'node',
+      testEnvironment: "node",
       skipFormat: true,
-    });
-    tasks.push(jestTask);
-    addJestFiles(host, normalizedOptions);
+    })
+    tasks.push(jestTask)
+    addJestFiles(host, normalizedOptions)
   }
 
   if (!options.skipFormat) {
-    await formatFiles(host);
+    await formatFiles(host)
   }
 
-  return runTasksInSerial(...tasks);
+  return runTasksInSerial(...tasks)
 }
-export default applicationGenerator;
-export const applicationSchematic = convertNxGenerator(applicationGenerator);
+export default applicationGenerator
+export const applicationSchematic = convertNxGenerator(applicationGenerator)

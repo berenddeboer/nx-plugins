@@ -1,15 +1,18 @@
-import { ExecutorContext } from '@nx/devkit';
+import { ExecutorContext } from "@nx/devkit"
 
-export function mockExecutorContext(executorName: string, workspaceVersion = 2): ExecutorContext {
+export function mockExecutorContext(
+  executorName: string,
+  workspaceVersion = 2
+): ExecutorContext {
   return {
-    projectName: 'proj',
-    root: '/root',
-    cwd: '/root',
+    projectName: "proj",
+    root: "/root",
+    cwd: "/root",
     workspace: {
       version: workspaceVersion,
       projects: {
         proj: {
-          root: 'apps/proj',
+          root: "apps/proj",
           targets: {
             test: {
               executor: `@berenddeboer/nx-aws-cdk:${executorName}`,
@@ -22,5 +25,5 @@ export function mockExecutorContext(executorName: string, workspaceVersion = 2):
       executor: `@berenddeboer/nx-aws-cdk:${executorName}`,
     },
     isVerbose: true,
-  };
+  }
 }
