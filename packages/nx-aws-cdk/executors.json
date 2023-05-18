@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/schema",
   "executors": {
     "synth": {
-      "implementation": "./src/executors/shnth/synth",
+      "implementation": "./src/executors/synth/synth",
       "schema": "./src/executors/synth/schema.json",
       "description": "synth executor"
     },
