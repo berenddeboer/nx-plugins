@@ -33,6 +33,9 @@
     "nx-aws-cdk-e2e": {
       "tags": [],
       "implicitDependencies": ["nx-aws-cdk"]
+    },
+    "nx-sst": {
+      "tags": []
     }
   },
   "workspaceLayout": {

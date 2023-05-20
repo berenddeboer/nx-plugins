@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "nx-sst",
+  "version": "0.0.1",
+  "generators": {
+    "init": {
+      "factory": "./src/generators/init/init",
+      "schema": "./src/generators/init/schema.json",
+      "description": "Add nx-sst to a project",
+      "hidden": true
+    },
+    "app": {
+      "factory": "./src/generators/app/generator",
+      "schema": "./src/generators/app/schema.json",
+      "description": "SST app generator"
+    }
+  }
+}

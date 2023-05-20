@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "NxCdk",
+  "title": "app",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use?"
+    },
+    "region": {
+      "type": "string",
+      "default": "us-east-1",
+      "description": "Region the app will be deploying to",
+      "x-prompt": {
+        "message": "Which region would you like to deploy the app to?",
+        "type": "list",
+        "items": [
+          {
+            "value": "us-east-2",
+            "label": "US East (Ohio)"
+          },
+          {
+            "value": "us-east-1",
+            "label": "US East (N. Virginia)"
+          },
+          {
+            "value": "us-west-1",
+            "label": "US West (N. California)"
+          },
+          {
+            "value": "us-west-2",
+            "label": "US West (Oregon)"
+          },
+          {
+            "value": "af-south-1",
+            "label": "Africa (Cape Town)"
+          },
+          {
+            "value": "ap-east-1",
+            "label": "Asia Pacific (Hong Kong)"
+          },
+          {
+            "value": "ap-south-1",
+            "label": "Asia Pacific (Mumbai)"
+          },
+          {
+            "value": "ap-northeast-3",
+            "label": "Asia Pacific (Osaka)"
+          },
+          {
+            "value": "ap-northeast-2",
+            "label": "Asia Pacific (Seoul)"
+          },
+          {
+            "value": "ap-southeast-1",
+            "label": "Asia Pacific (Singapore)"
+          },
+          {
+            "value": "ap-southeast-2",
+            "label": "Asia Pacific (Sydney)"
+          },
+          {
+            "value": "ap-northeast-1",
+            "label": "Asia Pacific (Tokyo)"
+          },
+          {
+            "value": "ca-central-1",
+            "label": "Canada (Central)"
+          },
+          {
+            "value": "ca-central-1",
+            "label": "Canada (Central)"
+          },
+          {
+            "value": "eu-central-1",
+            "label": "Europe (Frankfurt)"
+          },
+          {
+            "value": "eu-west-1",
+            "label": "Europe (Ireland)"
+          },
+          {
+            "value": "eu-west-2",
+            "label": "Europe (London)"
+          },
+          {
+            "value": "eu-south-1",
+            "label": "Europe (Milan)"
+          },
+          {
+            "value": "eu-west-3",
+            "label": "Europe (Paris)"
+          },
+          {
+            "value": "eu-north-1",
+            "label": "Europe (Stockholm)"
+          },
+          {
+            "value": "me-south-1",
+            "label": "Middle East (Bahrain)"
+          },
+          {
+            "value": "sa-east-1",
+            "label": "South America (São Paulo)"
+          }
+        ]
+      }
+    },
+    "tags": {
+      "type": "string",
+      "description": "Add tags to the project (used for linting)",
+      "alias": "t"
+    },
+    "directory": {
+      "type": "string",
+      "description": "A directory where the project is placed",
+      "alias": "d"
+    },
+    "unitTestRunner": {
+      "type": "string",
+      "enum": ["jest", "none"],
+      "description": "Test runner to use for unit tests.",
+      "default": "jest"
+    }
+  },
+  "required": ["name"]
+}

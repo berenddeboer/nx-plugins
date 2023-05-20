@@ -1,0 +1,21 @@
+import type { SSTConfig } from "sst";
+import { MyStack } from "./stacks/MyStack";
+
+export default {
+  config(input) {
+    return {
+      name:  "<%= name %>",
+      stage: "<%= stage %>",
+      region: "<%= region %>",
+    }
+  },
+  stacks(app) {
+    app.setDefaultFunctionProps({
+      runtime: "nodejs18.x",
+      architecture: "arm_64",
+    })
+
+    app
+      .stack(MyStack)
+  },
+} satisfies SSTConfig

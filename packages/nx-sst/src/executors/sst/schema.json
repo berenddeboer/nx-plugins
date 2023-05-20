@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "SST",
+  "description": "Run sst command",
+  "type": "object",
+  "properties": {
+    "command": {
+      "type": "string",
+      "description": "SST command to be run, eg start, diff, deploy"
+    },
+    "parameters": {
+      "type": "array",
+      "description": "Parameters for the given command, eg list of stacks",
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "alias": "stacks"
+    },
+    "stage": {
+      "type": "string",
+      "description": "The stage you want to deploy to"
+    },
+    "region": {
+      "type": "string",
+      "description": "The region you want to deploy to"
+    },
+    "role-arn": {
+      "type": "string",
+      "description": "ARN of Role to use when invoking CloudFormation"
+    },
+    "no-color": {
+      "type": "boolean",
+      "description": "Remove colors and other style from console output"
+    },
+    "verbose": {
+      "type": "boolean",
+      "description": "Show more debug info in the output"
+    }
+  },
+  "required": ["command"]
+}
