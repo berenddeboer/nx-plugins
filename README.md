@@ -31,6 +31,20 @@ PRs accepted.
 
 If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
+# Working on this code
+
+Build:
+
+    npx nx build nx-aws-cdk
+
+Test:
+
+    npx nx test nx-aws-cdk
+
+Publish package after login:
+
+    npm publish --access=public
+
 ## License
 
 This project is MIT licensed.
