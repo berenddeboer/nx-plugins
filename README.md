@@ -19,6 +19,13 @@ the plugin or accepts pull requests.
   - [Contributing](#contributing)
   - [License](#license)
 
+## Plugins
+
+| Plugin                                                        | Description                                                                                          |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| [`@berenddeboer/nx-aws-cdk`](./packages/nx-aws-cdk/README.md) | An Nx plugin for developing [aws cdk stacks](https://docs.aws.amazon.com/cdk/latest/guide/home.html) |
+| [`@berenddeboer/nx-sst`](./packages/nx-sst/README.md)         | An Nx plugin for developing [serverless full stack apps](https://docs.sst.dev/what-is-sst)           |
+
 ## Maintainers
 
 [@berenddeboer](https://github.com/berenddeboer)
@@ -33,17 +40,19 @@ If editing the README, please conform to the [standard-readme](https://github.co
 
 # Working on this code
 
-Build:
-
-    npx nx build nx-aws-cdk
-
 Test:
 
     npx nx test nx-aws-cdk
 
-Publish package after login:
+Create a new package:
 
-    npm publish --access=public
+1. Build:
+
+   npx nx build nx-aws-cdk
+
+2. Publish package after login:
+
+   npm publish --access=public
 
 ## License
 
