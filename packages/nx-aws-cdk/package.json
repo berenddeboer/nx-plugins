@@ -16,5 +16,7 @@
     "type": "git",
     "url": "git@github.com:berenddeboer/nx-plugins.git"
   },
+  "homepage": "https://github.com/berenddeboer/nx-plugins",
+  "description": "Nx plugin for AWS CDK stacks",
   "license": "MIT"
 }
