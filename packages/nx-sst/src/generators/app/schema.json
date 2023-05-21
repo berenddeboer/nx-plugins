@@ -113,6 +113,11 @@
         ]
       }
     },
+    "stage": {
+      "type": "string",
+      "default": "dev",
+      "description": "The environment your app gets deployed to"
+    },
     "tags": {
       "type": "string",
       "description": "Add tags to the project (used for linting)",
