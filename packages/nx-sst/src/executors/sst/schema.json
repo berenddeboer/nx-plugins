@@ -7,7 +7,7 @@
   "properties": {
     "command": {
       "type": "string",
-      "description": "SST command to be run, eg start, diff, deploy"
+      "description": "SST command to be run, eg dev, diff, deploy"
     },
     "parameters": {
       "type": "array",

@@ -88,7 +88,7 @@ export default async function (host: Tree, schema: AppGeneratorSchema) {
     root: options.projectRoot,
     projectType: "application",
     targets: {
-      start: runTarget({ command: "start" }),
+      dev: runTarget({ command: "dev" }),
       diff: runTarget({ command: "diff" }),
       deploy: runTarget({ command: "deploy" }),
       remove: runTarget({ command: "remove" }),
