@@ -10,14 +10,24 @@
     "importHelpers": true,
     "target": "es2020",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@berenddeboer/nx-aws-cdk": ["packages/nx-aws-cdk/src/index.ts"],
-      "@berenddeboer/nx-sst": ["packages/nx-sst/src/index.ts"]
+      "@berenddeboer/nx-aws-cdk": [
+        "packages/nx-aws-cdk/src/index.ts"
+      ],
+      "@berenddeboer/nx-sst": [
+        "packages/nx-sst/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
