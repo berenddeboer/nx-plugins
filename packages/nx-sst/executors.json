@@ -1,10 +1,15 @@
 {
   "$schema": "http://json-schema.org/schema",
   "executors": {
-    "sst": {
+    "version": {
       "implementation": "./src/executors/sst/executor",
       "schema": "./src/executors/sst/schema.json",
-      "description": "SST run executor"
+      "description": "version executor"
+    },
+    "dev": {
+      "implementation": "./src/executors/sst/executor",
+      "schema": "./src/executors/sst/schema.json",
+      "description": "dev executor"
     }
   }
 }
