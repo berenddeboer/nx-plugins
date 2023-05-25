@@ -21,6 +21,10 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
     commands.push(`--${arg} ${options.parseArgs[arg]}`)
   }
 
+  if (options.stacks && options.stacks.length) {
+    commands.push(options.stacks.join(" "))
+  }
+
   return commands.join(" ")
 }
 

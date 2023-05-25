@@ -25,7 +25,12 @@ function normalizeOptions(
   options: SSTRunExecutorSchema,
   context: ExecutorContext
 ): ParsedExecutorOption {
-  const just_options = omit(options, "command")
+  let just_options = omit(options, "command")
+  let stacks: string[]
+  if (options.parameters) {
+    stacks = options.parameters
+    just_options = omit(just_options, "parameters")
+  }
   const parsedArgs = parseArgs(just_options)
 
   // eslint-disable-next-line  no-unsafe-optional-chaining
@@ -34,6 +39,7 @@ function normalizeOptions(
   return {
     ...just_options,
     parseArgs: parsedArgs,
+    stacks,
     sourceRoot,
     root,
   }

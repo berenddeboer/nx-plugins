@@ -1,6 +1,4 @@
-import { ParsedExecutorInterface } from "../../interfaces/parsed-executor.interface"
-
-export interface SSTRunExecutorSchema extends ParsedExecutorInterface {
+export interface SSTRunExecutorSchema {
   command: string
   parameters?: string[]
   stage?: string
