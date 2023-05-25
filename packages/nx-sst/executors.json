@@ -4,7 +4,7 @@
     "sst": {
       "implementation": "./src/executors/sst/executor",
       "schema": "./src/executors/sst/schema.json",
-      "description": "dev executor"
+      "description": "sst executor"
     }
   }
 }
