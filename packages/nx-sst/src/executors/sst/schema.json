@@ -11,7 +11,7 @@
     },
     "parameters": {
       "type": "array",
-      "description": "Parameters for the given command, eg list of stacks",
+      "description": "Parameters for the given command, eg list of stacks to deploy",
       "default": [],
       "items": {
         "type": "string"
