@@ -7,8 +7,13 @@ import { SSTRunExecutorSchema } from "./schema"
 import { LARGE_BUFFER } from "../../utils/executor.util"
 import { mockExecutorContext } from "../../utils/testing"
 
-const options: SSTRunExecutorSchema = {
+const version: SSTRunExecutorSchema = {
   command: "version",
+}
+
+const deploy: SSTRunExecutorSchema = {
+  command: "deploy",
+  stage: "prd",
 }
 
 describe("SST Run Executor", () => {
@@ -22,7 +27,7 @@ describe("SST Run Executor", () => {
   afterEach(() => jest.clearAllMocks())
 
   it("can run", async () => {
-    await executor(options, context)
+    await executor(version, context)
     expect(childProcess.exec).toHaveBeenCalledWith(
       "sst version",
       expect.objectContaining({
@@ -34,5 +39,22 @@ describe("SST Run Executor", () => {
       })
     )
     expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: sst version`)
+  })
+
+  it("can receive parameters", async () => {
+    await executor(deploy, context)
+    expect(childProcess.exec).toHaveBeenCalledWith(
+      "sst deploy --stage prd",
+      expect.objectContaining({
+        cwd: expect.stringContaining(
+          path.join(context.root, context.workspace.projects["proj"].root)
+        ),
+        env: process.env,
+        maxBuffer: LARGE_BUFFER,
+      })
+    )
+    expect(logger.debug).toHaveBeenLastCalledWith(
+      `Executing command: sst deploy --stage prd`
+    )
   })
 })

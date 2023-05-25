@@ -1,22 +1,40 @@
 import * as path from "path"
+import { omit } from "lodash"
 import { SSTRunExecutorSchema } from "./schema"
 import { ExecutorContext } from "@nx/devkit"
 import { createCommand, runCommandProcess, parseArgs } from "../../utils/executor.util"
+import { ParsedExecutorInterface } from "../../interfaces/parsed-executor.interface"
+
+export interface ParsedExecutorOption extends ParsedExecutorInterface {
+  parseArgs?: Record<string, string>
+  sourceRoot: string
+  root: string
+}
 
 export default async function runExecutor(
   options: SSTRunExecutorSchema,
   context: ExecutorContext
 ) {
   const projectRoot = context.workspace.projects[context.projectName].root
-  /*
-  const stage = options.stage ? `--stage ${options.stage}` : ""
-  const region = options.region ? `--region ${options.region}` : ""
-  const roleArn = options.roleArn ? `--role-arn ${options.roleArn}` : ""
-  const parameters = options.parameters?.join(" ") ?? ""
-  const noColor = options.noColor ? "--no-color" : ""
-  const verbose = options.verbose ? "--verbose" : ""
-   */
-
-  const command = createCommand(options.command, options)
+  const normalizedOptions = normalizeOptions(options, context)
+  const command = createCommand(options.command, normalizedOptions)
   return runCommandProcess(command, path.join(context.root, projectRoot))
+}
+
+function normalizeOptions(
+  options: SSTRunExecutorSchema,
+  context: ExecutorContext
+): ParsedExecutorOption {
+  const just_options = omit(options, "command")
+  const parsedArgs = parseArgs(just_options)
+
+  // eslint-disable-next-line  no-unsafe-optional-chaining
+  const { sourceRoot, root } = context?.workspace?.projects[context.projectName]
+
+  return {
+    ...just_options,
+    parseArgs: parsedArgs,
+    sourceRoot,
+    root,
+  }
 }
