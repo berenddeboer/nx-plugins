@@ -15,9 +15,21 @@ export default async function runExecutor(
   options: SSTRunExecutorSchema,
   context: ExecutorContext
 ) {
-  const projectRoot = context.workspace.projects[context.projectName].root
   const normalizedOptions = normalizeOptions(options, context)
-  const command = createCommand(options.command, normalizedOptions)
+  const result = await runSst(options.command, normalizedOptions, context)
+
+  return {
+    success: result,
+  }
+}
+
+function runSst(
+  subcommand: string,
+  options: ParsedExecutorInterface,
+  context: ExecutorContext
+) {
+  const projectRoot = context.workspace.projects[context.projectName].root
+  const command = createCommand(subcommand, options)
   return runCommandProcess(command, path.join(context.root, projectRoot))
 }
 
