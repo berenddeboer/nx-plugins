@@ -94,7 +94,7 @@ export default async function (host: Tree, schema: AppGeneratorSchema) {
       remove: runTarget({ command: "remove" }),
       build: {
         ...runTarget({ command: "build" }),
-        outputs: [`${options.projectRoot}/.build`],
+        outputs: [`${options.projectRoot}/.sst`],
       },
       "sst-test": runTarget({ command: "test" }),
       cdk: runTarget({ command: "cdk" }),
