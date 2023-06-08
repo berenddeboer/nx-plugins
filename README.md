@@ -42,19 +42,25 @@ If editing the README, please conform to the [standard-readme](https://github.co
 
 Test:
 
-    npx nx test nx-aws-cdk
+```sh
+npx nx test nx-aws-cdk
+```
 
 # Create a new package:
 
 1. Build:
 
-   npx nx build nx-aws-cdk
+```sh
+npx nx build nx-aws-cdk
+```
 
 2. `cd dist/packages/nx-aws-cdk`
 
 3. Publish package after login:
 
-   npm publish --access=public
+```sh
+npm publish --access=public
+```
 
 ## License
 
