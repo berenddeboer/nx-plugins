@@ -6,7 +6,7 @@ import { logger } from "@nx/devkit"
 import { DestroyExecutorSchema } from "./schema"
 import executor from "./destroy"
 import { LARGE_BUFFER } from "../../utils/executor.util"
-import { mockExecutorContext } from "../../utils/testing"
+import { mockExecutorContext, cdk } from "../../utils/testing"
 
 const options: DestroyExecutorSchema = {}
 
@@ -24,7 +24,7 @@ describe("nx-aws-cdk Destroy Executor", () => {
     await executor(options, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      "cdk destroy",
+      `${cdk} destroy`,
       expect.objectContaining({
         cwd: expect.stringContaining(
           path.join(context.root, context.workspace.projects["proj"].root)
@@ -34,7 +34,7 @@ describe("nx-aws-cdk Destroy Executor", () => {
       })
     )
 
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk destroy`)
+    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: ${cdk} destroy`)
   })
 
   it("run cdk destroy command stack", async () => {
@@ -45,7 +45,7 @@ describe("nx-aws-cdk Destroy Executor", () => {
     await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      `cdk destroy ${stackName}`,
+      `${cdk} destroy ${stackName}`,
       expect.objectContaining({
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -53,7 +53,7 @@ describe("nx-aws-cdk Destroy Executor", () => {
     )
 
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: cdk destroy ${stackName}`
+      `Executing command: ${cdk} destroy ${stackName}`
     )
   })
 })

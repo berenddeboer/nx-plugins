@@ -54,11 +54,16 @@ npx nx test nx-aws-cdk
 npx nx build nx-aws-cdk
 ```
 
-2. `cd dist/packages/nx-aws-cdk`
+2. Test:
+
+```sh
+npx nx test nx-aws-cdk
+```
 
 3. Publish package after login:
 
 ```sh
+cd dist/packages/nx-aws-cdk
 npm publish --access=public
 ```
 

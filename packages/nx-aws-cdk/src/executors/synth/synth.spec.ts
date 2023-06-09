@@ -5,7 +5,7 @@ import { logger } from "@nx/devkit"
 import executor from "./synth"
 import { SynthExecutorSchema } from "./schema"
 import { LARGE_BUFFER } from "../../utils/executor.util"
-import { mockExecutorContext } from "../../utils/testing"
+import { mockExecutorContext, cdk } from "../../utils/testing"
 
 const options: SynthExecutorSchema = {}
 
@@ -23,7 +23,7 @@ describe("nx-aws-cdk synth Executor", () => {
     await executor(options, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      "cdk synth",
+      `${cdk} synth`,
       expect.objectContaining({
         cwd: expect.stringContaining(
           path.join(context.root, context.workspace.projects["proj"].root)
@@ -32,7 +32,7 @@ describe("nx-aws-cdk synth Executor", () => {
         maxBuffer: LARGE_BUFFER,
       })
     )
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk synth`)
+    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: ${cdk} synth`)
   })
 
   it("run cdk synth command stack", async () => {
@@ -43,7 +43,7 @@ describe("nx-aws-cdk synth Executor", () => {
     await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      `cdk synth ${stackName}`,
+      `${cdk} synth ${stackName}`,
       expect.objectContaining({
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -51,7 +51,7 @@ describe("nx-aws-cdk synth Executor", () => {
     )
 
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: cdk synth ${stackName}`
+      `Executing command: ${cdk} synth ${stackName}`
     )
   })
 
@@ -63,7 +63,7 @@ describe("nx-aws-cdk synth Executor", () => {
     await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      `cdk synth --context ${contextOptionString}`,
+      `${cdk} synth --context ${contextOptionString}`,
       expect.objectContaining({
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -71,7 +71,7 @@ describe("nx-aws-cdk synth Executor", () => {
     )
 
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: cdk synth --context ${contextOptionString}`
+      `Executing command: ${cdk} synth --context ${contextOptionString}`
     )
   })
 })

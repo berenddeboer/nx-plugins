@@ -5,7 +5,7 @@ import { logger } from "@nx/devkit"
 import executor from "./deploy"
 import { DeployExecutorSchema } from "./schema"
 import { LARGE_BUFFER } from "../../utils/executor.util"
-import { mockExecutorContext } from "../../utils/testing"
+import { mockExecutorContext, cdk } from "../../utils/testing"
 
 const options: DeployExecutorSchema = {}
 
@@ -23,7 +23,7 @@ describe("nx-aws-cdk deploy Executor", () => {
     await executor(options, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      "cdk deploy",
+      `${cdk} deploy`,
       expect.objectContaining({
         cwd: expect.stringContaining(
           path.join(context.root, context.workspace.projects["proj"].root)
@@ -32,7 +32,7 @@ describe("nx-aws-cdk deploy Executor", () => {
         maxBuffer: LARGE_BUFFER,
       })
     )
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: cdk deploy`)
+    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: ${cdk} deploy`)
   })
 
   it("run cdk deploy command stack", async () => {
@@ -43,7 +43,7 @@ describe("nx-aws-cdk deploy Executor", () => {
     await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      `cdk deploy ${stackName}`,
+      `${cdk} deploy ${stackName}`,
       expect.objectContaining({
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -51,7 +51,7 @@ describe("nx-aws-cdk deploy Executor", () => {
     )
 
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: cdk deploy ${stackName}`
+      `Executing command: ${cdk} deploy ${stackName}`
     )
   })
 
@@ -63,7 +63,7 @@ describe("nx-aws-cdk deploy Executor", () => {
     await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      `cdk deploy --context ${contextOptionString}`,
+      `${cdk} deploy --context ${contextOptionString}`,
       expect.objectContaining({
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -71,7 +71,7 @@ describe("nx-aws-cdk deploy Executor", () => {
     )
 
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: cdk deploy --context ${contextOptionString}`
+      `Executing command: ${cdk} deploy --context ${contextOptionString}`
     )
   })
 })

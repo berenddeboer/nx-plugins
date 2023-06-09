@@ -1,8 +1,9 @@
 import { exec } from "child_process"
+import { readFileSync } from "fs"
 
 import { DeployExecutorSchema } from "../executors/deploy/schema"
 import { ParsedExecutorInterface } from "../interfaces/parsed-executor.interface"
-import { logger } from "@nx/devkit"
+import { logger, detectPackageManager } from "@nx/devkit"
 
 export const executorPropKeys = ["stacks"]
 export const LARGE_BUFFER = 1024 * 1000000
@@ -15,7 +16,21 @@ export function parseArgs(options: DeployExecutorSchema): Record<string, string>
 }
 
 export function createCommand(command: string, options: ParsedExecutorInterface): string {
-  const commands = [`cdk ${command}`]
+  // We cannot start cdk in a monorepo, else it won't detect imported packages
+  // Workaround provided here: https://github.com/adrian-goe/nx-aws-cdk-v2/issues/679
+  // This improves upon that by detecting the main file to pass to CDK
+  // from cdk.json.
+  const NX_WORKSPACE_ROOT = process.env.NX_WORKSPACE_ROOT ?? ""
+  const packageManager = detectPackageManager()
+  const packageManagerExecutor =
+    packageManager === "npm" ? "npx" : `${packageManager} dlx`
+  const projectPath = `${NX_WORKSPACE_ROOT}/${options.root}`
+  const cdk_json = JSON.parse(readFileSync(`${projectPath}/cdk.json`).toString())
+  const app: string = cdk_json["app"]
+  const main = app.split(" ").pop()
+  const generatePath = `"${packageManagerExecutor} ts-node --require tsconfig-paths/register --project ${projectPath}/tsconfig.app.json ${projectPath}/${main}"`
+  const cdk = `node --require ts-node/register ${NX_WORKSPACE_ROOT}/node_modules/aws-cdk/bin/cdk.js -a ${generatePath}`
+  const commands = [`${cdk} ${command}`]
 
   if (typeof options.stacks === "string") {
     commands.push(options.stacks)
