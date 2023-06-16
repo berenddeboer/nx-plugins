@@ -2,7 +2,7 @@ import type { SSTConfig } from "sst";
 import { MyStack } from "./stacks/MyStack";
 
 export default {
-  config(input) {
+  config() {
     return {
       name:  "<%= name %>",
       stage: "<%= stage %>",
