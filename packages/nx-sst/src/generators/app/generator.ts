@@ -5,6 +5,7 @@ import {
   names,
   offsetFromRoot,
   formatFiles,
+  runTasksInSerial,
   Tree,
   writeJson,
 } from "@nx/devkit"
@@ -12,7 +13,6 @@ import * as path from "path"
 import { AppGeneratorSchema } from "./schema"
 import { jestProjectGenerator } from "@nx/jest"
 import initGenerator from "../init/init"
-import { runTasksInSerial } from "@nx/workspace/src/utilities/run-tasks-in-serial"
 import { SSTRunExecutorSchema } from "../../executors/sst/schema"
 import { join } from "path"
 
@@ -75,6 +75,10 @@ function addFiles(host: Tree, options: NormalizedSchema) {
   generateFiles(host, path.join(__dirname, "files"), options.projectRoot, templateOptions)
 }
 
+export interface NXLintExecutorSchema {
+  lintFilePatterns: string[]
+}
+
 export default async function (host: Tree, schema: AppGeneratorSchema) {
   const options = normalizeOptions(host, schema)
 
@@ -82,6 +86,10 @@ export default async function (host: Tree, schema: AppGeneratorSchema) {
 
   const runTarget = (options: SSTRunExecutorSchema) => ({
     executor: "@berenddeboer/nx-sst:sst",
+    options,
+  })
+  const nxLinter = (options: NXLintExecutorSchema) => ({
+    executor: "@nx/linter:eslint",
     options,
   })
   addProjectConfiguration(host, options.projectName, {
@@ -99,6 +107,10 @@ export default async function (host: Tree, schema: AppGeneratorSchema) {
       "sst-test": runTarget({ command: "test" }),
       cdk: runTarget({ command: "cdk" }),
       "add-cdk": runTarget({ command: "add-cdk" }),
+      lint: {
+        ...nxLinter({ lintFilePatterns: [`${options.projectRoot}/**/*.ts`] }),
+        outputs: ["{options.outputFile}"],
+      },
     },
     tags: options.parsedTags,
   })

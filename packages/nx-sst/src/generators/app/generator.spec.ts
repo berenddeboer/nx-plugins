@@ -20,5 +20,7 @@ describe("sst generator", () => {
     await generator(appTree, options)
     const config = readProjectConfiguration(appTree, "test")
     expect(config).toBeDefined()
+    expect(config.targets.lint).toBeDefined()
+    expect(config.targets.lint.options.lintFilePatterns).toBeDefined()
   })
 })
