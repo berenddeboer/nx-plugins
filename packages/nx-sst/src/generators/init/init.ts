@@ -18,7 +18,7 @@ function updateDependencies(tree: Tree) {
   return addDependenciesToPackageJson(
     tree,
     {
-      sst: "^2.3.0",
+      sst: "^2.16.3",
       constructs: "10.1.156",
     },
     {
