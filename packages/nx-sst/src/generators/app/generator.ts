@@ -105,8 +105,6 @@ export default async function (host: Tree, schema: AppGeneratorSchema) {
       deploy: runTarget({ command: "deploy" }),
       remove: runTarget({ command: "remove" }),
       "sst-test": runTarget({ command: "test" }),
-      cdk: runTarget({ command: "cdk" }),
-      "add-cdk": runTarget({ command: "add-cdk" }),
       lint: {
         ...nxLinter({ lintFilePatterns: [`${options.projectRoot}/**/*.ts`] }),
         outputs: ["{options.outputFile}"],
