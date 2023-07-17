@@ -1,6 +1,6 @@
 export interface ParsedExecutorInterface {
-  parseArgs?: Record<string, string>
   stacks?: string[]
+  context?: Record<string, string>
   sourceRoot: string
   root: string
 }

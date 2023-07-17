@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "version": 2,
+  "cli": "nx",
+  "title": "cdk executor",
+  "description": "Runs a CDK command",
+  "type": "object",
+  "properties": {
+    "command": {
+      "type": "string",
+      "description": "CDK command to be run, such as synth, diff or deploy"
+    },
+    "context": {
+      "type": "object",
+      "description": "CDK context values"
+    }
+  },
+  "required": []
+}

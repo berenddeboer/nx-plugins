@@ -117,16 +117,28 @@ export async function applicationGenerator(host: Tree, options: ApplicationSchem
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       synth: {
-        executor: "@berenddeboer/nx-aws-cdk:synth",
-        options: {},
+        executor: "@berenddeboer/nx-aws-cdk:cdk",
+        options: {
+          command: "synth",
+        },
       },
       deploy: {
-        executor: "@berenddeboer/nx-aws-cdk:deploy",
-        options: {},
+        executor: "@berenddeboer/nx-aws-cdk:cdk",
+        options: {
+          command: "deploy",
+        },
+      },
+      diff: {
+        executor: "@berenddeboer/nx-aws-cdk:cdk",
+        options: {
+          command: "diff",
+        },
       },
       destroy: {
-        executor: "@berenddeboer/nx-aws-cdk:destroy",
-        options: {},
+        executor: "@berenddeboer/nx-aws-cdk:cdk",
+        options: {
+          command: "destroy",
+        },
       },
     },
     tags: normalizedOptions.parsedTags,

@@ -1,20 +1,10 @@
 {
   "$schema": "http://json-schema.org/schema",
   "executors": {
-    "synth": {
-      "implementation": "./src/executors/synth/synth",
-      "schema": "./src/executors/synth/schema.json",
-      "description": "synth executor"
-    },
-    "deploy": {
-      "implementation": "./src/executors/deploy/deploy",
-      "schema": "./src/executors/deploy/schema.json",
-      "description": "deploy executor"
-    },
-    "destroy": {
-      "implementation": "./src/executors/destroy/destroy",
-      "schema": "./src/executors/destroy/schema.json",
-      "description": "destroy executor"
+    "cdk": {
+      "implementation": "./src/executors/cdk/executor",
+      "schema": "./src/executors/cdk/schema.json",
+      "description": "cdk executor"
     }
   }
 }

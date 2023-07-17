@@ -1,14 +1,14 @@
 import { exec } from "child_process"
 import { readFileSync } from "fs"
 
-import { DeployExecutorSchema } from "../executors/deploy/schema"
+import { CdkExecutorSchema } from "../executors/cdk/schema"
 import { ParsedExecutorInterface } from "../interfaces/parsed-executor.interface"
 import { logger, detectPackageManager } from "@nx/devkit"
 
 export const executorPropKeys = ["stacks"]
 export const LARGE_BUFFER = 1024 * 1000000
 
-export function parseArgs(options: DeployExecutorSchema): Record<string, string> {
+export function parseArgs(options: CdkExecutorSchema): Record<string, string> {
   const keys = Object.keys(options)
   return keys
     .filter((prop) => executorPropKeys.indexOf(prop) < 0)
@@ -30,14 +30,15 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
   const main = app.split(" ").pop()
   const generatePath = `"${packageManagerExecutor} ts-node --require tsconfig-paths/register --project ${projectPath}/tsconfig.app.json ${projectPath}/${main}"`
   const cdk = `node --require ts-node/register ${NX_WORKSPACE_ROOT}/node_modules/aws-cdk/bin/cdk.js -a ${generatePath}`
-  const commands = [`${cdk} ${command}`]
+  let commands = [cdk, command]
 
-  if (typeof options.stacks === "string") {
-    commands.push(options.stacks)
+  if (options.stacks) {
+    commands = commands.concat(options.stacks)
   }
-
-  for (const arg in options.parseArgs) {
-    commands.push(`--${arg} ${options.parseArgs[arg]}`)
+  if (options.context) {
+    Object.keys(options.context).forEach((key) => {
+      commands.push(`--context ${key}=${options.context[key]}`)
+    })
   }
 
   return commands.join(" ")
@@ -79,6 +80,7 @@ export function runCommandProcess(command: string, cwd: string): Promise<boolean
       }
 
       process.removeListener("exit", processExitListener)
+      process.removeListener("SIGTERM", processExitListener)
 
       process.stdin.removeListener("data", processExitListener)
     })

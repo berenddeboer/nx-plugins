@@ -2,15 +2,14 @@ import * as path from "path"
 import * as childProcess from "child_process"
 import { logger } from "@nx/devkit"
 
-import executor from "./deploy"
-import { DeployExecutorSchema } from "./schema"
+import executor from "./executor"
+import { CdkExecutorSchema } from "./schema"
 import { LARGE_BUFFER } from "../../utils/executor.util"
 import { mockExecutorContext, cdk } from "../../utils/testing"
 
-const options: DeployExecutorSchema = {}
-
-describe("nx-aws-cdk deploy Executor", () => {
-  const context = mockExecutorContext("deploy")
+describe("nx-aws-cdk cdk deploy Executor", () => {
+  const options: CdkExecutorSchema = { command: "deploy" }
+  const context = mockExecutorContext("cdk")
 
   beforeEach(async () => {
     jest.spyOn(logger, "debug")
@@ -57,13 +56,14 @@ describe("nx-aws-cdk deploy Executor", () => {
 
   it("run cdk deploy command context options", async () => {
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const option: any = Object.assign({}, options)
-    const contextOptionString = "key=value"
-    option["context"] = contextOptionString
-    await executor(option, context)
+    const options_with_context: CdkExecutorSchema = Object.assign({}, options)
+    options_with_context.context = {
+      key: "value",
+    }
+    await executor(options_with_context, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
-      `${cdk} deploy --context ${contextOptionString}`,
+      `${cdk} deploy --context key=value`,
       expect.objectContaining({
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -71,7 +71,35 @@ describe("nx-aws-cdk deploy Executor", () => {
     )
 
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: ${cdk} deploy --context ${contextOptionString}`
+      `Executing command: ${cdk} deploy --context key=value`
     )
+  })
+})
+
+describe("nx-aws-cdk cdk synth Executor", () => {
+  const options: CdkExecutorSchema = { command: "synth" }
+  const context = mockExecutorContext("cdk")
+
+  beforeEach(async () => {
+    jest.spyOn(logger, "debug")
+    jest.spyOn(childProcess, "exec")
+  })
+
+  afterEach(() => jest.clearAllMocks())
+
+  it("run cdk synth command", async () => {
+    await executor(options, context)
+
+    expect(childProcess.exec).toHaveBeenCalledWith(
+      `${cdk} synth`,
+      expect.objectContaining({
+        cwd: expect.stringContaining(
+          path.join(context.root, context.workspace.projects["proj"].root)
+        ),
+        env: process.env,
+        maxBuffer: LARGE_BUFFER,
+      })
+    )
+    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: ${cdk} synth`)
   })
 })
