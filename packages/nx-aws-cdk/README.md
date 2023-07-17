@@ -70,6 +70,28 @@ nx deploy myApp
 nx destroy myApp
 ```
 
+All CDK commands are supported, although only the common targets are emitted.
+
+## Upgrading to version 2
+
+Update your `project.json` when upgrading from an earlier version:
+
+1. Replace the `@berenddeboer/nx-aws-cdk:*` plugin with `@berenddeboer/nx-aws-cdk:cdk`
+
+2. Under the options property add the CDK command like `synth` or `deploy`.
+
+Example:
+
+```json
+"deploy": {
+  "executor": "@berenddeboer/nx-aws-cdk:cdk",
+  "options": {
+    "command": "deploy"
+  },
+  "outputs": ["{workspaceRoot}/dist/{projectRoot}"]
+},
+```
+
 ## Maintainers
 
 [@therk](https://github.com/therk)
