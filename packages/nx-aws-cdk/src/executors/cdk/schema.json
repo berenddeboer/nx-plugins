@@ -11,8 +11,11 @@
       "description": "CDK command to be run, such as synth, diff or deploy"
     },
     "context": {
-      "type": "object",
-      "description": "CDK context values"
+      "type": "array",
+      "description": "CDK context values",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": []

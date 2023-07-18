@@ -35,11 +35,21 @@ function normalizeOptions(
 ): ParsedCdkExecutorOption {
   const parsedArgs = parseArgs(options)
 
+  // If context values are passed, turn them into the proper object
+  const context_values: Record<string, string> = {}
+  if (options.context) {
+    options.context.forEach((kv) => {
+      const a = kv.split("=")
+      context_values[a[0]] = a[1]
+    })
+  }
+
   // eslint-disable-next-line  no-unsafe-optional-chaining
   const { sourceRoot, root } = context?.workspace?.projects[context.projectName]
 
   return {
     ...options,
+    context: context_values,
     parseArgs: parsedArgs,
     sourceRoot,
     root,

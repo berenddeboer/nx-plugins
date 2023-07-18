@@ -57,9 +57,7 @@ describe("nx-aws-cdk cdk deploy Executor", () => {
   it("run cdk deploy command context options", async () => {
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const options_with_context: CdkExecutorSchema = Object.assign({}, options)
-    options_with_context.context = {
-      key: "value",
-    }
+    options_with_context.context = ["key=value"]
     await executor(options_with_context, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
