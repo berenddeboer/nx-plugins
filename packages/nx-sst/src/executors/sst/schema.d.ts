@@ -4,6 +4,6 @@ export interface SSTRunExecutorSchema {
   stage?: string
   region?: string
   roleArn?: string
-  noColor?: boolean
   verbose?: boolean
+  polyfills?: string[]
 }

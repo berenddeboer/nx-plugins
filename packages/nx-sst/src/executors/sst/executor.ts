@@ -35,23 +35,22 @@ function runSst(
 
 function normalizeOptions(
   options: SSTRunExecutorSchema,
-  context: ExecutorContext
+  executor_context: ExecutorContext
 ): ParsedExecutorOption {
-  let just_options = omit(options, "command")
-  let stacks: string[]
-  if (options.parameters) {
-    stacks = options.parameters
-    just_options = omit(just_options, "parameters")
-  }
-  const parsedArgs = parseArgs(just_options)
+  const { polyfills, parameters, ...unknown_properties } = options
+  const otherArgs = parseArgs(unknown_properties)
+  delete otherArgs.command
+  delete otherArgs.parameters
 
   // eslint-disable-next-line  no-unsafe-optional-chaining
-  const { sourceRoot, root } = context?.workspace?.projects[context.projectName]
+  const { sourceRoot, root } =
+    executor_context?.workspace?.projects[executor_context.projectName]
 
   return {
-    ...just_options,
-    parseArgs: parsedArgs,
-    stacks,
+    ...options,
+    parseArgs: otherArgs,
+    stacks: parameters,
+    polyfills: polyfills,
     sourceRoot,
     root,
   }

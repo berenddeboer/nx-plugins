@@ -30,13 +30,16 @@
       "type": "string",
       "description": "ARN of Role to use when invoking CloudFormation"
     },
-    "no-color": {
-      "type": "boolean",
-      "description": "Remove colors and other style from console output"
-    },
     "verbose": {
       "type": "boolean",
       "description": "Show more debug info in the output"
+    },
+    "polyfills": {
+      "type": "array",
+      "description": "List of polyfills to inject before running sst. Allows you to support CommonJS libraries in SST, which emits ESM",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": ["command"]

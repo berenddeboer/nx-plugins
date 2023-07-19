@@ -15,7 +15,18 @@ export function parseArgs(options: SSTRunExecutorSchema): Record<string, string>
 }
 
 export function createCommand(command: string, options: ParsedExecutorInterface): string {
-  const commands = [`sst ${command}`]
+  let sst: string
+  if (options.polyfills && options.polyfills.length) {
+    const a = ["node"]
+    options.polyfills.forEach((pf) => {
+      a.push(`-r ${pf}`)
+    })
+    a.push(`${options.root}/node_modules/.bin/sst`)
+    sst = a.join(" ")
+  } else {
+    sst = "sst"
+  }
+  const commands = [`${sst} ${command}`]
 
   for (const arg in options.parseArgs) {
     commands.push(`--${arg} ${options.parseArgs[arg]}`)

@@ -22,6 +22,13 @@ const deploy_stack: SSTRunExecutorSchema = {
   parameters: ["mystack"],
 }
 
+const build_stack: SSTRunExecutorSchema = {
+  command: "build",
+  stage: "dev",
+  parameters: ["mystack"],
+  polyfills: ["@subbu963/esm-polyfills"],
+}
+
 const empty_parameters: SSTRunExecutorSchema = {
   command: "deploy",
   stage: "prd",
@@ -101,6 +108,23 @@ describe("SST Run Executor", () => {
     )
     expect(logger.debug).toHaveBeenLastCalledWith(
       `Executing command: sst deploy --stage prd`
+    )
+  })
+
+  it("supports polyfills", async () => {
+    await executor(build_stack, context)
+    expect(childProcess.exec).toHaveBeenCalledWith(
+      "node -r @subbu963/esm-polyfills apps/proj/node_modules/.bin/sst build --stage dev mystack",
+      expect.objectContaining({
+        cwd: expect.stringContaining(
+          path.join(context.root, context.workspace.projects["proj"].root)
+        ),
+        env: process.env,
+        maxBuffer: LARGE_BUFFER,
+      })
+    )
+    expect(logger.debug).toHaveBeenLastCalledWith(
+      `Executing command: node -r @subbu963/esm-polyfills apps/proj/node_modules/.bin/sst build --stage dev mystack`
     )
   })
 })
