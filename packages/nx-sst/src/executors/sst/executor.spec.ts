@@ -1,6 +1,6 @@
 import * as path from "path"
 import * as childProcess from "child_process"
-import { logger } from "@nx/devkit"
+import { logger, workspaceRoot } from "@nx/devkit"
 
 import executor from "./executor"
 import { SSTRunExecutorSchema } from "./schema"
@@ -114,7 +114,7 @@ describe("SST Run Executor", () => {
   it("supports polyfills", async () => {
     await executor(build_stack, context)
     expect(childProcess.exec).toHaveBeenCalledWith(
-      "node -r @subbu963/esm-polyfills apps/proj/node_modules/.bin/sst build --stage dev mystack",
+      `node -r @subbu963/esm-polyfills ${workspaceRoot}/node_modules/.bin/sst build --stage dev mystack`,
       expect.objectContaining({
         cwd: expect.stringContaining(
           path.join(context.root, context.workspace.projects["proj"].root)
@@ -124,7 +124,7 @@ describe("SST Run Executor", () => {
       })
     )
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: node -r @subbu963/esm-polyfills apps/proj/node_modules/.bin/sst build --stage dev mystack`
+      `Executing command: node -r @subbu963/esm-polyfills ${workspaceRoot}/node_modules/.bin/sst build --stage dev mystack`
     )
   })
 })

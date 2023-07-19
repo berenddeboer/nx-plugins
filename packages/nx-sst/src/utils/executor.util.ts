@@ -2,7 +2,7 @@ import { exec } from "child_process"
 
 import { SSTRunExecutorSchema } from "../executors/sst/schema"
 import { ParsedExecutorInterface } from "../interfaces/parsed-executor.interface"
-import { logger } from "@nx/devkit"
+import { logger, workspaceRoot } from "@nx/devkit"
 
 export const executorPropKeys = ["stacks"]
 export const LARGE_BUFFER = 1024 * 1000000
@@ -21,7 +21,7 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
     options.polyfills.forEach((pf) => {
       a.push(`-r ${pf}`)
     })
-    a.push(`${options.root}/node_modules/.bin/sst`)
+    a.push(`${workspaceRoot}/node_modules/.bin/sst`)
     sst = a.join(" ")
   } else {
     sst = "sst"
