@@ -41,6 +41,10 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
     })
   }
 
+  for (const arg in options.otherArgs) {
+    commands.push(`--${arg}=${options.otherArgs[arg]}`)
+  }
+
   return commands.join(" ")
 }
 

@@ -31,26 +31,30 @@ async function runCdk(options: ParsedCdkExecutorOption, context: ExecutorContext
 
 function normalizeOptions(
   options: CdkExecutorSchema,
-  context: ExecutorContext
+  executor_context: ExecutorContext
 ): ParsedCdkExecutorOption {
-  const parsedArgs = parseArgs(options)
+  const { context, ...unknown_properties } = options
+  const otherArgs = parseArgs(unknown_properties)
+  delete otherArgs.command
+  delete otherArgs.stacks
 
   // If context values are passed, turn them into the proper object
   const context_values: Record<string, string> = {}
-  if (options.context) {
-    options.context.forEach((kv) => {
+  if (context) {
+    context.forEach((kv) => {
       const a = kv.split("=")
       context_values[a[0]] = a[1]
     })
   }
 
   // eslint-disable-next-line  no-unsafe-optional-chaining
-  const { sourceRoot, root } = context?.workspace?.projects[context.projectName]
+  const { sourceRoot, root } =
+    executor_context?.workspace?.projects[executor_context.projectName]
 
   return {
     ...options,
     context: context_values,
-    parseArgs: parsedArgs,
+    otherArgs: otherArgs,
     sourceRoot,
     root,
   }

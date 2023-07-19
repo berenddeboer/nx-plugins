@@ -100,4 +100,24 @@ describe("nx-aws-cdk cdk synth Executor", () => {
     )
     expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: ${cdk} synth`)
   })
+
+  it("run cdk synth command with an extra parameter", async () => {
+    const extra_options: CdkExecutorSchema = Object.assign({}, options)
+    extra_options["validation"] = true
+    await executor(extra_options, context)
+
+    expect(childProcess.exec).toHaveBeenCalledWith(
+      `${cdk} synth --validation=true`,
+      expect.objectContaining({
+        cwd: expect.stringContaining(
+          path.join(context.root, context.workspace.projects["proj"].root)
+        ),
+        env: process.env,
+        maxBuffer: LARGE_BUFFER,
+      })
+    )
+    expect(logger.debug).toHaveBeenLastCalledWith(
+      `Executing command: ${cdk} synth --validation=true`
+    )
+  })
 })
