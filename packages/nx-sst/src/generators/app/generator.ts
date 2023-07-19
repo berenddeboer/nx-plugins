@@ -117,7 +117,6 @@ export default async function (tree: Tree, schema: AppGeneratorSchema) {
       },
       deploy: runTarget({ command: "deploy" }),
       remove: runTarget({ command: "remove" }),
-      "sst-test": runTarget({ command: "test" }),
       lint: {
         ...nxLinter({ lintFilePatterns: [`${options.projectRoot}/**/*.ts`] }),
         outputs: ["{options.outputFile}"],
