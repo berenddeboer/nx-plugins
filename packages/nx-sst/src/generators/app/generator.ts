@@ -95,15 +95,6 @@ export default async function (tree: Tree, schema: AppGeneratorSchema) {
     executor: "@berenddeboer/nx-sst:sst",
     options,
   })
-  const nxLinter = (options: NXLintExecutorSchema) => ({
-    executor: "@nx/linter:eslint",
-    options,
-  })
-
-  if (options.linter !== "none") {
-    const lintCallback = await addLint(tree, options)
-    tasks.push(lintCallback)
-  }
 
   addProjectConfiguration(tree, options.projectName, {
     root: options.projectRoot,
@@ -117,14 +108,15 @@ export default async function (tree: Tree, schema: AppGeneratorSchema) {
       },
       deploy: runTarget({ command: "deploy" }),
       remove: runTarget({ command: "remove" }),
-      lint: {
-        ...nxLinter({ lintFilePatterns: [`${options.projectRoot}/**/*.ts`] }),
-        outputs: ["{options.outputFile}"],
-      },
     },
     tags: options.parsedTags,
   })
   addFiles(tree, options)
+
+  if (options.linter !== "none") {
+    const lintCallback = await addLint(tree, options)
+    tasks.push(lintCallback)
+  }
 
   if (options.unitTestRunner === "jest") {
     const jestCallback = await addJest(tree, options)

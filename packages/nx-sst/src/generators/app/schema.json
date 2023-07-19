@@ -128,11 +128,17 @@
       "description": "A directory where the project is placed",
       "alias": "d"
     },
+    "linter": {
+      "description": "The tool to use for running lint checks.",
+      "type": "string",
+      "enum": ["eslint", "none"],
+      "default": "eslint"
+    },
     "unitTestRunner": {
       "type": "string",
       "enum": ["jest", "vitest", "none"],
       "description": "Test runner to use for unit tests.",
-      "default": "jest"
+      "x-prompt": "Which unit test runner would you like to use?"
     }
   },
   "required": ["name"]
