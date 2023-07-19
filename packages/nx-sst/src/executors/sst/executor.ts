@@ -1,5 +1,4 @@
 import * as path from "path"
-import { omit } from "lodash"
 import { SSTRunExecutorSchema } from "./schema"
 import { ExecutorContext } from "@nx/devkit"
 import { createCommand, runCommandProcess, parseArgs } from "../../utils/executor.util"
@@ -42,9 +41,9 @@ function normalizeOptions(
   delete otherArgs.command
   delete otherArgs.parameters
 
-  // eslint-disable-next-line  no-unsafe-optional-chaining
+  // eslint-disable-next-line no-unsafe-optional-chaining
   const { sourceRoot, root } =
-    executor_context?.workspace?.projects[executor_context.projectName]
+    executor_context.workspace.projects[executor_context.projectName]
 
   return {
     ...options,

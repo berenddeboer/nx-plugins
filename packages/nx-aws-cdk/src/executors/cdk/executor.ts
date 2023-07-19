@@ -15,7 +15,7 @@ export interface ParsedCdkExecutorOption extends ParsedExecutorInterface {
 export default async function runExecutor(
   options: CdkExecutorSchema,
   context: ExecutorContext
-): Promise<{ success: Boolean }> {
+): Promise<{ success: boolean }> {
   const normalizedOptions = normalizeOptions(options, context)
   const result = await runCdk(normalizedOptions, context)
 
@@ -47,9 +47,9 @@ function normalizeOptions(
     })
   }
 
-  // eslint-disable-next-line  no-unsafe-optional-chaining
+  // eslint-disable-next-line no-unsafe-optional-chaining
   const { sourceRoot, root } =
-    executor_context?.workspace?.projects[executor_context.projectName]
+    executor_context.workspace.projects[executor_context.projectName]
 
   return {
     ...options,
