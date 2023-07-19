@@ -43,6 +43,7 @@
     "@nx/js": "16.5.2",
     "@nx/linter": "^16.1.4",
     "@nx/plugin": "^16.5.2",
+    "@nx/vite": "^16.5.2",
     "@nx/workspace": "16.1.4",
     "@swc-node/register": "~1.4.2",
     "@swc/cli": "~0.1.62",

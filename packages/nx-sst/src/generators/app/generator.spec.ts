@@ -10,6 +10,8 @@ describe("sst generator", () => {
     name: "test",
     stage: "dev",
     region: "us-east-1",
+    skipFormat: true,
+    linter: "none",
   }
 
   beforeEach(() => {
@@ -22,5 +24,24 @@ describe("sst generator", () => {
     expect(config).toBeDefined()
     expect(config.targets.lint).toBeDefined()
     expect(config.targets.lint.options.lintFilePatterns).toBeDefined()
+    expect(config.targets.test).toBeUndefined()
+  })
+
+  it("supports the jest test runner", async () => {
+    await generator(appTree, { ...options, unitTestRunner: "jest" })
+    const config = readProjectConfiguration(appTree, "test")
+    expect(config).toBeDefined()
+    expect(config.targets.lint).toBeDefined()
+    expect(config.targets.lint.options.lintFilePatterns).toBeDefined()
+    expect(config.targets.test.executor).toBe("@nx/jest:jest")
+  })
+
+  it("supports the vitest test runner", async () => {
+    await generator(appTree, { ...options, unitTestRunner: "vitest" })
+    const config = readProjectConfiguration(appTree, "test")
+    expect(config).toBeDefined()
+    expect(config.targets.lint).toBeDefined()
+    expect(config.targets.lint.options.lintFilePatterns).toBeDefined()
+    expect(config.targets.test.executor).toBe("@nx/vite:test")
   })
 })

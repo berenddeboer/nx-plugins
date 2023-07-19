@@ -1,3 +1,5 @@
+// nx-ignore-next-line
+const { Linter } = require("@nx/linter") // use require to import to avoid circular dependency
 import { InitSchema } from "../init/schema"
 
 export interface AppGeneratorSchema extends InitSchema {
@@ -6,4 +8,6 @@ export interface AppGeneratorSchema extends InitSchema {
   region?: string
   tags?: string
   directory?: string
+  linter?: Linter
+  setParserOptionsProject?: boolean
 }

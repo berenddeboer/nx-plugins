@@ -1,3 +1,4 @@
 export interface InitSchema {
-  unitTestRunner?: "jest" | "none"
+  unitTestRunner?: "jest" | "vitest" | "none"
+  skipFormat: true
 }

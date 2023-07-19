@@ -5,7 +5,6 @@ import {
   Tree,
   updateJson,
 } from "@nx/devkit"
-import { jestInitGenerator } from "@nx/jest"
 import { InitSchema } from "./schema"
 
 function updateDependencies(tree: Tree) {
@@ -28,20 +27,17 @@ function updateDependencies(tree: Tree) {
 }
 
 export default async function (tree: Tree, schema: InitSchema) {
-  let jestInstall: GeneratorCallback
   const tasks: GeneratorCallback[] = []
-  if (!schema.unitTestRunner || schema.unitTestRunner === "jest") {
-    jestInstall = await jestInitGenerator(tree, {})
-  }
   const installTask = updateDependencies(tree)
   tasks.push(installTask)
 
-  await formatFiles(tree)
+  if (!schema.skipFormat) {
+    await formatFiles(tree)
+  }
 
   return async () => {
-    if (jestInstall) {
-      await jestInstall()
+    for (const task of tasks) {
+      await task()
     }
-    await installTask()
   }
 }
