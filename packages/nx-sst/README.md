@@ -19,19 +19,25 @@ nx g @berenddeboer/nx-sst:app <app name>
 
 All SST commands are supported.
 
-For example, if your project is named app:
+To see all options:
 
-## Start:
+```sh
+npx nx g @berenddeboer/nx-sst:app --help
+```
+
+## Local debugging
+
+For example, if your project is named app:
 
 `nx run app:dev` or `nx dev app`
 
-## Deploy:
+## Deploy
 
 ```
 nx run app:deploy
 ```
 
-## Deploy to stage:
+## Deploy to a stage
 
 ```
 nx run app:deploy --stage=production
