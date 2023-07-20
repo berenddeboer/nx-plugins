@@ -19,6 +19,7 @@ import { jestProjectGenerator } from "@nx/jest"
 import initGenerator from "../init/init"
 import { SSTRunExecutorSchema } from "../../executors/sst/schema"
 import { join } from "path"
+import { Linter, lintProjectGenerator } from "@nx/linter"
 
 interface NormalizedSchema extends AppGeneratorSchema {
   projectName: string
@@ -113,7 +114,7 @@ export default async function (tree: Tree, schema: AppGeneratorSchema) {
   })
   addFiles(tree, options)
 
-  if (options.linter !== "none") {
+  if (options.linter !== Linter.None) {
     const lintCallback = await addLint(tree, options)
     tasks.push(lintCallback)
   }
@@ -143,9 +144,8 @@ export async function addLint(
   tree: Tree,
   options: NormalizedSchema
 ): Promise<GeneratorCallback> {
-  const { lintProjectGenerator } = ensurePackage("@nx/linter", nxVersion)
   return lintProjectGenerator(tree, {
-    project: options.name,
+    project: options.projectName,
     linter: options.linter,
     skipFormat: true,
     tsConfigPaths: [joinPathFragments(options.projectRoot, "tsconfig.lib.json")],
