@@ -30,15 +30,15 @@
       "default": false
     },
     "unitTestRunner": {
-      "description": "Adds the specified unit test runner",
       "type": "string",
-      "enum": ["jest", "none"],
-      "default": "jest"
+      "enum": ["jest", "vitest", "none"],
+      "description": "Test runner to use for unit tests.",
+      "x-prompt": "Which unit test runner would you like to use?"
     },
     "linter": {
       "description": "The tool to use for running lint checks.",
       "type": "string",
-      "enum": ["eslint", "tslint"],
+      "enum": ["eslint", "none"],
       "default": "eslint"
     },
     "setParserOptionsProject": {

@@ -2,6 +2,7 @@ import * as path from "path"
 import {
   addProjectConfiguration,
   convertNxGenerator,
+  ensurePackage,
   formatFiles,
   generateFiles,
   GeneratorCallback,
@@ -12,15 +13,16 @@ import {
   ProjectConfiguration,
   runTasksInSerial,
   Tree,
-  readNxJson,
   updateJson,
-  updateNxJson,
+  writeJson,
 } from "@nx/devkit"
+import { nxVersion } from "../../utils/versions"
 import { jestProjectGenerator } from "@nx/jest"
 import { Linter, lintProjectGenerator } from "@nx/linter"
 
 import { ApplicationSchema } from "./schema"
 import { initGenerator } from "../init/init"
+import { CdkExecutorSchema } from "../../executors/cdk/schema"
 
 interface NormalizedSchema extends ApplicationSchema {
   projectName: string
@@ -56,35 +58,19 @@ function addFiles(host: Tree, options: NormalizedSchema) {
     offsetFromRoot: offsetFromRoot(options.projectRoot),
     template: "",
   }
-
   generateFiles(host, path.join(__dirname, "files"), options.projectRoot, templateOptions)
 }
 
-function addJestFiles(host: Tree, options: NormalizedSchema) {
-  const templateOptions = {
-    ...options,
-    ...names(options.projectName),
-    offsetFromRoot: offsetFromRoot(options.projectRoot),
-    template: "",
-  }
-  generateFiles(
-    host,
-    path.join(__dirname, "jest-files"),
-    options.projectRoot,
-    templateOptions
-  )
-}
-async function addLintingToApplication(
-  tree: Tree,
+export async function addJest(
+  host: Tree,
   options: NormalizedSchema
 ): Promise<GeneratorCallback> {
-  return await lintProjectGenerator(tree, {
-    linter: options.linter,
+  return await jestProjectGenerator(host, {
     project: options.projectName,
-    tsConfigPaths: [joinPathFragments(options.projectRoot, "tsconfig.*?.json")],
-    eslintFilePatterns: [`${options.projectRoot}/**/*.ts`],
-    skipFormat: true,
-    setParserOptionsProject: options.setParserOptionsProject,
+    supportTsx: true,
+    skipSerializers: true,
+    setupFile: "none",
+    babelJest: true,
   })
 }
 
@@ -101,79 +87,78 @@ function updateLintConfig(tree: Tree, options: NormalizedSchema) {
   })
 }
 
-export async function applicationGenerator(host: Tree, options: ApplicationSchema) {
+export async function applicationGenerator(tree: Tree, schema: ApplicationSchema) {
   const tasks: GeneratorCallback[] = []
-  const normalizedOptions = normalizeOptions(host, options)
-  const initTask = await initGenerator(host, {
-    ...options,
-    skipFormat: true,
-  })
-
-  tasks.push(initTask)
-
-  const project: ProjectConfiguration = {
-    root: normalizedOptions.projectRoot,
-    projectType: "application",
-    sourceRoot: `${normalizedOptions.projectRoot}/src`,
-    targets: {
-      synth: {
-        executor: "@berenddeboer/nx-aws-cdk:cdk",
-        options: {
-          command: "synth",
-        },
-      },
-      deploy: {
-        executor: "@berenddeboer/nx-aws-cdk:cdk",
-        options: {
-          command: "deploy",
-        },
-      },
-      diff: {
-        executor: "@berenddeboer/nx-aws-cdk:cdk",
-        options: {
-          command: "diff",
-        },
-      },
-      destroy: {
-        executor: "@berenddeboer/nx-aws-cdk:cdk",
-        options: {
-          command: "destroy",
-        },
-      },
-    },
-    tags: normalizedOptions.parsedTags,
-  }
-  addProjectConfiguration(host, normalizedOptions.projectName, project)
-  const workspace = readNxJson(host)
-
-  updateNxJson(host, workspace)
-  addFiles(host, normalizedOptions)
-
-  if (normalizedOptions.linter !== Linter.None) {
-    const lintTask = await addLintingToApplication(host, normalizedOptions)
-    tasks.push(lintTask)
-    updateLintConfig(host, normalizedOptions)
-  }
-
-  if (normalizedOptions.unitTestRunner === "jest") {
-    const jestTask = await jestProjectGenerator(host, {
-      project: normalizedOptions.projectName,
-      setupFile: "none",
-      skipSerializers: true,
-      supportTsx: false,
-      babelJest: false,
-      testEnvironment: "node",
+  tasks.push(
+    await initGenerator(tree, {
+      ...schema,
       skipFormat: true,
     })
-    tasks.push(jestTask)
-    addJestFiles(host, normalizedOptions)
+  )
+
+  const options = normalizeOptions(tree, schema)
+
+  const runTarget = (options: CdkExecutorSchema) => ({
+    executor: "@berenddeboer/nx-aws-cdk:cdk",
+    options,
+  })
+
+  const project: ProjectConfiguration = {
+    root: options.projectRoot,
+    projectType: "application",
+    sourceRoot: `${options.projectRoot}/src`,
+    targets: {
+      synth: runTarget({ command: "synth" }),
+      deploy: runTarget({ command: "deploy" }),
+      diff: runTarget({ command: "diff" }),
+      destroy: runTarget({ command: "destroy" }),
+    },
+    tags: options.parsedTags,
+  }
+  addProjectConfiguration(tree, options.projectName, project)
+  addFiles(tree, options)
+
+  if (options.unitTestRunner === "jest") {
+    const jestCallback = await addJest(tree, options)
+    tasks.push(jestCallback)
+  } else if (options.unitTestRunner === "vitest") {
+    const { vitestGenerator } = ensurePackage("@nx/vite", nxVersion)
+    const vitestTask = await vitestGenerator(tree, {
+      project: options.name,
+      uiFramework: "none",
+      coverageProvider: "v8",
+      skipFormat: true,
+    })
+    tasks.push(vitestTask)
+  }
+
+  if (options.linter !== Linter.None) {
+    const lintCallback = await addLint(tree, options)
+    //updateLintConfig(tree, options)
+    tasks.push(lintCallback)
   }
 
   if (!options.skipFormat) {
-    await formatFiles(host)
+    await formatFiles(tree)
   }
 
   return runTasksInSerial(...tasks)
 }
+
+export async function addLint(
+  tree: Tree,
+  options: NormalizedSchema
+): Promise<GeneratorCallback> {
+  return lintProjectGenerator(tree, {
+    project: options.projectName,
+    linter: options.linter,
+    skipFormat: true,
+    tsConfigPaths: [joinPathFragments(options.projectRoot, "tsconfig.lib.json")],
+    unitTestRunner: options.unitTestRunner,
+    eslintFilePatterns: [`${options.projectRoot}/**/*.ts`],
+    setParserOptionsProject: options.setParserOptionsProject,
+  })
+}
+
 export default applicationGenerator
 export const applicationSchematic = convertNxGenerator(applicationGenerator)
