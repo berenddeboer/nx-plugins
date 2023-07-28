@@ -21,7 +21,7 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
     options.polyfills.forEach((pf) => {
       a.push(`-r ${pf}`)
     })
-    a.push(`${workspaceRoot}/node_modules/.bin/sst`)
+    a.push(`${workspaceRoot}/node_modules/sst/cli/sst.js`)
     sst = a.join(" ")
   } else {
     sst = "sst"
