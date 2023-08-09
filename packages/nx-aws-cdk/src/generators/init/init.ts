@@ -2,10 +2,8 @@ import {
   addDependenciesToPackageJson,
   convertNxGenerator,
   formatFiles,
-  GeneratorCallback,
   Tree,
 } from "@nx/devkit"
-import { jestInitGenerator } from "@nx/jest"
 
 import { InitGeneratorSchema } from "./schema"
 import {
@@ -14,23 +12,9 @@ import {
   CONSTRUCTS_VERSION,
 } from "../../utils/cdk-shared"
 
-function normalizeOptions(schema: InitGeneratorSchema) {
-  return {
-    ...schema,
-    unitTestRunner: schema.unitTestRunner ?? "jest",
-  }
-}
-
-export async function initGenerator(host: Tree, options: InitGeneratorSchema) {
-  let jestInstall: GeneratorCallback
-  const schema = normalizeOptions(options)
-
-  if (schema.unitTestRunner === "jest") {
-    jestInstall = await jestInitGenerator(host, {})
-  }
-
+export async function initGenerator(tree: Tree, schema: InitGeneratorSchema) {
   const installTask = addDependenciesToPackageJson(
-    host,
+    tree,
     {
       "aws-cdk-lib": CDK_VERSION,
       constructs: CONSTRUCTS_VERSION,
@@ -42,13 +26,10 @@ export async function initGenerator(host: Tree, options: InitGeneratorSchema) {
   )
 
   if (!schema.skipFormat) {
-    await formatFiles(host)
+    await formatFiles(tree)
   }
 
   return async () => {
-    if (jestInstall) {
-      await jestInstall()
-    }
     await installTask()
   }
 }
