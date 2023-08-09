@@ -17,7 +17,6 @@ import {
   writeJson,
 } from "@nx/devkit"
 import { nxVersion } from "../../utils/versions"
-import { jestProjectGenerator } from "@nx/jest"
 import { Linter, lintProjectGenerator } from "@nx/linter"
 
 import { ApplicationSchema } from "./schema"
@@ -59,19 +58,6 @@ function addFiles(host: Tree, options: NormalizedSchema) {
     template: "",
   }
   generateFiles(host, path.join(__dirname, "files"), options.projectRoot, templateOptions)
-}
-
-export async function addJest(
-  host: Tree,
-  options: NormalizedSchema
-): Promise<GeneratorCallback> {
-  return await jestProjectGenerator(host, {
-    project: options.projectName,
-    supportTsx: true,
-    skipSerializers: true,
-    setupFile: "none",
-    babelJest: true,
-  })
 }
 
 function updateLintConfig(tree: Tree, options: NormalizedSchema) {
@@ -119,8 +105,15 @@ export async function applicationGenerator(tree: Tree, schema: ApplicationSchema
   addFiles(tree, options)
 
   if (options.unitTestRunner === "jest") {
-    const jestCallback = await addJest(tree, options)
-    tasks.push(jestCallback)
+    const { jestProjectGenerator } = ensurePackage("@nx/jest", nxVersion)
+    const jestTask = await jestProjectGenerator(tree, {
+      project: options.name,
+      supportTsx: true,
+      skipSerializers: true,
+      setupFile: "none",
+      babelJest: true,
+    })
+    tasks.push(jestTask)
   } else if (options.unitTestRunner === "vitest") {
     const { vitestGenerator } = ensurePackage("@nx/vite", nxVersion)
     const vitestTask = await vitestGenerator(tree, {

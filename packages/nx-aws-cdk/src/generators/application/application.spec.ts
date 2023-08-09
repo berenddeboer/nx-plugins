@@ -20,7 +20,7 @@ describe("aws-cdk generator", () => {
   })
 
   it("supports the directory option", async () => {
-    await generator(appTree, { ...options, directory: "sub" })
+    await generator(appTree, { ...options, directory: "sub", unitTestRunner: "none" })
     const config = readProjectConfiguration(appTree, "sub-test")
     expect(config).toBeDefined()
     expect(config.name).toBe("sub-test")
