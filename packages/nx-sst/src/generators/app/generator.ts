@@ -15,7 +15,6 @@ import {
 import { nxVersion } from "../../utils/versions"
 import * as path from "path"
 import { AppGeneratorSchema } from "./schema"
-import { jestProjectGenerator } from "@nx/jest"
 import initGenerator from "../init/init"
 import { SSTRunExecutorSchema } from "../../executors/sst/schema"
 import { join } from "path"
@@ -44,19 +43,6 @@ function normalizeOptions(host: Tree, options: AppGeneratorSchema): NormalizedSc
     projectDirectory,
     parsedTags,
   }
-}
-
-export async function addJest(
-  host: Tree,
-  options: NormalizedSchema
-): Promise<GeneratorCallback> {
-  return await jestProjectGenerator(host, {
-    project: options.projectName,
-    supportTsx: true,
-    skipSerializers: true,
-    setupFile: "none",
-    babelJest: true,
-  })
 }
 
 function addFiles(host: Tree, options: NormalizedSchema) {
@@ -120,8 +106,15 @@ export default async function (tree: Tree, schema: AppGeneratorSchema) {
   }
 
   if (options.unitTestRunner === "jest") {
-    const jestCallback = await addJest(tree, options)
-    tasks.push(jestCallback)
+    const { jestProjectGenerator } = ensurePackage("@nx/jest", nxVersion)
+    const jestTask = await jestProjectGenerator(tree, {
+      project: options.name,
+      supportTsx: true,
+      skipSerializers: true,
+      setupFile: "none",
+      babelJest: true,
+    })
+    tasks.push(jestTask)
   } else if (options.unitTestRunner === "vitest") {
     const { vitestGenerator } = ensurePackage("@nx/vite", nxVersion)
     const vitestTask = await vitestGenerator(tree, {
