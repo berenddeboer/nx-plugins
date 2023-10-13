@@ -17,5 +17,8 @@
   },
   "homepage": "https://github.com/berenddeboer/nx-plugins",
   "description": "Nx plugin for Serverless Stack apps",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@nx/devkit": "^16.5.2"
+  }
 }
