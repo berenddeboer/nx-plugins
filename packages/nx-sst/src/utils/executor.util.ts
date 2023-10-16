@@ -24,7 +24,7 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
     a.push(`${workspaceRoot}/node_modules/sst/cli/sst.js`)
     sst = a.join(" ")
   } else {
-    sst = "sst"
+    sst = "npx sst"
   }
   const commands = [`${sst} ${command}`]
 
