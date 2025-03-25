@@ -14,8 +14,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/nx-sst/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/nx-sst/jest.config.ts"
       }
     },
     "build": {

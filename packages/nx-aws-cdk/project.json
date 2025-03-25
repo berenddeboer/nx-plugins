@@ -14,8 +14,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/nx-aws-cdk/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/nx-aws-cdk/jest.config.ts"
       }
     },
     "build": {

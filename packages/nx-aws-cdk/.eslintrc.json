@@ -9,7 +9,10 @@
     {
       "files": ["*.ts__template__"],
       "extends": ["plugin:@nx/typescript", "plugin:prettier/recommended"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
