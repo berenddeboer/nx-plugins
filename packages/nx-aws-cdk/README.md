@@ -24,9 +24,12 @@ Based on !codebrew/nx-aws-cdk
 
 ## Install
 
-```shell
+```sh
 # npm
 npm install --save-dev @berenddeboer/nx-aws-cdk
+
+# pnpm
+pnpm i --save-dev @berenddeboer/nx-aws-cdk
 
 # yarn
 yarn add --dev @berenddeboer/nx-aws-cdk
@@ -40,8 +43,8 @@ Create AWS CDK v2 Application
 
 More details on AWS CDK v2 can be found on https://docs.aws.amazon.com/cdk/v2/guide/home.html
 
-```shell
-nx generate @berenddeboer/nx-aws-cdk:application myApp
+```sh
+npx nx generate @berenddeboer/nx-aws-cdk:application myApp
 ```
 
 you can customize it further by passing these options:
@@ -65,7 +68,7 @@ Options:
 
 Generated applications expose several functions to the CLI that allow users to deploy, destroy and so on.
 
-```shell
+```sh
 nx deploy myApp
 nx destroy myApp
 ```
