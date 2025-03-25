@@ -5,10 +5,10 @@
     "name": "Berend de Boer"
   },
   "license": "MIT",
-  "homepage": "https://github.com/therk/nx-plugins",
+  "homepage": "https://github.com/berenddeboer/nx-plugins",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/therk/nx-plugins.git"
+    "url": "git+https://github.com/berenddeboer/nx-plugins.git"
   },
   "scripts": {
     "nx": "nx",
@@ -23,8 +23,7 @@
     "link:aws-cdk": "cd dist/packages/nx-aws-cdk && npm link",
     "test:sst": "nx test nx-sst",
     "build:sst": "nx build nx-sst",
-    "link:sst": "cd dist/packages/nx-sst && npm link",
-    "prepare": "husky install"
+    "link:sst": "cd dist/packages/nx-sst && npm link"
   },
   "private": true,
   "dependencies": {
