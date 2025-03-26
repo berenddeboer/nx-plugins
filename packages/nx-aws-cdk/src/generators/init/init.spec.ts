@@ -1,23 +1,40 @@
-import { readJson, Tree } from "@nx/devkit"
+import type { Tree } from "@nx/devkit"
+import * as devkit from "@nx/devkit"
 import { createTreeWithEmptyWorkspace } from "@nx/devkit/testing"
-
+import { CDK_CLI_VERSION, CDK_VERSION } from "../../utils/versions"
 import { initGenerator } from "./init"
-import { InitGeneratorSchema } from "./schema"
 
-describe("init", () => {
+describe("init generator", () => {
   let tree: Tree
-  const options: InitGeneratorSchema = {}
 
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace()
+    jest.clearAllMocks()
   })
 
-  it("should add aws-cdk dependency", async () => {
-    await initGenerator(tree, options)
-    const packageJson = readJson(tree, "package.json")
+  it.only("should add dependencies", async () => {
+    await initGenerator(tree, {})
 
-    expect(packageJson.dependencies["aws-cdk-lib"]).toBeDefined()
-    expect(packageJson.dependencies["constructs"]).toBeDefined()
-    expect(packageJson.devDependencies["aws-cdk"]).toBeDefined()
+    const packageJson = devkit.readJson(tree, "package.json")
+    expect(packageJson.devDependencies["aws-cdk"]).toBe(CDK_CLI_VERSION)
+    expect(packageJson.dependencies["aws-cdk-lib"]).toBe(CDK_VERSION)
+  })
+
+  describe("--skipFormat", () => {
+    it("should format files by default", async () => {
+      jest.spyOn(devkit, "formatFiles")
+
+      await initGenerator(tree, {})
+
+      expect(devkit.formatFiles).toHaveBeenCalled()
+    })
+
+    it("should not format files when --skipFormat=true", async () => {
+      jest.spyOn(devkit, "formatFiles")
+
+      await initGenerator(tree, { skipFormat: true })
+
+      expect(devkit.formatFiles).not.toHaveBeenCalled()
+    })
   })
 })

@@ -2,8 +2,8 @@ import * as path from "path"
 import { ExecutorContext } from "@nx/devkit"
 
 import { CdkExecutorSchema } from "./schema"
-import { createCommand, runCommandProcess, parseArgs } from "../../utils/executor.util"
-import { ParsedExecutorInterface } from "../../interfaces/parsed-executor.interface"
+import { createCommand, runCommandProcess, parseArgs } from "./lib/executor.util"
+import { ParsedExecutorInterface } from "./lib/parsed-executor.interface"
 
 export interface ParsedCdkExecutorOption extends ParsedExecutorInterface {
   command: string
@@ -48,8 +48,8 @@ function normalizeOptions(
   }
 
   // eslint-disable-next-line no-unsafe-optional-chaining
-  const { sourceRoot, root } =
-    executor_context.workspace.projects[executor_context.projectName]
+  const { projectName } = executor_context
+  const { root, sourceRoot } = executor_context.projectsConfigurations.projects[projectName]
 
   return {
     ...options,

@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@berenddeboer/nx-aws-cdk/plugin root project should create nodes 1`] = `
+[
+  [
+    "cdk.json",
+    {
+      "projects": {
+        ".": {
+          "targets": {
+            "undefined": {
+              "command": "npx cdk destroy",
+              "inputs": [
+                "default",
+                {
+                  "externalDependencies": [
+                    "aws-cdk",
+                  ],
+                },
+              ],
+              "options": {
+                "cwd": ".",
+              },
+              "outputs": [
+                "{projectRoot}/dist/.",
+              ],
+            },
+          },
+        },
+      },
+    },
+  ],
+]
+`;

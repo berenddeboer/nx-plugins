@@ -44,7 +44,7 @@ Create AWS CDK v2 Application
 More details on AWS CDK v2 can be found on https://docs.aws.amazon.com/cdk/v2/guide/home.html
 
 ```sh
-npx nx generate @berenddeboer/nx-aws-cdk:application myApp
+npx nx generate @berenddeboer/nx-aws-cdk:application --directory=stacks/cdk-app --name=cdk-app
 ```
 
 you can customize it further by passing these options:

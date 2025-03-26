@@ -1,6 +1,6 @@
 {
   "name": "@berenddeboer/nx-aws-cdk",
-  "version": "2.3.0",
+  "version": "3.0.0-alpha1",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
@@ -20,7 +20,7 @@
   "description": "Nx plugin for AWS CDK stacks",
   "license": "MIT",
   "peerDependencies": {
-    "@nx/devkit": "^16.5.2",
-    "@nx/linter": "^16.5.2"
+    "@nx/devkit": "^20.6.4",
+    "@nx/eslint": "^20.6.4"
   }
 }

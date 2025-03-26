@@ -1,4 +1,5 @@
-export interface InitGeneratorSchema {
-  unitTestRunner?: "vitest" | "jest" | "none"
+export interface InitGeneratorOptions {
   skipFormat?: boolean
+  skipPackageJson?: boolean
+  keepExistingVersions?: boolean
 }

@@ -1,38 +1,41 @@
-import {
-  addDependenciesToPackageJson,
-  convertNxGenerator,
-  formatFiles,
-  Tree,
-} from "@nx/devkit"
+import type { GeneratorCallback, Tree } from "@nx/devkit"
+import { addPlugin } from "@nx/devkit/src/utils/add-plugin"
+import { createProjectGraphAsync, formatFiles } from "@nx/devkit"
+import { CdkPluginOptions, createNodesV2 } from "../../plugins/plugin"
 
-import { InitGeneratorSchema } from "./schema"
-import {
-  CDK_ESLINT_VERSION,
-  CDK_VERSION,
-  CONSTRUCTS_VERSION,
-} from "../../utils/cdk-shared"
+import { addDependencies } from "./lib"
+import type { InitGeneratorOptions } from "./schema"
 
-export async function initGenerator(tree: Tree, schema: InitGeneratorSchema) {
-  const installTask = addDependenciesToPackageJson(
+export async function initGenerator(
+  tree: Tree,
+  options: InitGeneratorOptions
+): Promise<GeneratorCallback> {
+  await addPlugin<CdkPluginOptions>(
     tree,
+    await createProjectGraphAsync(),
+    "@berenddeboer/nx-aws-cdk/plugin",
+    createNodesV2,
     {
-      "aws-cdk-lib": CDK_VERSION,
-      constructs: CONSTRUCTS_VERSION,
+      synthTargetName: ["synth"],
+      deployTargetName: ["deploy"],
+      diffTargetName: ["diff"],
+      rollbackTargetName: ["rollback"],
+      watchTargetName: ["watch"],
+      destroyTargetName: ["destroy"],
     },
-    {
-      "aws-cdk": CDK_VERSION,
-      "eslint-plugin-cdk": CDK_ESLINT_VERSION,
-    }
+    false
   )
 
-  if (!schema.skipFormat) {
+  let installPackagesTask: GeneratorCallback = () => {}
+  if (!options.skipPackageJson) {
+    installPackagesTask = addDependencies(tree, options)
+  }
+
+  if (!options.skipFormat) {
     await formatFiles(tree)
   }
 
-  return async () => {
-    await installTask()
-  }
+  return installPackagesTask
 }
 
 export default initGenerator
-export const initSchematic = convertNxGenerator(initGenerator)

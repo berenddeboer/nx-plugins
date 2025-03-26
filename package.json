@@ -23,13 +23,16 @@
     "link:aws-cdk": "cd dist/packages/nx-aws-cdk && npm link",
     "test:sst": "nx test nx-sst",
     "build:sst": "nx build nx-sst",
-    "link:sst": "cd dist/packages/nx-sst && npm link"
+    "link:sst": "cd dist/packages/nx-sst && npm link",
+    "prepare": "husky"
   },
   "private": true,
   "dependencies": {
     "@nx/devkit": "20.6.4",
+    "@nx/eslint": "^20.6.4",
+    "@nx/node": "^20.6.4",
     "@swc/helpers": "0.5.15",
-    "tslib": "^2.0.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
@@ -59,7 +62,7 @@
     "jiti": "2.4.2",
     "lint-staged": "^15.5.0",
     "nx": "20.6.4",
-    "prettier": "^3.5.3",
+    "prettier": "^2.8.8",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "tslib": "^2.3.0",

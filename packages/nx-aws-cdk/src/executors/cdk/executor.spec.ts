@@ -4,8 +4,8 @@ import { logger } from "@nx/devkit"
 
 import executor from "./executor"
 import { CdkExecutorSchema } from "./schema"
-import { LARGE_BUFFER } from "../../utils/executor.util"
-import { mockExecutorContext, cdk } from "../../utils/testing"
+import { LARGE_BUFFER } from "./lib/executor.util"
+import { mockExecutorContext, cdk } from "./lib/testing"
 
 describe("nx-aws-cdk cdk deploy Executor", () => {
   const options: CdkExecutorSchema = { command: "deploy" }
@@ -25,7 +25,7 @@ describe("nx-aws-cdk cdk deploy Executor", () => {
       `${cdk} deploy`,
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.workspace.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -92,7 +92,7 @@ describe("nx-aws-cdk cdk synth Executor", () => {
       `${cdk} synth`,
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.workspace.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -110,7 +110,7 @@ describe("nx-aws-cdk cdk synth Executor", () => {
       `${cdk} synth --validation=true`,
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.workspace.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,

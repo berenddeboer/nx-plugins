@@ -1,8 +1,8 @@
 import { exec } from "child_process"
 import { readFileSync } from "fs"
 
-import { CdkExecutorSchema } from "../executors/cdk/schema"
-import { ParsedExecutorInterface } from "../interfaces/parsed-executor.interface"
+import { CdkExecutorSchema } from "../schema"
+import { ParsedExecutorInterface } from "./parsed-executor.interface"
 import { logger, detectPackageManager } from "@nx/devkit"
 
 export const executorPropKeys = ["stacks"]
