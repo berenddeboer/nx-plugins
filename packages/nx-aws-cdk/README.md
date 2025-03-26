@@ -58,6 +58,8 @@ You can configure the default target names in the plugin:
 },
 ```
 
+Remove a target if you do not want it auto-generated.
+
 There's no need to use the executor anymore, but you can still use it
 for non-inferred targets.
 
