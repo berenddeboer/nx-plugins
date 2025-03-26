@@ -1,8 +1,11 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx"],
-  "extends": ["plugin:prettier/recommended"],
+  "plugins": ["@nx", "prettier"],
+  "extends": ["eslint:recommended", "plugin:@nx/typescript", "prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],

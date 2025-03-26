@@ -49,7 +49,8 @@ function normalizeOptions(
 
   // eslint-disable-next-line no-unsafe-optional-chaining
   const { projectName } = executor_context
-  const { root, sourceRoot } = executor_context.projectsConfigurations.projects[projectName]
+  const { root, sourceRoot } =
+    executor_context.projectsConfigurations.projects[projectName]
 
   return {
     ...options,

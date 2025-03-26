@@ -7,6 +7,7 @@
       ["sentence-case", "start-case", "pascal-case", "upper-case", "lower-case"]
     ],
     "body-case": [2, "never"],
+    "header-max-length": [2, "always", 140],
     "type-enum": [
       2,
       "always",

@@ -25,9 +25,13 @@ describe("aws-cdk generator", () => {
     //console.debug(appTree)
     const config = readNxJson(appTree)
     expect(config).toBeDefined()
-    const plugin = config.plugins.some((plugin: devkit.PluginConfiguration) => plugin === '@berenddeboer/nx-aws-cdk/plugin')
+    const plugin = config.plugins.some(
+      (plugin: devkit.PluginConfiguration) => plugin === "@berenddeboer/nx-aws-cdk/plugin"
+    )
     expect(plugin).toBeDefined()
-    const vitePlugin = config.plugins.some((plugin: devkit.PluginConfiguration) => plugin === '@nx/vite/plugin')
+    const vitePlugin = config.plugins.some(
+      (plugin: devkit.PluginConfiguration) => plugin === "@nx/vite/plugin"
+    )
     expect(vitePlugin).toBeFalsy()
     expect(appTree.exists(`${appDirectory}/cdk.json`)).toBeTruthy()
     expect(appTree.exists(`${appDirectory}/tsconfig.json`)).toBeTruthy()
@@ -59,7 +63,9 @@ describe("aws-cdk generator", () => {
     await generator(appTree, { ...options, unitTestRunner: "vitest" })
     const config = readNxJson(appTree)
     expect(config).toBeDefined()
-    const vitePlugin = config.plugins.some((plugin: devkit.PluginConfiguration) => plugin === '@nx/vite/plugin')
+    const vitePlugin = config.plugins.some(
+      (plugin: devkit.PluginConfiguration) => plugin === "@nx/vite/plugin"
+    )
     expect(vitePlugin).toBeDefined()
     expect(appTree.exists("vitest.workspace.ts")).toBeTruthy()
   })

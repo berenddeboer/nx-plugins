@@ -9,16 +9,16 @@ export function mockExecutorContext(
   workspaceVersion = 2
 ): ExecutorContext {
   const context: ExecutorContext = {
-    root: '/root',
-    cwd: '/root',
+    root: "/root",
+    cwd: "/root",
     isVerbose: false,
-    projectName: 'proj',
+    projectName: "proj",
     nxJsonConfiguration: {},
     projectsConfigurations: {
       version: workspaceVersion,
       projects: {
         proj: {
-          root: 'packages/nx-aws-cdk/test/apps/proj',
+          root: "packages/nx-aws-cdk/test/apps/proj",
           targets: {
             test: {
               executor: `@berenddeboer/nx-aws-cdk:${executorName}`,
@@ -30,10 +30,10 @@ export function mockExecutorContext(
     projectGraph: {
       nodes: {
         myapp: {
-          type: 'app',
-          name: 'proj',
+          type: "app",
+          name: "proj",
           data: {
-            root: 'packages/nx-aws-cdk/test/apps/proj',
+            root: "packages/nx-aws-cdk/test/apps/proj",
           },
         },
       },
@@ -42,6 +42,6 @@ export function mockExecutorContext(
     target: {
       executor: `@berenddeboer/nx-aws-cdk:${executorName}`,
     },
-  };
+  }
   return context
 }

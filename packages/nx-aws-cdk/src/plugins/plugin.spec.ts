@@ -2,7 +2,7 @@ import { CreateNodesContext } from "@nx/devkit"
 import { createNodesV2 } from "./plugin"
 
 describe("@berenddeboer/nx-aws-cdk/plugin", () => {
-  let createNodesFunction = createNodesV2[1]
+  const createNodesFunction = createNodesV2[1]
   let context: CreateNodesContext
 
   describe("root project", () => {
@@ -30,16 +30,10 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
       jest.resetModules()
     })
 
-    it('should create nodes', async () => {
-      const nodes = await createNodesFunction(
-        ['cdk.json'],
-        {
-        },
-        context
-      );
+    it("should create nodes", async () => {
+      const nodes = await createNodesFunction(["cdk.json"], {}, context)
 
-      expect(nodes).toMatchSnapshot();
-    });
+      expect(nodes).toMatchSnapshot()
+    })
   })
-
 })
