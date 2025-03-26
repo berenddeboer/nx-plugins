@@ -94,17 +94,19 @@ async function createNodesInternal(
   }
 
   // Project configuration to be merged into the rest of the Nx configuration
+  const targets = {}
+
+  if (options.synthTargetName) targets[options.synthTargetName] = synthTarget
+  if (options.deployTargetName) targets[options.deployTargetName] = deployTarget
+  if (options.diffTargetName) targets[options.diffTargetName] = diffTarget
+  if (options.rollbackTargetName) targets[options.rollbackTargetName] = rollbackTarget
+  if (options.watchTargetName) targets[options.watchTargetName] = watchTarget
+  if (options.destroyTargetName) targets[options.destroyTargetName] = destroyTarget
+
   return {
     projects: {
       [projectRoot]: {
-        targets: {
-          [options.synthTargetName]: synthTarget,
-          [options.deployTargetName]: deployTarget,
-          [options.diffTargetName]: diffTarget,
-          [options.rollbackTargetName]: rollbackTarget,
-          [options.watchTargetName]: watchTarget,
-          [options.destroyTargetName]: destroyTarget,
-        },
+        targets,
       },
     },
   }

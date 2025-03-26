@@ -37,6 +37,30 @@ yarn add --dev @berenddeboer/nx-aws-cdk
 
 ## Usage
 
+### Plugin
+
+This package uses self-inferred targets (tasks). Anything with a
+`cdk.json` will create the appropriate cdk targets for that project.
+
+You can configure the default target names in the plugin:
+
+```json
+{
+  "plugin": "@berenddeboer/nx-aws-cdk/plugin",
+  "options": {
+	"synthTargetName": "synth",
+	"deployTargetName": "deploy",
+	"diffTargetName": "diff",
+	"rollbackTargetName": "rollback",
+	"watchTargetName": "watch",
+	"destroyTargetName": "destroy"
+  }
+},
+```
+
+There's no need to use the executor anymore, but you can still use it
+for non-inferred targets.
+
 ### Generate Application
 
 Create AWS CDK v2 Application
