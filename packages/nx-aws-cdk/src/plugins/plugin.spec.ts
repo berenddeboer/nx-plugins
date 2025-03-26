@@ -7,7 +7,7 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
   let context: CreateNodesContext
 
   describe("root project", () => {
-    const tempFs = new TempFs('test');
+    const tempFs = new TempFs("test")
     const projectRoot = "stacks/cdk-app"
 
     beforeEach(async () => {
@@ -29,13 +29,15 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         configFiles: [],
       }
 
-      tempFs.createFileSync(`${projectRoot}/package.json`, JSON.stringify({ name: 'cdk-app' }));
-
+      tempFs.createFileSync(
+        `${projectRoot}/package.json`,
+        JSON.stringify({ name: "cdk-app" })
+      )
     })
 
     afterEach(() => {
       jest.resetModules()
-      tempFs.cleanup();
+      tempFs.cleanup()
     })
 
     it("should create all targets when names are provided", async () => {
@@ -45,9 +47,13 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         diffTargetName: "diff",
         rollbackTargetName: "rollback",
         watchTargetName: "watch",
-        destroyTargetName: "destroy"
+        destroyTargetName: "destroy",
       }
-      const nodes = await createNodesFunction([`${projectRoot}/cdk.json`], options, context)
+      const nodes = await createNodesFunction(
+        [`${projectRoot}/cdk.json`],
+        options,
+        context
+      )
       const project = nodes[0][1].projects[projectRoot]
 
       expect(project.targets).toHaveProperty("synth")
@@ -65,9 +71,13 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         diffTargetName: null,
         rollbackTargetName: null,
         watchTargetName: null,
-        destroyTargetName: null
+        destroyTargetName: null,
       }
-      const nodes = await createNodesFunction([`${projectRoot}/cdk.json`], options, context)
+      const nodes = await createNodesFunction(
+        [`${projectRoot}/cdk.json`],
+        options,
+        context
+      )
       const project = nodes[0][1].projects[projectRoot]
 
       expect(project.targets).toEqual({})
@@ -80,9 +90,13 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         diffTargetName: "",
         rollbackTargetName: "",
         watchTargetName: "",
-        destroyTargetName: ""
+        destroyTargetName: "",
       }
-      const nodes = await createNodesFunction([`${projectRoot}/cdk.json`], options, context)
+      const nodes = await createNodesFunction(
+        [`${projectRoot}/cdk.json`],
+        options,
+        context
+      )
       const project = nodes[0][1].projects[projectRoot]
 
       expect(project.targets).toEqual({})
@@ -98,10 +112,14 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
     it("should create only specified targets", async () => {
       const options = {
         synthTargetName: "synth",
-        deployTargetName: "deploy"
+        deployTargetName: "deploy",
         // other targets not specified
       }
-      const nodes = await createNodesFunction([`${projectRoot}/cdk.json`], options, context)
+      const nodes = await createNodesFunction(
+        [`${projectRoot}/cdk.json`],
+        options,
+        context
+      )
       const project = nodes[0][1].projects[projectRoot]
 
       expect(project.targets).toHaveProperty("synth")
