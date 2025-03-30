@@ -39,8 +39,10 @@ yarn add --dev @berenddeboer/nx-aws-cdk
 
 ### Plugin
 
-This package uses self-inferred targets (tasks). Anything with a
-`cdk.json` will create the appropriate cdk targets for that project.
+This package uses [inferred
+targets](https://nx.dev/concepts/inferred-tasks) (tasks). Any project
+with a `cdk.json` in its root will create the appropriate cdk targets
+for that project.
 
 You can configure the default target names in the plugin:
 
