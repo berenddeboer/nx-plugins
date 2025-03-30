@@ -14,6 +14,7 @@ export function createFiles(tree: Tree, options: NormalizedOptions): void {
       name: options.appProjectName,
       root: options.appProjectRoot,
       projectName: options.appProjectName,
+      projectRoot: options.appProjectRoot,
       offsetFromRoot: projectOffsetFromRoot,
     }
   )

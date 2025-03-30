@@ -34,6 +34,8 @@ describe("aws-cdk generator", () => {
     )
     expect(vitePlugin).toBeFalsy()
     expect(appTree.exists(`${appDirectory}/cdk.json`)).toBeTruthy()
+    const cdkJson = readJson(appTree, `${appDirectory}/cdk.json`)
+    expect(cdkJson.output).toBe(`../dist/${appDirectory}`)
     expect(appTree.exists(`${appDirectory}/tsconfig.json`)).toBeTruthy()
     expect(appTree.exists(`${appDirectory}/tsconfig.app.json`)).toBeTruthy()
     expect(appTree.exists(`${appDirectory}/src/main.ts`)).toBeTruthy()

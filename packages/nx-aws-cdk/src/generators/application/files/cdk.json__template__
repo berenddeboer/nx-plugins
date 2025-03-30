@@ -1,6 +1,6 @@
 {
   "app": "npx ts-node --prefer-ts-exts src/main.ts",
-  "output": "<%= offsetFromRoot %>dist/apps/<%= projectName %>",
+  "output": "<%= offsetFromRoot %>dist/<%= projectRoot %>",
   "watch": {
     "include": [
       "**"
