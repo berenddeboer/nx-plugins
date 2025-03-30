@@ -65,24 +65,25 @@ Remove a target if you do not want it auto-generated.
 There's no need to use the executor anymore, but you can still use it
 for non-inferred targets.
 
-### Generate Application
+### Generating a CDK application
 
-Create AWS CDK v2 Application
-
-More details on AWS CDK v2 can be found on https://docs.aws.amazon.com/cdk/v2/guide/home.html
+To generate an [AWS CDK v2
+Application](https://docs.aws.amazon.com/cdk/v2/guide/home.html):
 
 ```sh
 npx nx generate @berenddeboer/nx-aws-cdk:application --directory=stacks/cdk-app --name=cdk-app
 ```
 
-you can customize it further by passing these options:
+Currently (alpha 3 versions): do not specify a unit test runner or
+eslint. This crashes nx for as yet unknown reasons.
+
+You can customize it further by passing these options:
 
 ```
 nx generate @berenddeboer/nx-aws-cdk:application [name] [options,...]
 
 Options:
   --tags                     Add tags to the project (used for linting)
-  --directory                A directory where the project is placed
   --skipFormat               Skip formatting files
   --unitTestRunner           Adds the specified unit test runner (default: jest)
   --linter                   The tool to use for running lint checks. (default: eslint)
@@ -101,32 +102,8 @@ nx deploy myApp
 nx destroy myApp
 ```
 
-All CDK commands are supported, although only the common targets are emitted.
-
-## Upgrading to version 2
-
-Update your `project.json` when upgrading from an earlier version:
-
-1. Replace the `@berenddeboer/nx-aws-cdk:*` plugin with `@berenddeboer/nx-aws-cdk:cdk`
-
-2. Under the options property add the CDK command like `synth` or `deploy`.
-
-Example:
-
-```json
-"deploy": {
-  "executor": "@berenddeboer/nx-aws-cdk:cdk",
-  "options": {
-    "command": "deploy"
-  },
-  "outputs": ["{workspaceRoot}/dist/{projectRoot}"]
-},
-```
-
-## Maintainers
-
-[@therk](https://github.com/therk)
-[@tienne](https://github.com/tienne) Used to maintain the original plugin under Codebrew
+We infer the most common cdk commands. Use the executor to have access
+to all CDK commands.
 
 ## Contributing
 
