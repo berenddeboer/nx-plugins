@@ -9,8 +9,8 @@
 
 # @berenddeboer/nx-aws-cdk
 
-An Nx plugin for developing [aws-cdk applications](https://docs.aws.amazon.com/cdk/latest/guide/home.html)
-Based on !codebrew/nx-aws-cdk
+A self-inferring Nx plugin for developing [aws-cdk
+applications](https://docs.aws.amazon.com/cdk/latest/guide/home.html).
 
 ## Table of Contents
 
