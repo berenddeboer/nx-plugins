@@ -1,6 +1,6 @@
 {
   "name": "@berenddeboer/nx-aws-cdk",
-  "version": "3.0.0-alpha5",
+  "version": "3.0.0-alpha6",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
@@ -17,7 +17,7 @@
     "url": "git@github.com:berenddeboer/nx-plugins.git"
   },
   "homepage": "https://github.com/berenddeboer/nx-plugins",
-  "description": "Nx plugin for AWS CDK stacks",
+  "description": "Nx self-inferring plugin for AWS CDK stacks",
   "license": "MIT",
   "peerDependencies": {
     "@nx/devkit": "^20.6.4",

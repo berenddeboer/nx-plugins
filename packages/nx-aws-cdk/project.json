@@ -26,7 +26,11 @@
         "packageJson": "packages/nx-aws-cdk/package.json",
         "main": "packages/nx-aws-cdk/src/index.ts",
         "assets": [
-          "packages/nx-aws-cdk/*.md",
+          {
+            "input": "./packages/nx-aws-cdk",
+            "glob": "README.md",
+            "output": "."
+          },
           {
             "input": "./packages/nx-aws-cdk/src",
             "glob": "**/!(*.ts)",
