@@ -12,7 +12,7 @@ describe("init generator", () => {
     jest.clearAllMocks()
   })
 
-  it.only("should add dependencies", async () => {
+  it("should add dependencies", async () => {
     await initGenerator(tree, {})
 
     const packageJson = devkit.readJson(tree, "package.json")
