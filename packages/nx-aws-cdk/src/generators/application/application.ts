@@ -118,6 +118,7 @@ export async function applicationGeneratorInternal(
       {
         target: "ES2020",
         module: "commonjs",
+        moduleResolution: "node",
         lib: ["es2020", "dom"],
         declaration: true,
         strict: true,
