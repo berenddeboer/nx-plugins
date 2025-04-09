@@ -133,6 +133,7 @@ export async function applicationGeneratorInternal(
         inlineSources: true,
         experimentalDecorators: true,
         strictPropertyInitialization: false,
+        types: ["node"],
         typeRoots: ["./node_modules/@types"],
       },
       options.linter === "eslint"

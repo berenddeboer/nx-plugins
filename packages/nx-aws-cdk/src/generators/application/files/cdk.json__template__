@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts src/main.ts",
+  "app": "npx ts-node --project tsconfig.app.json --prefer-ts-exts src/main.ts",
   "output": "<%= offsetFromRoot %>dist/<%= projectRoot %>",
   "watch": {
     "include": [

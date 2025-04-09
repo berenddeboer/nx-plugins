@@ -13,6 +13,7 @@ describe("aws-cdk generator", () => {
     addPlugin: true,
     unitTestRunner: "none",
     linter: "none", // For some reason enabling the linter crashes the test. Works fine when running for real.
+    useTsSolution: true,
   }
 
   beforeEach(() => {
@@ -36,8 +37,12 @@ describe("aws-cdk generator", () => {
     expect(appTree.exists(`${appDirectory}/cdk.json`)).toBeTruthy()
     const cdkJson = readJson(appTree, `${appDirectory}/cdk.json`)
     expect(cdkJson.output).toBe(`../dist/${appDirectory}`)
+    expect(cdkJson.app).toContain("tsconfig.app.json")
     expect(appTree.exists(`${appDirectory}/tsconfig.json`)).toBeTruthy()
     expect(appTree.exists(`${appDirectory}/tsconfig.app.json`)).toBeTruthy()
+    // TODO: this fails, don't understand why
+    //const appTsConfig = readJson(appTree, `${appDirectory}/tsconfig.app.json`)
+    //expect(appTsConfig.compilerOptions.types).toBe(["node"])
     expect(appTree.exists(`${appDirectory}/src/main.ts`)).toBeTruthy()
     expect(appTree.exists(`${appDirectory}/src/stacks/app-stack.ts`)).toBeTruthy()
     const pkgjson = readJson(appTree, `${appDirectory}/package.json`)
