@@ -38,9 +38,10 @@
       "description": "Add tags to the project (used for linting)"
     },
     "unitTestRunner": {
+      "description": "Test runner to use for unit tests.",
       "type": "string",
       "enum": ["jest", "vitest", "none"],
-      "description": "Test runner to use for unit tests.",
+      "default": "none",
       "x-prompt": "Which unit test runner would you like to use?"
     },
     "linter": {
