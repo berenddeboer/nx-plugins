@@ -1,6 +1,6 @@
 {
   "name": "@berenddeboer/nx-aws-cdk",
-  "version": "3.0.0-alpha4",
+  "version": "3.0.0-alpha5",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
