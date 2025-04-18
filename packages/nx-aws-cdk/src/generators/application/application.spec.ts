@@ -40,9 +40,9 @@ describe("aws-cdk generator", () => {
     expect(cdkJson.app).toContain("tsconfig.app.json")
     expect(appTree.exists(`${appDirectory}/tsconfig.json`)).toBeTruthy()
     expect(appTree.exists(`${appDirectory}/tsconfig.app.json`)).toBeTruthy()
-    // TODO: this fails, don't understand why
-    //const appTsConfig = readJson(appTree, `${appDirectory}/tsconfig.app.json`)
-    //expect(appTsConfig.compilerOptions.types).toBe(["node"])
+    const appTsConfig = readJson(appTree, `${appDirectory}/tsconfig.app.json`)
+    expect(appTsConfig.compilerOptions.types).toEqual(["node"])
+    expect(appTsConfig.extends).toEqual("./tsconfig.json")
     expect(appTree.exists(`${appDirectory}/src/main.ts`)).toBeTruthy()
     expect(appTree.exists(`${appDirectory}/src/stacks/app-stack.ts`)).toBeTruthy()
     const pkgjson = readJson(appTree, `${appDirectory}/package.json`)
