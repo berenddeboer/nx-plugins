@@ -77,8 +77,6 @@ function createAppTsConfig(host: Tree, options: { projectRoot: string }) {
       inlineSources: true,
       experimentalDecorators: true,
       strictPropertyInitialization: false,
-      typeRoots: ["./node_modules/@types"],
-      types: ["node"],
     },
     include: ["src/**/*"],
     exclude: [],

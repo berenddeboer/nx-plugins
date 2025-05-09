@@ -4,6 +4,7 @@ import {
   joinPathFragments,
   runTasksInSerial,
   Tree,
+  updateJson,
   writeJson,
 } from "@nx/devkit"
 import { getRelativePathToRootTsConfig, initGenerator as jsInitGenerator } from "@nx/js"
@@ -111,19 +112,33 @@ export async function applicationGeneratorInternal(
   }
 
   if (options.useTsSolution) {
-    // this makes tsconfig.app.json inherit from tsconfig.base.json somehow
-    /*
+    // Add our project to workspace tsconfig.json
+    // But this also makes tsconfig.app.json inherit from tsconfig.base.json somehow
     updateTsconfigFiles(
       tree,
       options.appProjectRoot,
       "tsconfig.app.json",
-      {
-      },
+      {},
       options.linter === "eslint"
         ? ["eslint.config.js", "eslint.config.cjs", "eslint.config.mjs"]
         : ["node_modules", "cdk.out"]
     )
-     */
+  }
+
+  if (tree.exists('tsconfig.base.json')) {
+    updateJson(tree, 'tsconfig.base.json', (json) => {
+      json.compilerOptions.typeRoots ??= [];
+      json.compilerOptions.types ??= [];
+      const typeRoot = "./node_modules/@types"
+      const nodeType = "node"
+      if (!json.compilerOptions.typeRoots.some((x: string) => x === typeRoot)) {
+        json.compilerOptions.typeRoots.push(typeRoot)
+      }
+      if (!json.compilerOptions.types.some((x: string) => x === nodeType)) {
+        json.compilerOptions.types.push(nodeType)
+      }
+      return json;
+    })
   }
 
   if (!options.skipFormat) {
