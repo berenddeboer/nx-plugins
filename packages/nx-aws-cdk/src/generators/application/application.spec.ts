@@ -13,7 +13,7 @@ describe("aws-cdk generator", () => {
     addPlugin: true,
     unitTestRunner: "none",
     linter: "none", // For some reason enabling the linter crashes the test. Works fine when running for real.
-    useTsSolution: true,
+    useTsSolution: true, // tests will fail without this
   }
 
   beforeEach(() => {

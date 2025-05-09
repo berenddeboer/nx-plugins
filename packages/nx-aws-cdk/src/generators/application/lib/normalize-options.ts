@@ -12,7 +12,7 @@ export async function normalizeOptions(
   options: ApplicationGeneratorOptions
 ): Promise<NormalizedOptions> {
   await ensureRootProjectName(options, "application")
-  const { projectName: appProjectName, projectRoot: appProjectRoot } =
+  const { projectName, projectRoot: appProjectRoot, importPath } =
     await determineProjectNameAndRootOptions(tree, {
       name: options.name,
       projectType: "application",
@@ -20,6 +20,10 @@ export async function normalizeOptions(
       rootProject: options.rootProject,
     })
   options.rootProject = appProjectRoot === "."
+
+  const isUsingTsSolutionConfig = isUsingTsSolutionSetup(tree);
+  const appProjectName =
+    !isUsingTsSolutionConfig || options.name ? projectName : importPath;
 
   const nxJson = readNxJson(tree)
   const addPlugin =
@@ -33,8 +37,7 @@ export async function normalizeOptions(
     appProjectRoot,
     linter: options.linter ?? Linter.EsLint,
     unitTestRunner: options.unitTestRunner ?? "jest",
-    //unitTestRunner: "none",
-    useProjectJson: options.useProjectJson ?? !isUsingTsSolutionSetup(tree),
-    useTsSolution: true,
+    useProjectJson: options.useProjectJson ?? !isUsingTsSolutionConfig,
+    useTsSolution: isUsingTsSolutionConfig || options.useTsSolution,
   }
 }
