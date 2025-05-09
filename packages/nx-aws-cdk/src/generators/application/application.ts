@@ -111,6 +111,8 @@ export async function applicationGeneratorInternal(
   }
 
   if (options.useTsSolution) {
+    // this makes tsconfig.app.json inherit from tsconfig.base.json somehow
+    /*
     updateTsconfigFiles(
       tree,
       options.appProjectRoot,
@@ -121,6 +123,7 @@ export async function applicationGeneratorInternal(
         ? ["eslint.config.js", "eslint.config.cjs", "eslint.config.mjs"]
         : ["node_modules", "cdk.out"]
     )
+     */
   }
 
   if (!options.skipFormat) {
