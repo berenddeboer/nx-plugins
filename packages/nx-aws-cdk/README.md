@@ -50,6 +50,7 @@ You can configure the default target names in the plugin:
 {
   "plugin": "@berenddeboer/nx-aws-cdk/plugin",
   "options": {
+	"cdkTargetName": "cdk",
 	"synthTargetName": "synth",
 	"deployTargetName": "deploy",
 	"diffTargetName": "diff",
@@ -64,6 +65,12 @@ Remove a target if you do not want it auto-generated.
 
 There's no need to use the executor anymore, but you can still use it
 for non-inferred targets.
+
+Use the cdk target to run any cdk command easily:
+
+```sh
+npx nx run my-stack:cdk import ...
+```
 
 ### Generating a CDK application
 

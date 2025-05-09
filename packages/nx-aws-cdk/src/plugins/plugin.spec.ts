@@ -42,6 +42,7 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
 
     it("should create all targets when names are provided", async () => {
       const options = {
+        cdkTargetName: "cdk",
         synthTargetName: "synth",
         deployTargetName: "deploy",
         diffTargetName: "diff",
@@ -56,6 +57,7 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
       )
       const project = nodes[0][1].projects[projectRoot]
 
+      expect(project.targets).toHaveProperty("cdk")
       expect(project.targets).toHaveProperty("synth")
       expect(project.targets).toHaveProperty("deploy")
       expect(project.targets).toHaveProperty("diff")

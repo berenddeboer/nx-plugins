@@ -16,6 +16,7 @@ export async function initGenerator(
     "@berenddeboer/nx-aws-cdk/plugin",
     createNodesV2,
     {
+      cdkTargetName: ["cdk"],
       synthTargetName: ["synth"],
       deployTargetName: ["deploy"],
       diffTargetName: ["diff"],

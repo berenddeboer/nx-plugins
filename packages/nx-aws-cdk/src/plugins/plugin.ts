@@ -9,6 +9,7 @@ import { dirname, join } from "path"
 
 // Expected format of the plugin options defined in nx.json
 export interface CdkPluginOptions {
+  cdkTargetName?: string
   synthTargetName?: string
   deployTargetName?: string
   diffTargetName?: string
@@ -65,8 +66,8 @@ async function createNodesInternal(
     ],
     outputs: [`{projectRoot}/dist/${projectRoot}`],
   }
-  const deployTarget: TargetConfiguration = {
-    command: `npx cdk deploy`,
+  const cdkTarget: TargetConfiguration = {
+    command: `npx cdk`,
     options: { cwd: projectRoot },
     inputs: [
       "default",
@@ -76,26 +77,31 @@ async function createNodesInternal(
     ],
     outputs: [`{projectRoot}/dist/${projectRoot}`],
   }
+  const deployTarget: TargetConfiguration = {
+    ...cdkTarget,
+    command: `npx cdk deploy`,
+  }
   const diffTarget: TargetConfiguration = {
-    ...deployTarget,
+    ...cdkTarget,
     command: `npx cdk diff`,
   }
   const rollbackTarget: TargetConfiguration = {
-    ...deployTarget,
+    ...cdkTarget,
     command: `npx cdk rollback`,
   }
   const watchTarget: TargetConfiguration = {
-    ...deployTarget,
+    ...cdkTarget,
     command: `npx cdk watch`,
   }
   const destroyTarget: TargetConfiguration = {
-    ...deployTarget,
+    ...cdkTarget,
     command: `npx cdk destroy`,
   }
 
   // Project configuration to be merged into the rest of the Nx configuration
   const targets = {}
 
+  if (options.cdkTargetName) targets[options.cdkTargetName] = cdkTarget
   if (options.synthTargetName) targets[options.synthTargetName] = synthTarget
   if (options.deployTargetName) targets[options.deployTargetName] = deployTarget
   if (options.diffTargetName) targets[options.diffTargetName] = diffTarget
