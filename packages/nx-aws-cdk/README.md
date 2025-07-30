@@ -69,7 +69,7 @@ for non-inferred targets.
 Use the cdk target to run any cdk command easily:
 
 ```sh
-npx nx run my-stack:cdk import ...
+npx nx run my-stack:cdk diff ...
 ```
 
 ### Generating a CDK application
@@ -81,23 +81,38 @@ Application](https://docs.aws.amazon.com/cdk/v2/guide/home.html):
 npx nx generate @berenddeboer/nx-aws-cdk:application --directory=stacks/cdk-app --name=cdk-app
 ```
 
-Currently (alpha 3 versions): do not specify a unit test runner or
-eslint. This crashes nx for as yet unknown reasons.
+Currently do not specify a unit test runner. This crashes nx for as
+yet unknown reasons.
 
 You can customize it further by passing these options:
 
 ```
-nx generate @berenddeboer/nx-aws-cdk:application [name] [options,...]
+nx generate @berenddeboer/nx-aws-cdk:application [directory] [options,...]
 
 Options:
-  --tags                     Add tags to the project (used for linting)
-  --skipFormat               Skip formatting files
-  --unitTestRunner           Adds the specified unit test runner (default: jest)
-  --linter                   The tool to use for running lint checks. (default: eslint)
-  --setParserOptionsProject  Whether or not to configure the ESLint "parserOptions.project" option. We do not do this by default for lint performance reasons.
-  --dryRun                   Runs through and reports activity without writing to disk.
-  --skip-nx-cache            Skip the use of Nx cache.
-  --help                     Show available options for project target.
+    --directory                  The directory of the new                          [string]
+                                 application.
+    --name                       The name of the application.                      [string]
+    --linter                     The tool to use for running   [string] [choices: "eslint",
+                                 lint checks.                     "none"] [default: "none"]
+    --setParserOptionsProject    Whether or not to configure                      [boolean]
+                                 the ESLint
+                                 `parserOptions.project`
+                                 option. We do not do this by
+                                 default for lint performance
+                                 reasons.
+    --tags                       Add tags to the project (used                     [string]
+                                 for linting)
+    --unitTestRunner             Test runner to use for unit     [string] [choices: "jest",
+                                 tests.                         "vitest", "none"] [default:
+                                                                                    "none"]
+    --useProjectJson             Use a `project.json`                             [boolean]
+                                 configuration file instead of
+                                 inlining the Nx configuration
+                                 in the `package.json` file.
+    --skipFormat                 Skip formatting files.                           [boolean]
+    --skipPackageJson            Do not add dependencies to                       [boolean]
+                                 `package.json`.
 ```
 
 ### Targets

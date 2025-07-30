@@ -3,8 +3,12 @@ import { AppStack } from "./stacks/app-stack"
 
 // for development, use account/region from cdk cli
 const devEnv = {
-  account: process.env["CDK_DEFAULT_ACCOUNT"],
-  region: process.env["CDK_DEFAULT_REGION"],
+  ...(process.env["CDK_DEFAULT_ACCOUNT"] && {
+    account: process.env["CDK_DEFAULT_ACCOUNT"],
+  }),
+  ...(process.env["CDK_DEFAULT_REGION"] && {
+    region: process.env["CDK_DEFAULT_REGION"],
+  }),
 }
 
 const app = new App()
