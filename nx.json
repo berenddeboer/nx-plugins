@@ -61,5 +61,5 @@
     }
   },
   "useInferencePlugins": false,
-  "defaultBase": "master"
+  "defaultBase": "main"
 }

@@ -125,10 +125,10 @@ export async function applicationGeneratorInternal(
     )
   }
 
-  if (tree.exists('tsconfig.base.json')) {
-    updateJson(tree, 'tsconfig.base.json', (json) => {
-      json.compilerOptions.typeRoots ??= [];
-      json.compilerOptions.types ??= [];
+  if (tree.exists("tsconfig.base.json")) {
+    updateJson(tree, "tsconfig.base.json", (json) => {
+      json.compilerOptions.typeRoots ??= []
+      json.compilerOptions.types ??= []
       const typeRoot = "./node_modules/@types"
       const nodeType = "node"
       if (!json.compilerOptions.typeRoots.some((x: string) => x === typeRoot)) {
@@ -137,7 +137,7 @@ export async function applicationGeneratorInternal(
       if (!json.compilerOptions.types.some((x: string) => x === nodeType)) {
         json.compilerOptions.types.push(nodeType)
       }
-      return json;
+      return json
     })
   }
 

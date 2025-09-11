@@ -41,7 +41,7 @@ describe("sst generator", () => {
     const config = readProjectConfiguration(appTree, "test")
     expect(config).toBeDefined()
     expect(config.targets.lint).toBeDefined()
-    expect(config.targets.lint.executor).toBe("@nx/linter:eslint")
+    expect(config.targets.lint.executor).toBe("@nx/eslint:lint")
     expect(config.targets.lint.options.lintFilePatterns).toBeDefined()
     expect(config.targets.test.executor).toBe("@nx/vite:test")
   })

@@ -18,7 +18,7 @@ import { AppGeneratorSchema } from "./schema"
 import initGenerator from "../init/init"
 import { SSTRunExecutorSchema } from "../../executors/sst/schema"
 import { join } from "path"
-import { Linter, lintProjectGenerator } from "@nx/linter"
+import { Linter, lintProjectGenerator } from "@nx/eslint"
 
 interface NormalizedSchema extends AppGeneratorSchema {
   projectName: string

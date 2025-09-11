@@ -4,11 +4,13 @@ export function mockExecutorContext(
   executorName: string,
   workspaceVersion = 2
 ): ExecutorContext {
-  return {
-    projectName: "proj",
+  const context: ExecutorContext = {
     root: "/root",
     cwd: "/root",
-    workspace: {
+    isVerbose: false,
+    projectName: "proj",
+    nxJsonConfiguration: {},
+    projectsConfigurations: {
       version: workspaceVersion,
       projects: {
         proj: {
@@ -21,9 +23,21 @@ export function mockExecutorContext(
         },
       },
     },
+    projectGraph: {
+      nodes: {
+        myapp: {
+          type: "app",
+          name: "proj",
+          data: {
+            root: "apps/proj",
+          },
+        },
+      },
+      dependencies: {},
+    },
     target: {
       executor: `@berenddeboer/nx-sst:${executorName}`,
     },
-    isVerbose: true,
   }
+  return context
 }

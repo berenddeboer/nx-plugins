@@ -51,7 +51,7 @@ describe("SST Run Executor", () => {
       "sst version",
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.workspace.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -66,7 +66,7 @@ describe("SST Run Executor", () => {
       "sst deploy --stage prd",
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.workspace.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -83,7 +83,7 @@ describe("SST Run Executor", () => {
       "sst deploy --stage prd mystack",
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.workspace.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -100,7 +100,7 @@ describe("SST Run Executor", () => {
       "sst deploy --stage prd",
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.workspace.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -117,7 +117,7 @@ describe("SST Run Executor", () => {
       `node -r @subbu963/esm-polyfills ${workspaceRoot}/node_modules/sst/cli/sst.js build --stage dev mystack`,
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.workspace.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,

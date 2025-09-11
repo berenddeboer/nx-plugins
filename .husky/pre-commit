@@ -1,1 +1,7 @@
-pnpm test
+#!/usr/bin/env bash
+
+set -eu
+
+# Run lint-staged for other checks
+npx lint-staged
+npx nx --output-style=static affected --targets=lint,typecheck,test

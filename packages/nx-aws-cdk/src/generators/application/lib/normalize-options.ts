@@ -12,18 +12,21 @@ export async function normalizeOptions(
   options: ApplicationGeneratorOptions
 ): Promise<NormalizedOptions> {
   await ensureRootProjectName(options, "application")
-  const { projectName, projectRoot: appProjectRoot, importPath } =
-    await determineProjectNameAndRootOptions(tree, {
-      name: options.name,
-      projectType: "application",
-      directory: options.directory,
-      rootProject: options.rootProject,
-    })
+  const {
+    projectName,
+    projectRoot: appProjectRoot,
+    importPath,
+  } = await determineProjectNameAndRootOptions(tree, {
+    name: options.name,
+    projectType: "application",
+    directory: options.directory,
+    rootProject: options.rootProject,
+  })
   options.rootProject = appProjectRoot === "."
 
-  const isUsingTsSolutionConfig = isUsingTsSolutionSetup(tree);
+  const isUsingTsSolutionConfig = isUsingTsSolutionSetup(tree)
   const appProjectName =
-    !isUsingTsSolutionConfig || options.name ? projectName : importPath;
+    !isUsingTsSolutionConfig || options.name ? projectName : importPath
 
   const nxJson = readNxJson(tree)
   const addPlugin =

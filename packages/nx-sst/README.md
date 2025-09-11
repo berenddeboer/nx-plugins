@@ -5,6 +5,8 @@ apps. Copied from
 [otterdev-io/plugins](https://github.com/otterdev-io/nx-plugins) and
 adapted for SST v2.
 
+The plugin works with SST v3 as well, but cannot yet generate an application.
+
 ## Add the plugin to your workspace:
 
 ```sh

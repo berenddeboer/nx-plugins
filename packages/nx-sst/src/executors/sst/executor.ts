@@ -27,7 +27,7 @@ function runSst(
   options: ParsedExecutorInterface,
   context: ExecutorContext
 ) {
-  const projectRoot = context.workspace.projects[context.projectName].root
+  const projectRoot = context.projectsConfigurations.projects[context.projectName].root
   const command = createCommand(subcommand, options)
   return runCommandProcess(command, path.join(context.root, projectRoot))
 }
@@ -43,7 +43,7 @@ function normalizeOptions(
 
   // eslint-disable-next-line no-unsafe-optional-chaining
   const { sourceRoot, root } =
-    executor_context.workspace.projects[executor_context.projectName]
+    executor_context.projectsConfigurations.projects[executor_context.projectName]
 
   return {
     ...options,
