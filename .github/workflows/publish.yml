@@ -1,0 +1,107 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "Project to release (leave empty for all affected)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.8.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Enable Nx Cloud distributed task execution (uncomment to enable paid feature)
+      # - name: Start Nx Cloud CI run
+      #   run: pnpm dlx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
+
+      # Run tests and builds for affected projects
+      - name: Run affected tests and builds
+        run: pnpm exec nx run-many -t lint test build typecheck
+
+      # Version packages using semver (analyzes commits automatically)
+      - name: Version packages
+        run: |
+          if [ -n "${{ github.event.inputs.project }}" ]; then
+            echo "Versioning specific project: ${{ github.event.inputs.project }}"
+            pnpm exec nx run ${{ github.event.inputs.project }}:version
+          else
+            echo "Versioning all affected packages"
+            pnpm exec nx affected --target=version
+          fi
+
+      # Build packages for publishing
+      - name: Build packages
+        run: |
+          if [ -n "${{ github.event.inputs.project }}" ]; then
+            echo "Building specific project: ${{ github.event.inputs.project }}"
+            pnpm exec nx run ${{ github.event.inputs.project }}:build
+          else
+            echo "Building all affected packages"
+            pnpm exec nx affected --target=build
+          fi
+
+      # Publish to NPM using OIDC (no tokens needed)
+      - name: Publish to NPM
+        run: |
+          if [ -n "${{ github.event.inputs.project }}" ]; then
+            # Publish specific project
+            project="${{ github.event.inputs.project }}"
+            if [ -d "dist/packages/$project" ]; then
+              echo "Publishing $project..."
+              cd dist/packages/$project
+              npm publish --access public --provenance
+              cd -
+            fi
+          else
+            # Publish all affected projects
+            AFFECTED=$(pnpm exec nx show projects --affected --base=HEAD~1 --head=HEAD --json | jq -r '.[]')
+            for project in $AFFECTED; do
+              if [ -d "dist/packages/$project" ]; then
+                echo "Publishing $project..."
+                cd dist/packages/$project
+                npm publish --access public --provenance
+                cd -
+              fi
+            done
+          fi
+
+      # Push version changes and tags
+      - name: Push changes
+        run: |
+          git push origin main --follow-tags
+
+      # Fix CI issues
+      - name: Fix CI
+        run: pnpm exec nx fix-ci
+        if: always()
