@@ -13,7 +13,7 @@
   "author": "Berend de Boer",
   "repository": {
     "type": "git",
-    "url": "git@github.com:berenddeboer/nx-plugins.git"
+    "url": "git+ssh://git@github.com/berenddeboer/nx-plugins.git"
   },
   "homepage": "https://github.com/berenddeboer/nx-plugins",
   "description": "Nx plugin for Serverless Stack apps",
