@@ -51,6 +51,8 @@ jobs:
 
       # Version packages using semver (analyzes commits automatically)
       - name: Version packages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -n "${{ github.event.inputs.project }}" ]; then
             echo "Versioning specific project: ${{ github.event.inputs.project }}"
