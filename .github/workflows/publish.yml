@@ -108,19 +108,6 @@ jobs:
         run: |
           git push origin main --follow-tags
 
-      # Create GitHub releases after tags are pushed
-      - name: Create GitHub releases
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [ -n "${{ github.event.inputs.project }}" ]; then
-            echo "Creating GitHub release for specific project: ${{ github.event.inputs.project }}"
-            pnpm exec nx run ${{ github.event.inputs.project }}:github
-          else
-            echo "Creating GitHub releases for all affected packages"
-            pnpm exec nx affected --target=github
-          fi
-
       # Fix CI issues
       - name: Fix CI
         run: pnpm exec nx fix-ci
