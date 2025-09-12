@@ -120,7 +120,4 @@ Both plugins follow standard Nx plugin patterns:
 
 ### Publishing
 
-Packages are published to npm under `@berenddeboer/` scope:
-
-- Manual publishing process from `dist/packages/{plugin}` directory
-- Version management in individual package.json files
+Packages are published via `.github/workflows/publish.yml`.
