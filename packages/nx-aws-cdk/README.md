@@ -24,16 +24,41 @@ applications](https://docs.aws.amazon.com/cdk/latest/guide/home.html).
 
 ## Install
 
+<details open>
+<summary>npm</summary>
+
 ```sh
-# npm
 npm install --save-dev @berenddeboer/nx-aws-cdk
+```
 
-# pnpm
+</details>
+
+<details>
+<summary>pnpm</summary>
+
+```sh
 pnpm i --save-dev @berenddeboer/nx-aws-cdk
+```
 
-# yarn
+</details>
+
+<details>
+<summary>yarn</summary>
+
+```sh
 yarn add --dev @berenddeboer/nx-aws-cdk
 ```
+
+</details>
+
+<details>
+<summary>bun</summary>
+
+```sh
+bun add -D @berenddeboer/nx-aws-cdk
+```
+
+</details>
 
 ## Usage
 
