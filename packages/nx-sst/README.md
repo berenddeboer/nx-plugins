@@ -9,9 +9,41 @@ The plugin works with SST v3 as well, but cannot yet generate an application.
 
 ## Add the plugin to your workspace:
 
+<details open>
+<summary>npm</summary>
+
 ```sh
 npm install @berenddeboer/nx-sst
 ```
+
+</details>
+
+<details>
+<summary>pnpm</summary>
+
+```sh
+pnpm i @berenddeboer/nx-sst
+```
+
+</details>
+
+<details>
+<summary>yarn</summary>
+
+```sh
+yarn add @berenddeboer/nx-sst
+```
+
+</details>
+
+<details>
+<summary>bun</summary>
+
+```sh
+bun add @berenddeboer/nx-sst
+```
+
+</details>
 
 ## Create a typescript sst app:
 
