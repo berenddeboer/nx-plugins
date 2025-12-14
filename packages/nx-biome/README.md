@@ -161,7 +161,7 @@ The plugin configures Nx caching with appropriate inputs:
 
 - Project-level `biome.json` / `biome.jsonc`
 - Workspace-level `biome.json` / `biome.jsonc`
-- Source files: `*.ts`, `*.tsx`, `*.js`, `*.jsx`, `*.json`, `*.css`
+- Source files: `*.ts`, `*.tsx`, `*.js`, `*.jsx`, `*.mjs`, `*.json`, `*.jsonc`, `*.css`, `*.md`
 
 This ensures the cache is invalidated when relevant files change.
 
