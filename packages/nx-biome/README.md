@@ -2,6 +2,17 @@
 
 An Nx plugin for [Biome](https://biomejs.dev/) - a fast linter and formatter for JavaScript, TypeScript, JSON, and CSS. This plugin includes support for batch processing, which dramatically speeds up linting in monorepos.
 
+## Table of Contents
+
+- [Features](#features)
+- [Install](#install)
+- [Usage](#usage)
+  - [Plugin Setup](#plugin-setup)
+  - [Basic Usage](#basic-usage)
+  - [Batch Mode](#batch-mode-recommended-for-ci)
+- [Configuration](#configuration)
+- [License](#license)
+
 ## Features
 
 - Self-inferring plugin that automatically adds lint targets to all projects
@@ -9,25 +20,47 @@ An Nx plugin for [Biome](https://biomejs.dev/) - a fast linter and formatter for
 - **Batch executor for running Biome once across all affected projects** - massive performance improvement for large monorepos
 - Caching support for faster subsequent runs
 
-## Installation
+## Install
 
-```bash
-npm install -D @berenddeboer/nx-biome
-# or
-pnpm add -D @berenddeboer/nx-biome
-# or
-yarn add -D @berenddeboer/nx-biome
+<details open>
+<summary>npm</summary>
+
+```sh
+npm install --save-dev @berenddeboer/nx-biome
 ```
 
-Make sure you have Biome installed in your workspace:
+</details>
 
-```bash
-npm install -D @biomejs/biome
+<details>
+<summary>pnpm</summary>
+
+```sh
+pnpm add --save-dev @berenddeboer/nx-biome
 ```
 
-## Setup
+</details>
 
-### Using the Plugin (Recommended)
+<details>
+<summary>yarn</summary>
+
+```sh
+yarn add --dev @berenddeboer/nx-biome
+```
+
+</details>
+
+<details>
+<summary>bun</summary>
+
+```sh
+bun add -D @berenddeboer/nx-biome
+```
+
+</details>
+
+## Usage
+
+### Plugin Setup
 
 Add the plugin to your `nx.json`:
 
@@ -45,25 +78,6 @@ Add the plugin to your `nx.json`:
 ```
 
 This will automatically add a `lint` target to all projects in your workspace.
-
-### Manual Configuration
-
-Alternatively, you can manually add the executor to specific projects in their `project.json`:
-
-```json
-{
-  "targets": {
-    "lint": {
-      "executor": "@berenddeboer/nx-biome:biome",
-      "options": {
-        "projectRoot": "apps/my-app"
-      }
-    }
-  }
-}
-```
-
-## Usage
 
 ### Basic Usage
 
@@ -129,33 +143,11 @@ nx run-many -t lint --batch
 | ------------- | ------ | ------- | --------------------------------- |
 | `projectRoot` | string | `.`     | The root directory of the project |
 
-## Biome Configuration
+### Biome Configuration
 
 This plugin expects a `biome.json` or `biome.jsonc` configuration file at the workspace root or in individual project directories. See the [Biome configuration documentation](https://biomejs.dev/reference/configuration/) for details.
 
-Example `biome.json`:
-
-```json
-{
-  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true
-    }
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2
-  }
-}
-```
-
-## Caching
+### Caching
 
 The plugin configures Nx caching with appropriate inputs:
 
@@ -165,6 +157,12 @@ The plugin configures Nx caching with appropriate inputs:
 
 This ensures the cache is invalidated when relevant files change.
 
+## Contributing
+
+See [the contributing file](../../CONTRIBUTING.md)!
+
+PRs accepted.
+
 ## License
 
-MIT
+This project is MIT licensed.
