@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.1.0](https://github.com/berenddeboer/nx-plugins/compare/nx-sst-1.0.0...nx-sst-1.1.0) (2025-12-14)
+
+### Features
+
+- **sst:** allow using sst without having to install it globally ([#7](https://github.com/berenddeboer/nx-plugins/issues/7)) ([29b21f9](https://github.com/berenddeboer/nx-plugins/commit/29b21f9a474537cd712444ab45970d5a9374b00f))
+
 ## [1.0.0](https://github.com/berenddeboer/nx-plugins/compare/nx-sst-0.13.6...nx-sst-1.0.0) (2025-09-12)
 
 ### ⚠ BREAKING CHANGES
