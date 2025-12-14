@@ -60,13 +60,6 @@ npx nx build nx-aws-cdk
 npx nx test nx-aws-cdk
 ```
 
-3. Publish package after login:
-
-```sh
-cd dist/packages/nx-aws-cdk
-npm publish --access=public
-```
-
 ## License
 
 This project is MIT licensed.
