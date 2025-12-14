@@ -48,7 +48,7 @@ describe("SST Run Executor", () => {
   it("can run", async () => {
     await executor(version, context)
     expect(childProcess.exec).toHaveBeenCalledWith(
-      "sst version",
+      "npx sst version",
       expect.objectContaining({
         cwd: expect.stringContaining(
           path.join(context.root, context.projectsConfigurations.projects["proj"].root)
@@ -57,13 +57,13 @@ describe("SST Run Executor", () => {
         maxBuffer: LARGE_BUFFER,
       })
     )
-    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: sst version`)
+    expect(logger.debug).toHaveBeenLastCalledWith(`Executing command: npx sst version`)
   })
 
   it("can receive stage parameter", async () => {
     await executor(deploy, context)
     expect(childProcess.exec).toHaveBeenCalledWith(
-      "sst deploy --stage prd",
+      "npx sst deploy --stage prd",
       expect.objectContaining({
         cwd: expect.stringContaining(
           path.join(context.root, context.projectsConfigurations.projects["proj"].root)
@@ -73,14 +73,14 @@ describe("SST Run Executor", () => {
       })
     )
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: sst deploy --stage prd`
+      `Executing command: npx sst deploy --stage prd`
     )
   })
 
   it("can receive stack to deploy", async () => {
     await executor(deploy_stack, context)
     expect(childProcess.exec).toHaveBeenCalledWith(
-      "sst deploy --stage prd mystack",
+      "npx sst deploy --stage prd mystack",
       expect.objectContaining({
         cwd: expect.stringContaining(
           path.join(context.root, context.projectsConfigurations.projects["proj"].root)
@@ -90,14 +90,14 @@ describe("SST Run Executor", () => {
       })
     )
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: sst deploy --stage prd mystack`
+      `Executing command: npx sst deploy --stage prd mystack`
     )
   })
 
   it("ignores empty parameters", async () => {
     await executor(empty_parameters, context)
     expect(childProcess.exec).toHaveBeenCalledWith(
-      "sst deploy --stage prd",
+      "npx sst deploy --stage prd",
       expect.objectContaining({
         cwd: expect.stringContaining(
           path.join(context.root, context.projectsConfigurations.projects["proj"].root)
@@ -107,7 +107,7 @@ describe("SST Run Executor", () => {
       })
     )
     expect(logger.debug).toHaveBeenLastCalledWith(
-      `Executing command: sst deploy --stage prd`
+      `Executing command: npx sst deploy --stage prd`
     )
   })
 
