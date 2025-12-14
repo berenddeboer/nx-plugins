@@ -1,0 +1,28 @@
+{
+  "name": "@berenddeboer/nx-biome",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "executors": "./executors.json",
+  "keywords": [
+    "nx",
+    "biome",
+    "linter",
+    "formatter",
+    "monorepo",
+    "Node"
+  ],
+  "author": "Berend de Boer",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/berenddeboer/nx-plugins.git"
+  },
+  "homepage": "https://github.com/berenddeboer/nx-plugins",
+  "description": "Nx self-inferring plugin for Biome linter and formatter with batch processing support",
+  "license": "MIT",
+  "dependencies": {
+    "@biomejs/biome": "^2.3.8"
+  },
+  "peerDependencies": {
+    "@nx/devkit": "^20.6.4 || ^21.0.0 || ^22.0.0"
+  }
+}

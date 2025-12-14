@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "type": "object",
+  "cli": "nx",
+  "title": "Biome executor",
+  "description": "Run Biome linter and formatter check",
+  "properties": {
+    "projectRoot": {
+      "type": "string",
+      "description": "The root directory of the project to lint"
+    }
+  },
+  "required": []
+}

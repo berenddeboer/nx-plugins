@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@berenddeboer/nx-aws-cdk": ["packages/nx-aws-cdk/src/index.ts"],
+      "@berenddeboer/nx-biome": ["packages/nx-biome/src/index.ts"],
       "@berenddeboer/nx-sst": ["packages/nx-sst/src/index.ts"]
     }
   },

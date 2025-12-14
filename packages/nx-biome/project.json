@@ -1,0 +1,67 @@
+{
+  "name": "nx-biome",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/nx-biome/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["packages/nx-biome/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/nx-biome/jest.config.ts"
+      }
+    },
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/nx-biome",
+        "tsConfig": "packages/nx-biome/tsconfig.lib.json",
+        "packageJson": "packages/nx-biome/package.json",
+        "main": "packages/nx-biome/src/index.ts",
+        "assets": [
+          {
+            "input": "./packages/nx-biome",
+            "glob": "README.md",
+            "output": "."
+          },
+          {
+            "input": "./packages/nx-biome/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/nx-biome/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/nx-biome",
+            "glob": "executors.json",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventionalcommits",
+        "postTargets": ["build"]
+      }
+    },
+    "github": {
+      "executor": "@jscutlery/semver:github",
+      "options": {
+        "tag": "${tag}",
+        "notesFile": "packages/nx-biome/CHANGELOG.md"
+      }
+    }
+  }
+}

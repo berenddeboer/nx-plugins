@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "executors": {
+    "biome": {
+      "implementation": "./src/executors/biome/executor",
+      "batchImplementation": "./src/executors/biome/executor.batch",
+      "schema": "./src/executors/biome/schema.json",
+      "description": "Run Biome linter and formatter check"
+    }
+  }
+}
