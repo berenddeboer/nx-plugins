@@ -44,6 +44,8 @@ npx nx build nx-aws-cdk
 npx nx test nx-aws-cdk
 ```
 
+3. To publish, use the Publish workflow in GitHub actions and select the project to publish.
+
 ## License
 
 This project is MIT licensed.
