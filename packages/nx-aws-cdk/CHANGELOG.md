@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.0.3](https://github.com/berenddeboer/nx-plugins/compare/nx-aws-cdk-3.0.2...nx-aws-cdk-3.0.3) (2025-12-14)
+
 ## [3.0.2](https://github.com/berenddeboer/nx-plugins/compare/nx-aws-cdk-3.0.1...nx-aws-cdk-3.0.2) (2025-09-12)
 
 ## [1.0.3](https://github.com/codebrewlab/nx-plugins/compare/v1.0.2...v1.0.3) (2022-01-28)
