@@ -12,6 +12,7 @@ Nx monorepo for various Nx plugins
 | Plugin                                                        | Description                                                                                          |
 | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | [`@berenddeboer/nx-aws-cdk`](./packages/nx-aws-cdk/README.md) | An Nx plugin for developing [aws cdk stacks](https://docs.aws.amazon.com/cdk/latest/guide/home.html) |
+| [`@berenddeboer/nx-biome`](./packages/nx-biome/README.md)     | An Nx plugin for linting and formatting with [Biome](https://biomejs.dev/)                           |
 | [`@berenddeboer/nx-sst`](./packages/nx-sst/README.md)         | An Nx plugin for developing [serverless full stack apps](https://docs.sst.dev/what-is-sst)           |
 
 ## Contributing
