@@ -1,7 +1,13 @@
 {
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "sharedGlobals": ["{workspaceRoot}/package.json", "{workspaceRoot}/.eslintrc.json"]
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
+    "sharedGlobals": [
+      "{workspaceRoot}/package.json",
+      "{workspaceRoot}/.eslintrc.json"
+    ]
   },
   "targetDependencies": {
     "build": [
@@ -17,7 +23,9 @@
     },
     "nx-aws-cdk-e2e": {
       "tags": [],
-      "implicitDependencies": ["nx-aws-cdk"]
+      "implicitDependencies": [
+        "nx-aws-cdk"
+      ]
     },
     "nx-sst": {
       "tags": []
@@ -39,7 +47,11 @@
     },
     "@nx/jest:jest": {
       "cache": true,
-      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/jest.preset.js"
+      ],
       "options": {
         "passWithNoTests": true
       },
@@ -52,10 +64,16 @@
     },
     "@nx/js:tsc": {
       "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["default", "^default"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "default",
+        "^default"
+      ]
     }
   },
   "useInferencePlugins": false,
-  "defaultBase": "main"
+  "defaultBase": "main",
+  "nxCloudId": "693f23592602cf8ef46bb949"
 }
