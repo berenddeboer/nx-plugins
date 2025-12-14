@@ -19,7 +19,7 @@
   "description": "Nx plugin for Serverless Stack apps",
   "license": "MIT",
   "peerDependencies": {
-    "@nx/devkit": "^20.6.4",
-    "@nx/eslint": "^20.6.4"
+    "@nx/devkit": "^20.6.4 || ^21.0.0 || ^22.0.0",
+    "@nx/eslint": "^20.6.4 || ^21.0.0 || ^22.0.0"
   }
 }
