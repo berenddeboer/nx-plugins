@@ -27,7 +27,6 @@
     "appsDir": "e2e",
     "libsDir": "packages"
   },
-  "nxCloudAccessToken": "ZGNkYzZlMDQtYjQxZi00YjhlLTk1MjEtYWQ3NjIxMjU1MzlmfHJlYWQtd3JpdGU=",
   "targetDefaults": {
     "build": {
       "cache": true
