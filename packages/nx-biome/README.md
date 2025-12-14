@@ -1,6 +1,6 @@
 # @berenddeboer/nx-biome
 
-An Nx plugin for [Biome](https://biomejs.dev/) - a fast linter and formatter for JavaScript, TypeScript, JSON, and CSS. This plugin includes support for batch processing, which dramatically speeds up linting in monorepos.
+A self-inferring Nx plugin for [Biome](https://biomejs.dev/) - a fast linter and formatter for JavaScript, TypeScript, JSON, and CSS. This plugin includes support for batch processing, which dramatically speeds up linting in monorepos.
 
 ## Table of Contents
 
