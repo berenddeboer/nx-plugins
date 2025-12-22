@@ -58,7 +58,7 @@ describe("nx-biome executor", () => {
 
     expect(childProcess.execSync).toHaveBeenCalledWith("biome check apps/proj", {
       stdio: "inherit",
-      cwd: process.cwd(),
+      cwd: context.root,
     })
     expect(result.success).toBe(true)
   })
@@ -70,7 +70,7 @@ describe("nx-biome executor", () => {
 
     expect(childProcess.execSync).toHaveBeenCalledWith("biome check .", {
       stdio: "inherit",
-      cwd: process.cwd(),
+      cwd: context.root,
     })
   })
 
@@ -134,7 +134,7 @@ describe("nx-biome batch executor", () => {
       "biome check apps/proj libs/lib",
       expect.objectContaining({
         stdio: "pipe",
-        cwd: process.cwd(),
+        cwd: context.root,
         encoding: "utf-8",
       })
     )
@@ -176,7 +176,7 @@ describe("nx-biome batch executor", () => {
       "biome check apps/proj",
       expect.objectContaining({
         stdio: "pipe",
-        cwd: process.cwd(),
+        cwd: context.root,
       })
     )
   })
