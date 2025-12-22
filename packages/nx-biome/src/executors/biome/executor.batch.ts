@@ -16,9 +16,10 @@ export default async function biomeBatchExecutor(
   taskGraph: TaskGraph,
   options: Record<string, BiomeExecutorOptions>,
   _overrides: BiomeExecutorOptions,
-  _context: ExecutorContext
+  context: ExecutorContext
 ): Promise<Record<string, BatchExecutorTaskResult>> {
   const tasks = Object.values(taskGraph.tasks)
+  const workspaceRoot = context.root
 
   // Get project roots from task options (keyed by task ID)
   const projectRoots = tasks.map((task) => {
@@ -38,7 +39,7 @@ export default async function biomeBatchExecutor(
     // Run biome check on all project directories at once
     const output = execSync(`biome check ${args}`, {
       stdio: "pipe",
-      cwd: process.cwd(),
+      cwd: workspaceRoot,
       encoding: "utf-8",
     })
     terminalOutput = output

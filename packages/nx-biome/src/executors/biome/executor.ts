@@ -7,14 +7,15 @@ import type { BiomeExecutorOptions } from "./schema"
  */
 export default async function biomeExecutor(
   options: BiomeExecutorOptions,
-  _context: ExecutorContext
+  context: ExecutorContext
 ): Promise<{ success: boolean }> {
   const projectRoot = options.projectRoot || "."
+  const workspaceRoot = context.root
 
   try {
     execSync(`biome check ${projectRoot}`, {
       stdio: "inherit",
-      cwd: process.cwd(),
+      cwd: workspaceRoot,
     })
     return { success: true }
   } catch {
