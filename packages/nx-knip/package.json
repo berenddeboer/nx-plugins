@@ -24,5 +24,10 @@
   "peerDependencies": {
     "@nx/devkit": "^20.6.4 || ^21.0.0 || ^22.0.0",
     "knip": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "knip": {
+      "optional": false
+    }
   }
 }
