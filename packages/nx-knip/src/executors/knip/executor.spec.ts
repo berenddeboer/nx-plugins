@@ -66,7 +66,7 @@ describe("nx-knip executor", () => {
         stdio: "ignore",
       })
       expect(childProcess.execSync).toHaveBeenCalledWith(
-        "npx knip-bun --workspace packages/proj",
+        'npx knip-bun --workspace "packages/proj"',
         {
           stdio: "inherit",
           cwd: context.root,
@@ -80,7 +80,7 @@ describe("nx-knip executor", () => {
 
       await executor(emptyOptions, context)
 
-      expect(childProcess.execSync).toHaveBeenCalledWith("npx knip-bun --workspace .", {
+      expect(childProcess.execSync).toHaveBeenCalledWith('npx knip-bun --workspace "."', {
         stdio: "inherit",
         cwd: context.root,
       })
@@ -104,7 +104,7 @@ describe("nx-knip executor", () => {
         stdio: "ignore",
       })
       expect(childProcess.execSync).toHaveBeenCalledWith(
-        "npx knip --workspace packages/proj",
+        'npx knip --workspace "packages/proj"',
         {
           stdio: "inherit",
           cwd: context.root,

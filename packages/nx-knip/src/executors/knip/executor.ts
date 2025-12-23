@@ -44,7 +44,7 @@ export default async function knipExecutor(
   const command = isBunAvailable() ? "npx knip-bun" : "npx knip"
 
   try {
-    execSync(`${command} --workspace ${projectRoot}`, {
+    execSync(`${command} --workspace ${JSON.stringify(projectRoot)}`, {
       stdio: "inherit",
       cwd: workspaceRoot,
     })
