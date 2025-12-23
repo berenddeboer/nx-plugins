@@ -1,0 +1,30 @@
+{
+  "name": "@berenddeboer/nx-knip",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "executors": "./executors.json",
+  "keywords": [
+    "nx",
+    "knip",
+    "unused",
+    "dependencies",
+    "exports",
+    "dead code",
+    "monorepo",
+    "Node"
+  ],
+  "author": "Berend de Boer",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/berenddeboer/nx-plugins.git"
+  },
+  "homepage": "https://github.com/berenddeboer/nx-plugins",
+  "description": "Nx self-inferring plugin for Knip - find unused dependencies, exports, and files",
+  "license": "MIT",
+  "dependencies": {
+    "knip": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@nx/devkit": "^20.6.4 || ^21.0.0 || ^22.0.0"
+  }
+}
