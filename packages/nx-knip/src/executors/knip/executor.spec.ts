@@ -47,15 +47,15 @@ describe("nx-knip executor", () => {
   const context = mockExecutorContext("knip")
 
   afterEach(() => {
-    jest.clearAllMocks()
+    jest.restoreAllMocks()
     resetBunCache()
   })
 
   describe("when Bun is available", () => {
     beforeEach(() => {
       jest.spyOn(childProcess, "execSync").mockImplementation(() => {
-        // Return empty string for bun --version check and knip-bun command
-        return ""
+        // Return empty buffer for bun --version check and knip-bun command
+        return Buffer.from("")
       })
     })
 
@@ -93,7 +93,7 @@ describe("nx-knip executor", () => {
         if (cmd === "bun --version") {
           throw new Error("bun not found")
         }
-        return ""
+        return Buffer.from("")
       })
     })
 
@@ -117,7 +117,7 @@ describe("nx-knip executor", () => {
   it("returns failure and logs error when knip check fails", async () => {
     jest.spyOn(childProcess, "execSync").mockImplementation((cmd: string) => {
       if (cmd === "bun --version") {
-        return ""
+        return Buffer.from("")
       }
       throw new Error("Knip check failed")
     })

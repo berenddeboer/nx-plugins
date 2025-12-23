@@ -1,1 +1,1 @@
-export * from "./plugins/plugin"
+export { createNodesV2, name, type KnipPluginOptions } from "./plugins/plugin"
