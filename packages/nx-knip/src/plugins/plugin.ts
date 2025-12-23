@@ -37,12 +37,15 @@ export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
                   cache: true,
                   inputs: [
                     "{projectRoot}/package.json",
-                    "{projectRoot}/**/*.ts",
-                    "{projectRoot}/**/*.tsx",
+                    // All extensions from knip's default project pattern
                     "{projectRoot}/**/*.js",
-                    "{projectRoot}/**/*.jsx",
-                    "{projectRoot}/**/*.mjs",
                     "{projectRoot}/**/*.cjs",
+                    "{projectRoot}/**/*.mjs",
+                    "{projectRoot}/**/*.jsx",
+                    "{projectRoot}/**/*.ts",
+                    "{projectRoot}/**/*.cts",
+                    "{projectRoot}/**/*.mts",
+                    "{projectRoot}/**/*.tsx",
                     "{projectRoot}/tsconfig.json",
                     "{projectRoot}/tsconfig.*.json",
                     // All possible knip config locations (including package.json "knip" property)
