@@ -1,6 +1,6 @@
 {
   "name": "@berenddeboer/nx-knip",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "src/index.js",
   "executors": "./executors.json",
   "keywords": [
