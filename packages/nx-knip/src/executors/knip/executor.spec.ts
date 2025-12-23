@@ -1,7 +1,7 @@
-import * as childProcess from "child_process"
+import * as childProcess from "node:child_process"
 import type { ExecutorContext } from "@nx/devkit"
 
-import executor from "./executor"
+import executor, { resetBunCache } from "./executor"
 import type { KnipExecutorOptions } from "./schema"
 
 function mockExecutorContext(executorName: string): ExecutorContext {
@@ -46,7 +46,10 @@ describe("nx-knip executor", () => {
   const options: KnipExecutorOptions = { projectRoot: "packages/proj" }
   const context = mockExecutorContext("knip")
 
-  afterEach(() => jest.clearAllMocks())
+  afterEach(() => {
+    jest.clearAllMocks()
+    resetBunCache()
+  })
 
   describe("when Bun is available", () => {
     beforeEach(() => {

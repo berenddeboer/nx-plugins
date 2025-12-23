@@ -3,15 +3,32 @@ import type { ExecutorContext } from "@nx/devkit"
 import type { KnipExecutorOptions } from "./schema"
 
 /**
- * Check if Bun is available on the system
+ * Cached result of Bun availability check.
+ * undefined = not checked yet, boolean = cached result
+ */
+let bunAvailableCache: boolean | undefined
+
+/**
+ * Reset the Bun availability cache. Exported for testing purposes.
+ */
+export function resetBunCache(): void {
+  bunAvailableCache = undefined
+}
+
+/**
+ * Check if Bun is available on the system.
+ * Result is cached since Bun availability won't change during a build.
  */
 function isBunAvailable(): boolean {
-  try {
-    execSync("bun --version", { stdio: "ignore" })
-    return true
-  } catch {
-    return false
+  if (bunAvailableCache === undefined) {
+    try {
+      execSync("bun --version", { stdio: "ignore" })
+      bunAvailableCache = true
+    } catch {
+      bunAvailableCache = false
+    }
   }
+  return bunAvailableCache
 }
 
 /**

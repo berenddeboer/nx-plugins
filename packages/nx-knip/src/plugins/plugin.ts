@@ -1,3 +1,4 @@
+import { dirname } from "node:path"
 import { type CreateNodesV2, createNodesFromFiles } from "@nx/devkit"
 
 export const name = "nx-knip-plugin"
@@ -19,7 +20,7 @@ export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
           return {}
         }
 
-        const projectRoot = configFile.replace("/package.json", "") || "."
+        const projectRoot = dirname(configFile)
 
         // Skip root package.json - knip runs from root for specific workspaces
         if (projectRoot === ".") {
