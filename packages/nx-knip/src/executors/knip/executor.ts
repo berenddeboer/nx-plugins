@@ -49,7 +49,9 @@ export default async function knipExecutor(
       cwd: workspaceRoot,
     })
     return { success: true }
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.error(`Knip check failed for ${projectRoot}: ${message}`)
     return { success: false }
   }
 }

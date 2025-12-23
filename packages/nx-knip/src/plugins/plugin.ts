@@ -14,7 +14,7 @@ export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
   projectConfigGlob,
   async (configFiles, options, context) => {
     return await createNodesFromFiles(
-      (configFile, options) => {
+      (configFile, pluginOptions) => {
         // Skip node_modules
         if (configFile.includes("node_modules")) {
           return {}
@@ -27,7 +27,7 @@ export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
           return {}
         }
 
-        const targetName = options?.targetName ?? "knip"
+        const targetName = pluginOptions?.targetName ?? "knip"
 
         return {
           projects: {

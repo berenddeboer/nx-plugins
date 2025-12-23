@@ -114,16 +114,20 @@ describe("nx-knip executor", () => {
     })
   })
 
-  it("returns failure when knip check fails", async () => {
+  it("returns failure and logs error when knip check fails", async () => {
     jest.spyOn(childProcess, "execSync").mockImplementation((cmd: string) => {
       if (cmd === "bun --version") {
         return ""
       }
       throw new Error("Knip check failed")
     })
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation()
 
     const result = await executor(options, context)
 
     expect(result.success).toBe(false)
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Knip check failed for packages/proj: Knip check failed"
+    )
   })
 })
