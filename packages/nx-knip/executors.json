@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "executors": {
+    "knip": {
+      "implementation": "./src/executors/knip/executor",
+      "schema": "./src/executors/knip/schema.json",
+      "description": "Run Knip to find unused dependencies, exports, and files"
+    }
+  }
+}
