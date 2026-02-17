@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.2](https://github.com/berenddeboer/nx-plugins/compare/nx-knip-1.0.1...nx-knip-1.0.2) (2026-02-17)
+
+### Bug Fixes
+
+- **nx-knip:** remove strict as default and support it as plugin option ([#14](https://github.com/berenddeboer/nx-plugins/issues/14)) ([8fb4d7c](https://github.com/berenddeboer/nx-plugins/commit/8fb4d7c67cf84eb5cb9d999a12ea31d3b14d7358))
+
 ## [1.0.1](https://github.com/berenddeboer/nx-plugins/compare/nx-knip-1.0.0...nx-knip-1.0.1) (2026-02-17)
 
 ### Bug Fixes
