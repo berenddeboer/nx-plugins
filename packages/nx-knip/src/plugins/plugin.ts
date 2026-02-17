@@ -63,6 +63,7 @@ export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
                   executor: "@berenddeboer/nx-knip:knip",
                   options: {
                     projectRoot,
+                    strict: true,
                   },
                   metadata: {
                     technologies: ["knip"],

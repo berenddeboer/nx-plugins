@@ -8,6 +8,18 @@
     "projectRoot": {
       "type": "string",
       "description": "The root directory of the project to lint"
+    },
+    "strict": {
+      "type": "boolean",
+      "description": "Enable strict mode to also report unused dependencies and unlisted binaries",
+      "default": false
+    },
+    "env": {
+      "type": "object",
+      "description": "Environment variables to set when running knip. Useful for providing dummy values for env vars that would otherwise cause .ts files to throw during knip analysis.",
+      "additionalProperties": {
+        "type": "string"
+      }
     }
   },
   "required": []
