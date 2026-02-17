@@ -42,11 +42,15 @@ export default async function knipExecutor(
   const projectRoot = options.projectRoot || "."
   const workspaceRoot = context.root
   const command = isBunAvailable() ? "npx knip-bun" : "npx knip"
+  const strictFlag = options.strict ? " --strict" : ""
+
+  const env = options.env ? { ...process.env, ...options.env } : process.env
 
   try {
-    execSync(`${command} --workspace ${JSON.stringify(projectRoot)}`, {
+    execSync(`${command} --workspace ${JSON.stringify(projectRoot)}${strictFlag}`, {
       stdio: "inherit",
       cwd: workspaceRoot,
+      env,
     })
     return { success: true }
   } catch (error) {

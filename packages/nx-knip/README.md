@@ -83,6 +83,65 @@ Or run it for all projects:
 nx run-many -t knip
 ```
 
+## Executor Options
+
+### `strict`
+
+Enable strict mode to also report unused dependencies and unlisted binaries. The plugin enables this by default for all inferred targets.
+
+You can override this per-project in `project.json`:
+
+```json
+{
+  "targets": {
+    "knip": {
+      "options": {
+        "strict": false
+      }
+    }
+  }
+}
+```
+
+### `env`
+
+Set environment variables for the knip process. This is useful when knip loads `.ts` files that throw on missing environment variables - you can provide dummy values so knip can analyze the files without errors.
+
+Configure via `targetDefaults` in `nx.json`:
+
+```json
+{
+  "targetDefaults": {
+    "knip": {
+      "options": {
+        "env": {
+          "SQLITE_DATABASE_PATH": "/tmp/knip-dummy.db",
+          "PF_ORG": "examples/demo"
+        }
+      }
+    }
+  }
+}
+```
+
+Or per-project in `project.json`:
+
+```json
+{
+  "targets": {
+    "knip": {
+      "options": {
+        "env": {
+          "DATABASE_URL": "postgres://localhost/dummy"
+        }
+      }
+    }
+  }
+}
+```
+
+The provided environment variables are merged with the current `process.env`, so existing variables are preserved and the specified ones are added or overridden.
+
 ## How it works
 
 This plugin runs `knip --workspace {projectRoot}` from the workspace root for each project. This means:

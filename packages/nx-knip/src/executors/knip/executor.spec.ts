@@ -43,7 +43,7 @@ function mockExecutorContext(executorName: string): ExecutorContext {
 }
 
 describe("nx-knip executor", () => {
-  const options: KnipExecutorOptions = { projectRoot: "packages/proj" }
+  const options: KnipExecutorOptions = { projectRoot: "packages/proj", strict: true }
   const context = mockExecutorContext("knip")
 
   afterEach(() => {
@@ -59,17 +59,18 @@ describe("nx-knip executor", () => {
       })
     })
 
-    it("runs knip-bun with --workspace flag on project root", async () => {
+    it("runs knip-bun with --workspace and --strict flags on project root", async () => {
       const result = await executor(options, context)
 
       expect(childProcess.execSync).toHaveBeenCalledWith("bun --version", {
         stdio: "ignore",
       })
       expect(childProcess.execSync).toHaveBeenCalledWith(
-        'npx knip-bun --workspace "packages/proj"',
+        'npx knip-bun --workspace "packages/proj" --strict',
         {
           stdio: "inherit",
           cwd: context.root,
+          env: process.env,
         }
       )
       expect(result.success).toBe(true)
@@ -83,7 +84,45 @@ describe("nx-knip executor", () => {
       expect(childProcess.execSync).toHaveBeenCalledWith('npx knip-bun --workspace "."', {
         stdio: "inherit",
         cwd: context.root,
+        env: process.env,
       })
+    })
+
+    it("omits --strict flag when strict is not set", async () => {
+      const nonStrictOptions: KnipExecutorOptions = { projectRoot: "packages/proj" }
+
+      await executor(nonStrictOptions, context)
+
+      expect(childProcess.execSync).toHaveBeenCalledWith(
+        'npx knip-bun --workspace "packages/proj"',
+        {
+          stdio: "inherit",
+          cwd: context.root,
+          env: process.env,
+        }
+      )
+    })
+
+    it("merges env option into process.env", async () => {
+      const envOptions: KnipExecutorOptions = {
+        projectRoot: "packages/proj",
+        env: { SQLITE_DATABASE_PATH: "/tmp/knip-dummy.db", PF_ORG: "examples/demo" },
+      }
+
+      await executor(envOptions, context)
+
+      expect(childProcess.execSync).toHaveBeenCalledWith(
+        'npx knip-bun --workspace "packages/proj"',
+        {
+          stdio: "inherit",
+          cwd: context.root,
+          env: {
+            ...process.env,
+            SQLITE_DATABASE_PATH: "/tmp/knip-dummy.db",
+            PF_ORG: "examples/demo",
+          },
+        }
+      )
     })
   })
 
@@ -97,17 +136,18 @@ describe("nx-knip executor", () => {
       })
     })
 
-    it("falls back to npx knip with --workspace flag", async () => {
+    it("falls back to npx knip with --workspace and --strict flags", async () => {
       const result = await executor(options, context)
 
       expect(childProcess.execSync).toHaveBeenCalledWith("bun --version", {
         stdio: "ignore",
       })
       expect(childProcess.execSync).toHaveBeenCalledWith(
-        'npx knip --workspace "packages/proj"',
+        'npx knip --workspace "packages/proj" --strict',
         {
           stdio: "inherit",
           cwd: context.root,
+          env: process.env,
         }
       )
       expect(result.success).toBe(true)
