@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.1](https://github.com/berenddeboer/nx-plugins/compare/nx-knip-1.0.0...nx-knip-1.0.1) (2026-02-17)
+
+### Bug Fixes
+
+- **nx-knip:** pass env options from plugin config to executor ([#13](https://github.com/berenddeboer/nx-plugins/issues/13)) ([c79b52f](https://github.com/berenddeboer/nx-plugins/commit/c79b52fcd8acd65848a3be737f394189fc1d5b97))
+
 ## [1.0.0](https://github.com/berenddeboer/nx-plugins/compare/nx-knip-0.2.0...nx-knip-1.0.0) (2026-02-17)
 
 ### ⚠ BREAKING CHANGES
