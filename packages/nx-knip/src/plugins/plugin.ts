@@ -8,6 +8,7 @@ const projectConfigGlob = "**/package.json"
 
 export interface KnipPluginOptions {
   targetName?: string
+  strict?: boolean
   env?: Record<string, string>
 }
 
@@ -64,7 +65,9 @@ export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
                   executor: "@berenddeboer/nx-knip:knip",
                   options: {
                     projectRoot,
-                    strict: true,
+                    ...(pluginOptions?.strict != null && {
+                      strict: pluginOptions.strict,
+                    }),
                     ...(pluginOptions?.env && { env: pluginOptions.env }),
                   },
                   metadata: {
