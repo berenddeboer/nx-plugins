@@ -1,123 +1,176 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for AI coding agents working in this Nx plugins monorepo.
 
 ## Project Overview
 
-This is an Nx workspace containing two custom Nx plugins for cloud infrastructure development:
+Nx workspace with four custom Nx plugins (pnpm workspace):
 
-- **@berenddeboer/nx-aws-cdk**: Self-inferring Nx plugin for AWS CDK v2 applications
-- **@berenddeboer/nx-sst**: Nx plugin for Serverless Stack (SST) v2 applications
+- **@berenddeboer/nx-aws-cdk** — Self-inferring plugin for AWS CDK v2 (executor, generators, plugin inference from `cdk.json`)
+- **@berenddeboer/nx-sst** — Plugin for SST v2 (executor, generators)
+- **@berenddeboer/nx-biome** — Self-inferring plugin for Biome linter/formatter (executor, plugin inference)
+- **@berenddeboer/nx-knip** — Self-inferring plugin for Knip unused code detection (executor, plugin inference)
 
-## Development Commands
-
-### Testing
-
-```bash
-# Test specific plugin
-pnpm run test nx-aws-cdk
-pnpm run test nx-sst
-
-# Run tests using Nx directly
-pnpm nx test nx-aws-cdk
-pnpm nx test nx-sst
-```
-
-### Building
+## Build / Lint / Test Commands
 
 ```bash
-# Build specific plugin
-pnpm run build:aws-cdk
-pnpm run build:sst
-
-# Build using Nx directly
+# Build a plugin
 pnpm nx build nx-aws-cdk
 pnpm nx build nx-sst
-```
+pnpm nx build nx-biome
+pnpm nx build nx-knip
 
-### Linting and Formatting
-
-```bash
-# Lint specific plugin
-pnpm run lint            # Lints nx-aws-cdk by default
+# Lint a plugin
 pnpm nx lint nx-aws-cdk
-pnpm nx lint nx-sst
 
-# Format code
-pnpm run format          # Formats uncommitted files
+# Typecheck a plugin
+pnpm nx typecheck nx-aws-cdk
+
+# Run all tests for a plugin
+pnpm nx test nx-aws-cdk
+
+# Run a single test file
+pnpm nx test nx-aws-cdk --testFile=src/executors/cdk/executor.spec.ts
+
+# Run tests matching a pattern
+pnpm nx test nx-aws-cdk --testNamePattern="deploy"
+
+# Run all affected targets (what pre-commit runs)
+pnpm nx affected --targets=lint,typecheck,test
+
+# Format uncommitted files
 pnpm nx format:write --uncommitted
-```
 
-### End-to-End Testing
-
-```bash
+# E2E tests
 pnpm run e2e
 ```
 
-### Local Testing of Plugins
+## Project Structure
 
-After building a plugin, you can test it locally:
+```
+packages/nx-{name}/
+  src/
+    index.ts                  # Entry point / barrel exports
+    plugins/plugin.ts         # Self-inferring plugin logic (CDK, biome, knip)
+    executors/{name}/
+      executor.ts             # Executor implementation (default export)
+      executor.spec.ts        # Co-located tests
+      schema.json             # JSON schema for options
+      schema.d.ts             # TypeScript interface for schema
+    generators/               # CDK and SST only
+      init/                   # Hidden init generator
+      application/ | app/     # App scaffold generator
+    utils/                    # Shared utilities
+  executors.json              # Executor definitions
+  generators.json             # Generator definitions
+  project.json               # Nx project config
+e2e/nx-aws-cdk-e2e/           # E2E tests
+```
 
-1. Build the plugin: `pnpm run build:aws-cdk` or `pnpm run build:sst`
-2. Navigate to build output: `cd dist/packages/{plugin-name}`
-3. Link for local testing: `pnpm link`
-4. In target project: `pnpm link @berenddeboer/{plugin-name}`
+## Code Style Guidelines
 
-## Architecture
+### Formatting (Prettier-enforced)
 
-### Project Structure
+- **No semicolons**
+- **Double quotes** for strings
+- **2-space indentation**, spaces not tabs
+- **90 character line width**
+- **Trailing commas**: ES5 style (arrays/objects, not function params)
+- **Arrow parens**: always — `(x) => ...`
 
-- `packages/nx-aws-cdk/`: AWS CDK plugin source code
-- `packages/nx-sst/`: SST plugin source code
-- `e2e/`: End-to-end tests
-- `dist/`: Build output directory
+### Imports
 
-### Plugin Architecture
+- Package imports first, then relative imports
+- Use `"node:fs"`, `"node:path"`, `"node:child_process"` protocol for Node builtins in new code
+- Use `import type { ... }` for type-only imports in new code
+- Double quotes, no semicolons: `import { join } from "node:path"`
 
-Both plugins follow standard Nx plugin patterns:
+### Naming Conventions
 
-**Generators**: Create new applications/projects
+| Element          | Convention               | Example                       |
+| ---------------- | ------------------------ | ----------------------------- |
+| Files            | kebab-case               | `executor.util.ts`            |
+| Directories      | kebab-case               | `nx-aws-cdk`                  |
+| Interfaces/Types | PascalCase               | `CdkExecutorSchema`           |
+| Classes          | PascalCase               | `TempFs`                      |
+| Functions        | camelCase                | `runCommandProcess`           |
+| Variables        | camelCase                | `childProcess`                |
+| Constants        | UPPER_SNAKE              | `LARGE_BUFFER`, `CDK_VERSION` |
+| Schema types     | `{Tool}ExecutorSchema`   |                               |
+| Generator opts   | `{Name}GeneratorOptions` |                               |
 
-- `nx-aws-cdk`: `init` (hidden) and `application` generators
-- `nx-sst`: `init` (hidden) and `app` generators
+### TypeScript
 
-**Executors**: Run tasks on projects
+- Target: ES2020, output: CommonJS
+- Return types may be inferred (not always explicit)
+- Use `eslint-disable` comments sparingly for specific lines only
+- Prefer `interface` for object shapes, `type` for unions/intersections
 
-- `nx-aws-cdk`: `cdk` executor for CDK commands
-- `nx-sst`: `sst` executor for SST commands
+### Export Patterns
 
-**Plugin System**: Both use Nx's self-inferring plugin capabilities
+- **Executors**: default export — `export default async function runExecutor(...)`
+- **Generators**: named + default — `export async function applicationGenerator(...)` then `export default applicationGenerator`
+- **Plugin inference**: named export `createNodesV2` (required by Nx API)
+- **Barrel files**: `export * from "./module"` in `index.ts`
 
-- `nx-aws-cdk`: Auto-detects projects with `cdk.json` and creates targets (deploy, destroy, diff, etc.)
-- `nx-sst`: Provides SST-specific executors and generators
+### Error Handling
 
-### Key Files
+- Executors return `{ success: boolean }` — never throw on command failure
+- Newer plugins: try/catch around `execSync`, return `{ success: true/false }`
+- Older plugins: wrap `child_process.exec` in a Promise, resolve `true`/`false` on exit code
+- Use guard clauses with early returns for invalid states
 
-- `generators.json`: Defines available generators
-- `executors.json`: Defines available executors
-- `src/plugins/plugin.ts`: Plugin inference logic (nx-aws-cdk)
-- `src/index.ts`: Plugin entry point
+## Testing Patterns
 
-## Development Notes
+- **Jest** with `ts-jest` transform, tests co-located as `*.spec.ts`
+- Run single test: `pnpm nx test nx-aws-cdk --testFile=src/executors/cdk/executor.spec.ts`
+- Mocking: `jest.spyOn()` only, no external mock libraries
+- Mock context: each plugin has a `testing.ts` with `mockExecutorContext()` factory
+- Generator tests: use `createTreeWithEmptyWorkspace()` from `@nx/devkit/testing`
+- Plugin tests: use `TempFs` class for temporary file systems
+- Cleanup: `afterEach(() => jest.clearAllMocks())`
+- E2E: uses `@nx/nx-plugin/testing` utilities with 120s timeouts
 
-### Dependencies
+### Test Structure
 
-- Uses Nx 20.6.4 with TypeScript 5.8.2
-- AWS CDK plugin requires `@nx/devkit` and `@nx/eslint` as peer dependencies
-- SST plugin requires `@nx/devkit` as peer dependency
+```typescript
+describe("nx-aws-cdk cdk deploy Executor", () => {
+  beforeEach(async () => {
+    jest.spyOn(logger, "debug")
+    jest.spyOn(childProcess, "exec")
+  })
+  afterEach(() => jest.clearAllMocks())
 
-### Testing Framework
+  it("should run cdk deploy command", async () => {
+    // arrange, act, assert
+  })
+})
+```
 
-- Uses Jest for unit testing
-- Has dedicated e2e test structure
+## Commit Messages
 
-### Code Quality
+Conventional commits enforced by commitlint. Max header: 140 chars.
 
-- ESLint for linting with TypeScript support
-- Prettier for formatting
-- Husky for git hooks with lint-staged
-- Commitlint with conventional commits
+```
+type(scope): description
+```
 
-### Publishing
+- **Types**: feat, fix, chore, docs, ci, build, perf, refactor, revert, style, test, sample, vendor
+- **Scopes**: `nx-aws-cdk`, `nx-sst`, `nx-biome`, `nx-knip`
+- Examples: `feat(nx-knip)!: add strict mode`, `fix(nx-biome): run biome from workspace root`
 
-Packages are published via `.github/workflows/publish.yml`.
+## Key Dependencies
+
+- Nx 21.x, TypeScript 5.9.x, Jest 30.x, pnpm
+- `@nx/devkit` for plugin APIs
+- `@nx/js:tsc` for building all plugins
+- `@jscutlery/semver` for versioning with conventional commits
+
+## Pre-commit Hooks
+
+Husky runs on every commit:
+
+1. `lint-staged` — formats staged files with Prettier
+2. `nx affected --targets=lint,typecheck,test` — checks affected projects
+
+Ensure `pnpm nx lint <project>` and `pnpm nx test <project>` pass before committing.
