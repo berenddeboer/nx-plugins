@@ -87,16 +87,36 @@ nx run-many -t knip
 
 ### `strict`
 
-Enable strict mode to also report unused dependencies and unlisted binaries. The plugin enables this by default for all inferred targets.
+Enable [strict mode](https://knip.dev/features/production-mode#strict-mode) (implies `--production`). Defaults to `false`. When enabled, knip will:
 
-You can override this per-project in `project.json`:
+- Verify isolation: workspaces should use strictly their own dependencies
+- Include `peerDependencies` when finding unused or unlisted dependencies
+- Report type-only imports listed in `dependencies`
+
+You can enable it for all projects via the plugin options in `nx.json`:
+
+```json
+{
+  "plugins": [
+    {
+      "plugin": "@berenddeboer/nx-knip",
+      "options": {
+        "targetName": "knip",
+        "strict": true
+      }
+    }
+  ]
+}
+```
+
+Or per-project in `project.json`:
 
 ```json
 {
   "targets": {
     "knip": {
       "options": {
-        "strict": false
+        "strict": true
       }
     }
   }

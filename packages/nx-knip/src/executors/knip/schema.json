@@ -11,7 +11,7 @@
     },
     "strict": {
       "type": "boolean",
-      "description": "Enable strict mode to also report unused dependencies and unlisted binaries",
+      "description": "Enable strict mode (implies --production). Verifies workspace dependency isolation, includes peerDependencies when finding unused or unlisted dependencies, and reports type-only imports listed in dependencies.",
       "default": false
     },
     "env": {
