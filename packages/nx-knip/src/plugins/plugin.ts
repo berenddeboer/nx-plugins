@@ -8,6 +8,7 @@ const projectConfigGlob = "**/package.json"
 
 export interface KnipPluginOptions {
   targetName?: string
+  env?: Record<string, string>
 }
 
 export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
@@ -64,6 +65,7 @@ export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
                   options: {
                     projectRoot,
                     strict: true,
+                    ...(pluginOptions?.env && { env: pluginOptions.env }),
                   },
                   metadata: {
                     technologies: ["knip"],
