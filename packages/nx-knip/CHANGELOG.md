@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.1.0](https://github.com/berenddeboer/nx-plugins/compare/nx-knip-1.0.2...nx-knip-1.1.0) (2026-03-02)
+
+### Features
+
+- **nx-knip:** add batch mode for multi-project knip runs ([#16](https://github.com/berenddeboer/nx-plugins/issues/16)) ([38c8180](https://github.com/berenddeboer/nx-plugins/commit/38c8180b9fb69c8231379611889b4c20b2cc1751))
+
 ## [1.0.2](https://github.com/berenddeboer/nx-plugins/compare/nx-knip-1.0.1...nx-knip-1.0.2) (2026-02-17)
 
 ### Bug Fixes
