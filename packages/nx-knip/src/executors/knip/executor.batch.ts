@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process"
+import { execFileSync } from "node:child_process"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
 import type { KnipExecutorOptions } from "./schema"
 import { isBunAvailable } from "./executor"
@@ -43,19 +43,19 @@ export default async function knipBatchExecutor(
   const env =
     Object.keys(mergedEnv).length > 0 ? { ...process.env, ...mergedEnv } : process.env
 
-  // Build command with --workspace flags
-  const command = isBunAvailable() ? "npx knip-bun" : "npx knip"
-  const workspaceFlags = uniqueRoots
-    .map((r) => `--workspace ${JSON.stringify(r)}`)
-    .join(" ")
-  const strictFlag = strict ? " --strict" : ""
-  const fullCommand = `${command} ${workspaceFlags}${strictFlag}`
+  // Build args with --workspace flags
+  const bin = isBunAvailable() ? "knip-bun" : "knip"
+  const args = [bin]
+  for (const r of uniqueRoots) {
+    args.push("--workspace", r)
+  }
+  if (strict) args.push("--strict")
 
   let success = true
   let terminalOutput = ""
 
   try {
-    const output = execSync(fullCommand, {
+    const output = execFileSync("npx", args, {
       stdio: "pipe",
       cwd: workspaceRoot,
       encoding: "utf-8",

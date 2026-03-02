@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process"
+import { execFileSync, execSync } from "node:child_process"
 import type { ExecutorContext } from "@nx/devkit"
 import type { KnipExecutorOptions } from "./schema"
 
@@ -41,13 +41,14 @@ export default async function knipExecutor(
 ): Promise<{ success: boolean }> {
   const projectRoot = options.projectRoot || "."
   const workspaceRoot = context.root
-  const command = isBunAvailable() ? "npx knip-bun" : "npx knip"
-  const strictFlag = options.strict ? " --strict" : ""
+
+  const args = [isBunAvailable() ? "knip-bun" : "knip", "--workspace", projectRoot]
+  if (options.strict) args.push("--strict")
 
   const env = options.env ? { ...process.env, ...options.env } : process.env
 
   try {
-    execSync(`${command} --workspace ${JSON.stringify(projectRoot)}${strictFlag}`, {
+    execFileSync("npx", args, {
       stdio: "inherit",
       cwd: workspaceRoot,
       env,
