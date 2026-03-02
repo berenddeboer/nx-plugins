@@ -67,7 +67,11 @@ export default async function knipBatchExecutor(
     success = false
     if (error && typeof error === "object" && "stdout" in error) {
       terminalOutput = String(error.stdout) + String(error.stderr || "")
-      console.log(terminalOutput)
+      console.error(terminalOutput)
+    } else {
+      const msg = error instanceof Error ? error.message : String(error)
+      terminalOutput = msg
+      console.error(msg)
     }
   }
 
