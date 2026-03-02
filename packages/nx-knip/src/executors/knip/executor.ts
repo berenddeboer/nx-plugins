@@ -19,7 +19,7 @@ export function resetBunCache(): void {
  * Check if Bun is available on the system.
  * Result is cached since Bun availability won't change during a build.
  */
-function isBunAvailable(): boolean {
+export function isBunAvailable(): boolean {
   if (bunAvailableCache === undefined) {
     try {
       execSync("bun --version", { stdio: "ignore" })

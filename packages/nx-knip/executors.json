@@ -3,6 +3,7 @@
   "executors": {
     "knip": {
       "implementation": "./src/executors/knip/executor",
+      "batchImplementation": "./src/executors/knip/executor.batch",
       "schema": "./src/executors/knip/schema.json",
       "description": "Run Knip to find unused dependencies, exports, and files"
     }
