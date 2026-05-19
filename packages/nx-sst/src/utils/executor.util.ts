@@ -77,6 +77,7 @@ export function runCommandProcess(command: string, cwd: string): Promise<boolean
       }
 
       process.removeListener("exit", processExitListener)
+      process.removeListener("SIGTERM", processExitListener)
 
       process.stdin.removeListener("data", processExitListener)
     })

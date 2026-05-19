@@ -44,7 +44,6 @@ function normalizeOptions(
   delete otherArgs.command
   delete otherArgs.parameters
 
-  // eslint-disable-next-line no-unsafe-optional-chaining
   const projectName = executor_context.projectName
   if (!projectName) throw new Error("No project name provided")
 
