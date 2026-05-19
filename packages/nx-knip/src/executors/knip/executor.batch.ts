@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process"
+import * as childProcess from "child_process"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
 import type { KnipExecutorOptions } from "./schema"
 import { isBunAvailable } from "./executor"
@@ -7,6 +7,11 @@ type BatchExecutorTaskResult = {
   task: string
   success: boolean
   terminalOutput: string
+}
+
+type CommandError = Error & {
+  stdout?: unknown
+  stderr?: unknown
 }
 
 /**
@@ -55,7 +60,7 @@ export default async function knipBatchExecutor(
   let terminalOutput = ""
 
   try {
-    const output = execFileSync("npx", args, {
+    const output = childProcess.execFileSync("npx", args, {
       stdio: "pipe",
       cwd: workspaceRoot,
       encoding: "utf-8",
@@ -66,7 +71,8 @@ export default async function knipBatchExecutor(
   } catch (error) {
     success = false
     if (error && typeof error === "object" && "stdout" in error) {
-      terminalOutput = String(error.stdout) + String(error.stderr || "")
+      const commandError = error as CommandError
+      terminalOutput = String(commandError.stdout) + String(commandError.stderr || "")
       console.error(terminalOutput)
     } else {
       const msg = error instanceof Error ? error.message : String(error)

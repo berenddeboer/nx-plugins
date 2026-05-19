@@ -58,5 +58,6 @@
   },
   "useInferencePlugins": false,
   "defaultBase": "main",
-  "nxCloudId": "693f23592602cf8ef46bb949"
+  "nxCloudId": "693f23592602cf8ef46bb949",
+  "analytics": true
 }

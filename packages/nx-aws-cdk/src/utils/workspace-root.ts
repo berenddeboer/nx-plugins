@@ -13,7 +13,7 @@ export function setWorkspaceRoot(root: string): void {
 
 export function workspaceRootInner(dir: string, candidateRoot: string | null): string {
   if (process.env.NX_WORKSPACE_ROOT_PATH) return process.env.NX_WORKSPACE_ROOT_PATH
-  if (path.dirname(dir) === dir) return candidateRoot
+  if (path.dirname(dir) === dir) return candidateRoot ?? dir
 
   const matches = [
     path.join(dir, "nx.json"),

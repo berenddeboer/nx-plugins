@@ -1,7 +1,7 @@
 import { readNxJson, Tree, updateNxJson } from "@nx/devkit"
 
 export function addPlugin(tree: Tree) {
-  const nxJson = readNxJson(tree)
+  const nxJson = readNxJson(tree) ?? {}
   nxJson.plugins ??= []
 
   let hasNxNuxtPlugin = false

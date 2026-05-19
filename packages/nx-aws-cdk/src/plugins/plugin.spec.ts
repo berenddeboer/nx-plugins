@@ -1,10 +1,10 @@
-import { CreateNodesContext } from "@nx/devkit"
+import type { CreateNodesContextV2 } from "@nx/devkit"
 import { createNodesV2 } from "./plugin"
 import { TempFs } from "../utils/temp-fs"
 
 describe("@berenddeboer/nx-aws-cdk/plugin", () => {
   const createNodesFunction = createNodesV2[1]
-  let context: CreateNodesContext
+  let context: CreateNodesContextV2
 
   describe("root project", () => {
     const tempFs = new TempFs("test")
@@ -26,7 +26,6 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
           },
         },
         workspaceRoot: tempFs.tempDir,
-        configFiles: [],
       }
 
       tempFs.createFileSync(
@@ -55,7 +54,7 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         options,
         context
       )
-      const project = nodes[0][1].projects[projectRoot]
+      const project = nodes[0]![1].projects![projectRoot]!
 
       expect(project.targets).toHaveProperty("cdk")
       expect(project.targets).toHaveProperty("synth")
@@ -80,7 +79,7 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         options,
         context
       )
-      const project = nodes[0][1].projects[projectRoot]
+      const project = nodes[0]![1].projects![projectRoot]!
 
       expect(project.targets).toEqual({})
     })
@@ -99,14 +98,14 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         options,
         context
       )
-      const project = nodes[0][1].projects[projectRoot]
+      const project = nodes[0]![1].projects![projectRoot]!
 
       expect(project.targets).toEqual({})
     })
 
     it("should not create targets when names are not specified", async () => {
       const nodes = await createNodesFunction([`${projectRoot}/cdk.json`], {}, context)
-      const project = nodes[0][1].projects[projectRoot]
+      const project = nodes[0]![1].projects![projectRoot]!
 
       expect(project.targets).toEqual({})
     })
@@ -122,7 +121,7 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         options,
         context
       )
-      const project = nodes[0][1].projects[projectRoot]
+      const project = nodes[0]![1].projects![projectRoot]!
 
       expect(project.targets).toHaveProperty("synth")
       expect(project.targets).toHaveProperty("deploy")

@@ -47,8 +47,9 @@ function normalizeOptions(
     })
   }
 
-  // eslint-disable-next-line no-unsafe-optional-chaining
   const { projectName } = executor_context
+  if (!projectName) throw new Error("No project name provided")
+
   const { root, sourceRoot } =
     executor_context.projectsConfigurations.projects[projectName]
 
@@ -56,7 +57,7 @@ function normalizeOptions(
     ...options,
     context: context_values,
     otherArgs: otherArgs,
-    sourceRoot,
+    sourceRoot: sourceRoot ?? root,
     root,
   }
 }
