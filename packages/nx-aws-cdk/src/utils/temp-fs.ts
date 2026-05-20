@@ -10,8 +10,8 @@ import {
   writeFileSync,
 } from "node:fs"
 import { mkdir, readFile, writeFile } from "node:fs/promises"
-import { dirname, join } from "path"
-import { tmpdir } from "os"
+import { tmpdir } from "node:os"
+import { dirname, join } from "node:path"
 import { joinPathFragments } from "./path"
 import { setWorkspaceRoot, workspaceRoot } from "./workspace-root"
 

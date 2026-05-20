@@ -1,6 +1,6 @@
-import { ensurePackage, GeneratorCallback, Tree } from "@nx/devkit"
-import { NormalizedOptions } from "../schema"
+import { type GeneratorCallback, type Tree, ensurePackage } from "@nx/devkit"
 import { nxVersion } from "../../../utils/versions"
+import type { NormalizedOptions } from "../schema"
 
 export async function addJest(
   host: Tree,

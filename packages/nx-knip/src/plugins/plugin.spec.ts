@@ -1,6 +1,6 @@
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs"
-import { join } from "node:path"
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
+import { join } from "node:path"
 import type { CreateNodesContextV2 } from "@nx/devkit"
 import { createNodesV2 } from "./plugin"
 
@@ -30,10 +30,11 @@ describe("@berenddeboer/nx-knip/plugin", () => {
   it("should infer knip target for a project", async () => {
     createPackageJson("packages/my-lib")
     const nodes = await createNodesFunction(["packages/my-lib/package.json"], {}, context)
-    const project = nodes[0]![1].projects!["packages/my-lib"]!
+    const project = nodes[0]?.[1].projects?.["packages/my-lib"]
+    if (!project) throw new Error("Project not found")
 
     expect(project.targets).toHaveProperty("knip")
-    expect(project.targets!.knip!.executor).toBe("@berenddeboer/nx-knip:knip")
+    expect(project.targets?.knip?.executor).toBe("@berenddeboer/nx-knip:knip")
   })
 
   it("should use custom target name", async () => {
@@ -43,7 +44,8 @@ describe("@berenddeboer/nx-knip/plugin", () => {
       { targetName: "lint-unused" },
       context
     )
-    const project = nodes[0]![1].projects!["packages/my-lib"]!
+    const project = nodes[0]?.[1].projects?.["packages/my-lib"]
+    if (!project) throw new Error("Project not found")
 
     expect(project.targets).toHaveProperty("lint-unused")
     expect(project.targets).not.toHaveProperty("knip")
@@ -53,7 +55,7 @@ describe("@berenddeboer/nx-knip/plugin", () => {
     writeFileSync(join(tempDir, "package.json"), JSON.stringify({ name: "root" }))
     const nodes = await createNodesFunction(["package.json"], {}, context)
 
-    expect(nodes[0]![1]).toEqual({})
+    expect(nodes[0]?.[1]).toEqual({})
   })
 
   it("should skip node_modules", async () => {
@@ -63,13 +65,14 @@ describe("@berenddeboer/nx-knip/plugin", () => {
       context
     )
 
-    expect(nodes[0]![1]).toEqual({})
+    expect(nodes[0]?.[1]).toEqual({})
   })
 
   it("should not include strict in options by default", async () => {
     createPackageJson("packages/my-lib")
     const nodes = await createNodesFunction(["packages/my-lib/package.json"], {}, context)
-    const options = nodes[0]![1].projects!["packages/my-lib"]!.targets!.knip!.options!
+    const options = nodes[0]?.[1].projects?.["packages/my-lib"]?.targets?.knip?.options
+    if (!options) throw new Error("Options not found")
 
     expect(options).not.toHaveProperty("strict")
   })
@@ -81,7 +84,8 @@ describe("@berenddeboer/nx-knip/plugin", () => {
       { strict: true },
       context
     )
-    const options = nodes[0]![1].projects!["packages/my-lib"]!.targets!.knip!.options!
+    const options = nodes[0]?.[1].projects?.["packages/my-lib"]?.targets?.knip?.options
+    if (!options) throw new Error("Options not found")
 
     expect(options.strict).toBe(true)
   })
@@ -93,7 +97,8 @@ describe("@berenddeboer/nx-knip/plugin", () => {
       { strict: false },
       context
     )
-    const options = nodes[0]![1].projects!["packages/my-lib"]!.targets!.knip!.options!
+    const options = nodes[0]?.[1].projects?.["packages/my-lib"]?.targets?.knip?.options
+    if (!options) throw new Error("Options not found")
 
     expect(options.strict).toBe(false)
   })
@@ -105,7 +110,8 @@ describe("@berenddeboer/nx-knip/plugin", () => {
       { env: { DATABASE_URL: "postgres://localhost/dummy" } },
       context
     )
-    const options = nodes[0]![1].projects!["packages/my-lib"]!.targets!.knip!.options!
+    const options = nodes[0]?.[1].projects?.["packages/my-lib"]?.targets?.knip?.options
+    if (!options) throw new Error("Options not found")
 
     expect(options.env).toEqual({ DATABASE_URL: "postgres://localhost/dummy" })
   })

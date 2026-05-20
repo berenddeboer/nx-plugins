@@ -1,6 +1,5 @@
 import type { Tree } from "@nx/devkit"
-import { offsetFromRoot } from "@nx/devkit"
-import { generateFiles, joinPathFragments } from "@nx/devkit"
+import { generateFiles, joinPathFragments, offsetFromRoot } from "@nx/devkit"
 import type { NormalizedOptions } from "../schema"
 
 export function createFiles(tree: Tree, options: NormalizedOptions): void {

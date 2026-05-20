@@ -1,4 +1,4 @@
-import { readNxJson, Tree, updateNxJson } from "@nx/devkit"
+import { type Tree, readNxJson, updateNxJson } from "@nx/devkit"
 
 export function addPlugin(tree: Tree) {
   const nxJson = readNxJson(tree) ?? {}

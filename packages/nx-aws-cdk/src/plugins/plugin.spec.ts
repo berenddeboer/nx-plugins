@@ -1,6 +1,6 @@
 import type { CreateNodesContextV2 } from "@nx/devkit"
-import { createNodesV2 } from "./plugin"
 import { TempFs } from "../utils/temp-fs"
+import { createNodesV2 } from "./plugin"
 
 describe("@berenddeboer/nx-aws-cdk/plugin", () => {
   const createNodesFunction = createNodesV2[1]
@@ -54,7 +54,8 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         options,
         context
       )
-      const project = nodes[0]![1].projects![projectRoot]!
+      const project = nodes[0]?.[1].projects?.[projectRoot]
+      if (!project) throw new Error("Project not found")
 
       expect(project.targets).toHaveProperty("cdk")
       expect(project.targets).toHaveProperty("synth")
@@ -79,7 +80,8 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         options,
         context
       )
-      const project = nodes[0]![1].projects![projectRoot]!
+      const project = nodes[0]?.[1].projects?.[projectRoot]
+      if (!project) throw new Error("Project not found")
 
       expect(project.targets).toEqual({})
     })
@@ -98,14 +100,16 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         options,
         context
       )
-      const project = nodes[0]![1].projects![projectRoot]!
+      const project = nodes[0]?.[1].projects?.[projectRoot]
+      if (!project) throw new Error("Project not found")
 
       expect(project.targets).toEqual({})
     })
 
     it("should not create targets when names are not specified", async () => {
       const nodes = await createNodesFunction([`${projectRoot}/cdk.json`], {}, context)
-      const project = nodes[0]![1].projects![projectRoot]!
+      const project = nodes[0]?.[1].projects?.[projectRoot]
+      if (!project) throw new Error("Project not found")
 
       expect(project.targets).toEqual({})
     })
@@ -121,7 +125,8 @@ describe("@berenddeboer/nx-aws-cdk/plugin", () => {
         options,
         context
       )
-      const project = nodes[0]![1].projects![projectRoot]!
+      const project = nodes[0]?.[1].projects?.[projectRoot]
+      if (!project) throw new Error("Project not found")
 
       expect(project.targets).toHaveProperty("synth")
       expect(project.targets).toHaveProperty("deploy")

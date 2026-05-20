@@ -1,11 +1,10 @@
-import * as path from "path"
-import * as childProcess from "child_process"
+import * as childProcess from "node:child_process"
+import * as path from "node:path"
 import { logger, workspaceRoot } from "@nx/devkit"
-
-import executor from "./executor"
-import { SSTRunExecutorSchema } from "./schema"
 import { LARGE_BUFFER } from "../../utils/executor.util"
 import { mockExecutorContext } from "../../utils/testing"
+import executor from "./executor"
+import type { SSTRunExecutorSchema } from "./schema"
 
 jest.mock("child_process")
 
@@ -71,7 +70,7 @@ describe("SST Run Executor", () => {
       "npx sst version",
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects.proj.root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -86,7 +85,7 @@ describe("SST Run Executor", () => {
       "npx sst deploy --stage prd",
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects.proj.root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -103,7 +102,7 @@ describe("SST Run Executor", () => {
       "npx sst deploy --stage prd mystack",
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects.proj.root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -120,7 +119,7 @@ describe("SST Run Executor", () => {
       "npx sst deploy --stage prd",
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects.proj.root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -137,7 +136,7 @@ describe("SST Run Executor", () => {
       `node -r @subbu963/esm-polyfills ${workspaceRoot}/node_modules/sst/cli/sst.js build --stage dev mystack`,
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects.proj.root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,

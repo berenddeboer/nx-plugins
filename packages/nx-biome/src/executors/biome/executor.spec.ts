@@ -1,6 +1,5 @@
-import * as childProcess from "child_process"
+import * as childProcess from "node:child_process"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
-
 import executor from "./executor"
 import batchExecutor from "./executor.batch"
 import type { BiomeExecutorOptions } from "./schema"

@@ -1,8 +1,7 @@
 import type { GeneratorCallback, Tree } from "@nx/devkit"
-import { addPlugin } from "@nx/devkit/src/utils/add-plugin"
 import { createProjectGraphAsync, formatFiles } from "@nx/devkit"
-import { CdkPluginOptions, createNodesV2 } from "../../plugins/plugin"
-
+import { addPlugin } from "@nx/devkit/src/utils/add-plugin"
+import { type CdkPluginOptions, createNodesV2 } from "../../plugins/plugin"
 import { addDependencies } from "./lib"
 import type { InitGeneratorOptions } from "./schema"
 

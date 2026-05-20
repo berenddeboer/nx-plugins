@@ -1,4 +1,4 @@
-import { Tree, writeJson } from "@nx/devkit"
+import { type Tree, writeJson } from "@nx/devkit"
 import * as shared from "@nx/js/src/utils/typescript/create-ts-config"
 
 // Define interface for TypeScript configuration

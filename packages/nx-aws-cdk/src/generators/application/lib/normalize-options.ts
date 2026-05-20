@@ -1,4 +1,4 @@
-import { Tree, readNxJson } from "@nx/devkit"
+import { type Tree, readNxJson } from "@nx/devkit"
 import {
   determineProjectNameAndRootOptions,
   ensureRootProjectName,

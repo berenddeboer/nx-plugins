@@ -1,11 +1,10 @@
-import * as path from "path"
-import * as childProcess from "child_process"
+import * as childProcess from "node:child_process"
+import * as path from "node:path"
 import { logger } from "@nx/devkit"
-
 import executor from "./executor"
-import { CdkExecutorSchema } from "./schema"
 import { LARGE_BUFFER } from "./lib/executor.util"
-import { mockExecutorContext, cdk } from "./lib/testing"
+import { cdk, mockExecutorContext } from "./lib/testing"
+import type { CdkExecutorSchema } from "./schema"
 
 jest.mock("child_process")
 
@@ -45,7 +44,7 @@ describe("nx-aws-cdk cdk deploy Executor", () => {
       `${cdk} deploy`,
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects.proj.root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -55,10 +54,8 @@ describe("nx-aws-cdk cdk deploy Executor", () => {
   })
 
   it("run cdk deploy command stack", async () => {
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const option: any = Object.assign({}, options)
     const stackName = "test"
-    option["stacks"] = stackName
+    const option: CdkExecutorSchema = { ...options, stacks: [stackName] }
     await executor(option, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
@@ -112,7 +109,7 @@ describe("nx-aws-cdk cdk synth Executor", () => {
       `${cdk} synth`,
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects.proj.root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,
@@ -126,14 +123,14 @@ describe("nx-aws-cdk cdk synth Executor", () => {
       {},
       options
     )
-    extra_options["validation"] = true
+    extra_options.validation = true
     await executor(extra_options, context)
 
     expect(childProcess.exec).toHaveBeenCalledWith(
       `${cdk} synth --validation=true`,
       expect.objectContaining({
         cwd: expect.stringContaining(
-          path.join(context.root, context.projectsConfigurations.projects["proj"].root)
+          path.join(context.root, context.projectsConfigurations.projects.proj.root)
         ),
         env: process.env,
         maxBuffer: LARGE_BUFFER,

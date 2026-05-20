@@ -23,6 +23,9 @@ pnpm nx build nx-knip
 # Lint a plugin
 pnpm nx lint nx-aws-cdk
 
+# Check formatting, lint rules, and import ordering for the whole workspace
+pnpm exec biome ci
+
 # Typecheck a plugin
 pnpm nx typecheck nx-aws-cdk
 
@@ -39,7 +42,7 @@ pnpm nx test nx-aws-cdk --testNamePattern="deploy"
 pnpm nx affected --targets=lint,typecheck,test
 
 # Format uncommitted files
-pnpm nx format:write --uncommitted
+pnpm exec biome check --write --changed
 
 # E2E tests
 pnpm run e2e
@@ -69,7 +72,7 @@ e2e/nx-aws-cdk-e2e/           # E2E tests
 
 ## Code Style Guidelines
 
-### Formatting (Prettier-enforced)
+### Formatting (Biome-enforced)
 
 - **No semicolons**
 - **Double quotes** for strings
@@ -80,7 +83,7 @@ e2e/nx-aws-cdk-e2e/           # E2E tests
 
 ### Imports
 
-- Package imports first, then relative imports
+- Import order is enforced by Biome: Node builtins, external packages, `@berenddeboer/**`, then relative imports
 - Use `"node:fs"`, `"node:path"`, `"node:child_process"` protocol for Node builtins in new code
 - Use `import type { ... }` for type-only imports in new code
 - Double quotes, no semicolons: `import { join } from "node:path"`
@@ -103,7 +106,7 @@ e2e/nx-aws-cdk-e2e/           # E2E tests
 
 - Target: ES2020, output: CommonJS
 - Return types may be inferred (not always explicit)
-- Use `eslint-disable` comments sparingly for specific lines only
+- Avoid `eslint-disable` comments in workspace code; use Biome suppression comments only when necessary
 - Prefer `interface` for object shapes, `type` for unions/intersections
 
 ### Export Patterns
@@ -165,12 +168,19 @@ type(scope): description
 - `@nx/devkit` for plugin APIs
 - `@nx/js:tsc` for building all plugins
 - `@jscutlery/semver` for versioning with conventional commits
+- `@biomejs/biome` for workspace formatting, linting, and import ordering
+- `eslint` and `@nx/eslint` remain because the AWS CDK and SST plugins still expose ESLint generator support for consumers; they are not used for this workspace's own linting
 
 ## Pre-commit Hooks
 
 Husky runs on every commit:
 
-1. `lint-staged` — formats staged files with Prettier
+1. `lint-staged` — formats staged files with Biome
 2. `nx affected --targets=lint,typecheck,test` — checks affected projects
 
-Ensure `pnpm nx lint <project>` and `pnpm nx test <project>` pass before committing.
+In CI, `pnpm exec biome ci` checks the whole workspace before Nx runs `test`,
+`build`, and `typecheck`. The per-project Nx `lint` targets are still available
+for local and affected-project workflows, and they run Biome via `biome check`.
+
+Ensure `pnpm exec biome ci`, `pnpm nx lint <project>`, and
+`pnpm nx test <project>` pass before committing.

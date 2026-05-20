@@ -1,6 +1,4 @@
-// nx-ignore-next-line
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { Linter } = require("@nx/eslint") // use require to import to avoid circular dependency
+import type { Linter, LinterType } from "@nx/eslint"
 import { InitSchema } from "../init/schema"
 
 export interface AppGeneratorSchema extends InitSchema {
@@ -9,6 +7,6 @@ export interface AppGeneratorSchema extends InitSchema {
   region?: string
   tags?: string
   directory?: string
-  linter?: Linter
+  linter?: Linter | LinterType
   setParserOptionsProject?: boolean
 }

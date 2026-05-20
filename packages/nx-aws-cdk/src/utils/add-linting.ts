@@ -1,7 +1,7 @@
-import { Tree } from "nx/src/generators/tree"
-import { Linter, LinterType, lintProjectGenerator } from "@nx/eslint"
+import { type GeneratorCallback, runTasksInSerial } from "@nx/devkit"
+import { type Linter, type LinterType, lintProjectGenerator } from "@nx/eslint"
+import type { Tree } from "nx/src/generators/tree"
 import { joinPathFragments } from "nx/src/utils/path"
-import { GeneratorCallback, runTasksInSerial } from "@nx/devkit"
 
 // TODO(colum): Look into the recommended set up using `withNuxt` inside eslint.config.mjs. https://eslint.nuxt.com/packages/config
 export async function addLinting(

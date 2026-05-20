@@ -1,7 +1,7 @@
-import * as childProcess from "child_process"
+import * as childProcess from "node:child_process"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
-import type { KnipExecutorOptions } from "./schema"
 import { isBunAvailable } from "./executor"
+import type { KnipExecutorOptions } from "./schema"
 
 type BatchExecutorTaskResult = {
   task: string

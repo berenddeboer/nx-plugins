@@ -1,4 +1,4 @@
-import { ExecutorContext } from "@nx/devkit"
+import type { ExecutorContext } from "@nx/devkit"
 
 // We run a very complex cdk
 const NX_WORKSPACE_ROOT = process.env.NX_WORKSPACE_ROOT ?? ""

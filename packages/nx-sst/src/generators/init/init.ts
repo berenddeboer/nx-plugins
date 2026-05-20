@@ -1,15 +1,15 @@
 import {
+  type GeneratorCallback,
+  type Tree,
   addDependenciesToPackageJson,
   formatFiles,
-  GeneratorCallback,
-  Tree,
   updateJson,
 } from "@nx/devkit"
-import { InitSchema } from "./schema"
+import type { InitSchema } from "./schema"
 
 function updateDependencies(tree: Tree) {
   updateJson(tree, "package.json", (json) => {
-    if (json.dependencies && json.dependencies["nx-sst"]) {
+    if (json.dependencies?.["nx-sst"]) {
       delete json.dependencies["nx-sst"]
     }
     return json

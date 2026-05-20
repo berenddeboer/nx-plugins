@@ -5,9 +5,9 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/eslint:lint",
+      "executor": "nx:run-commands",
       "options": {
-        "lintFilePatterns": ["packages/nx-aws-cdk/**/*.ts"]
+        "command": "biome check packages/nx-aws-cdk"
       }
     },
     "test": {

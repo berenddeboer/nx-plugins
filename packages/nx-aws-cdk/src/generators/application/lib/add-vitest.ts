@@ -1,6 +1,6 @@
-import { ensurePackage, Tree } from "@nx/devkit"
-import { NormalizedOptions } from "../schema"
+import { type Tree, ensurePackage } from "@nx/devkit"
 import { nxVersion } from "../../../utils/versions"
+import type { NormalizedOptions } from "../schema"
 
 export async function addVitest(tree: Tree, options: NormalizedOptions) {
   const { vitestGenerator } = ensurePackage<typeof import("@nx/vite")>(

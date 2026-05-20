@@ -1,9 +1,8 @@
-import { Tree, readJson, readNxJson } from "@nx/devkit"
-import * as devkit from "@nx/devkit"
+import type * as devkit from "@nx/devkit"
+import { type Tree, readJson, readNxJson } from "@nx/devkit"
 import { createTreeWithEmptyWorkspace } from "@nx/devkit/testing"
-
 import generator from "./application"
-import { ApplicationGeneratorOptions } from "./schema"
+import type { ApplicationGeneratorOptions } from "./schema"
 
 describe("aws-cdk generator", () => {
   let appTree: Tree
@@ -26,11 +25,11 @@ describe("aws-cdk generator", () => {
     //console.debug(appTree)
     const config = readNxJson(appTree)
     expect(config).toBeDefined()
-    const plugin = config!.plugins!.some(
+    const plugin = config?.plugins?.some(
       (plugin: devkit.PluginConfiguration) => plugin === "@berenddeboer/nx-aws-cdk/plugin"
     )
     expect(plugin).toBeDefined()
-    const vitePlugin = config!.plugins!.some(
+    const vitePlugin = config?.plugins?.some(
       (plugin: devkit.PluginConfiguration) => plugin === "@nx/vite/plugin"
     )
     expect(vitePlugin).toBeFalsy()
@@ -72,7 +71,7 @@ describe("aws-cdk generator", () => {
     await generator(appTree, { ...options, unitTestRunner: "vitest" })
     const config = readNxJson(appTree)
     expect(config).toBeDefined()
-    const vitePlugin = config!.plugins!.some(
+    const vitePlugin = config?.plugins?.some(
       (plugin: devkit.PluginConfiguration) => plugin === "@nx/vite/plugin"
     )
     expect(vitePlugin).toBeDefined()
