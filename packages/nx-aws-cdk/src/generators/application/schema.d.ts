@@ -16,7 +16,7 @@ export interface ApplicationGeneratorOptions {
   useProjectJson?: boolean
 }
 
-interface NormalizedOptions extends ApplicationGeneratorOptions {
+export interface NormalizedOptions extends ApplicationGeneratorOptions {
   appProjectName: string
-  appProjectRoot: Path
+  appProjectRoot: string
 }

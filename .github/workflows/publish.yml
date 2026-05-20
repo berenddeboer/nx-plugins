@@ -53,9 +53,12 @@ jobs:
       # - name: Start Nx Cloud CI run
       #   run: pnpm dlx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
 
+      - name: Run Biome checks
+        run: pnpm exec biome ci
+
       # Run tests and builds for affected projects
       - name: Run affected tests and builds
-        run: pnpm exec nx run-many -t lint test build typecheck
+        run: pnpm exec nx run-many -t test build typecheck
 
       # Version packages using semver (analyzes commits automatically)
       - name: Version packages

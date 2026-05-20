@@ -1,4 +1,4 @@
-import * as path from "path"
+import * as path from "node:path"
 import { workspaceRoot } from "./workspace-root"
 
 function removeWindowsDriveLetter(osSpecificPath: string): string {

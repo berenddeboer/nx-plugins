@@ -1,5 +1,5 @@
-import * as path from "path"
-import { PathLike, statSync } from "fs"
+import { type PathLike, statSync } from "node:fs"
+import * as path from "node:path"
 
 /**
  * The root of the workspace

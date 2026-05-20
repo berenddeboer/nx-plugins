@@ -1,9 +1,8 @@
-import { exec } from "child_process"
-import { readFileSync } from "fs"
-
-import { CdkExecutorSchema } from "../schema"
-import { ParsedExecutorInterface } from "./parsed-executor.interface"
-import { logger, detectPackageManager } from "@nx/devkit"
+import { exec } from "node:child_process"
+import { readFileSync } from "node:fs"
+import { detectPackageManager, logger } from "@nx/devkit"
+import type { CdkExecutorSchema } from "../schema"
+import type { ParsedExecutorInterface } from "./parsed-executor.interface"
 
 export const executorPropKeys = ["stacks"]
 export const LARGE_BUFFER = 1024 * 1000000
@@ -12,9 +11,10 @@ export function parseArgs(options: CdkExecutorSchema): Record<string, string> {
   const keys = Object.keys(options)
   return keys
     .filter((prop) => executorPropKeys.indexOf(prop) < 0)
-    .reduce<
-      Record<string, string>
-    >((acc, key) => ((acc[key] = String(options[key as keyof CdkExecutorSchema])), acc), {})
+    .reduce<Record<string, string>>((acc, key) => {
+      acc[key] = String(options[key as keyof CdkExecutorSchema])
+      return acc
+    }, {})
 }
 
 export function createCommand(command: string, options: ParsedExecutorInterface): string {
@@ -28,7 +28,7 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
     packageManager === "npm" ? "npx" : `${packageManager} dlx`
   const projectPath = `${NX_WORKSPACE_ROOT}/${options.root}`
   const cdk_json = JSON.parse(readFileSync(`${projectPath}/cdk.json`).toString())
-  const app: string = cdk_json["app"]
+  const app: string = cdk_json.app
   const main = app.split(" ").pop()
   const generatePath = `"${packageManagerExecutor} ts-node --require tsconfig-paths/register --project ${projectPath}/tsconfig.app.json ${projectPath}/${main}"`
   const cdk = `node --require ts-node/register ${NX_WORKSPACE_ROOT}/node_modules/aws-cdk/bin/cdk.js -a ${generatePath}`

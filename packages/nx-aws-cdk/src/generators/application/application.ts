@@ -1,29 +1,28 @@
 import {
+  type GeneratorCallback,
+  type Tree,
   formatFiles,
-  GeneratorCallback,
   joinPathFragments,
   runTasksInSerial,
-  Tree,
   updateJson,
   writeJson,
 } from "@nx/devkit"
+import { Linter } from "@nx/eslint"
 import { getRelativePathToRootTsConfig, initGenerator as jsInitGenerator } from "@nx/js"
 import {
   addProjectToTsSolutionWorkspace,
   updateTsconfigFiles,
 } from "@nx/js/src/utils/typescript/ts-solution-setup"
-import { updateGitIgnore } from "../../utils/update-gitignore"
-import { Linter } from "@nx/eslint"
+import type { PackageJson } from "nx/src/utils/package-json"
 import { addLinting } from "../../utils/add-linting"
-import { addVitest } from "./lib/add-vitest"
-import { addJest } from "./lib/add-jest"
-
-import { ApplicationGeneratorOptions } from "./schema"
+import { createTsConfig } from "../../utils/create-ts-config"
+import { ensureDependencies } from "../../utils/ensure-dependencies"
+import { updateGitIgnore } from "../../utils/update-gitignore"
 import { initGenerator } from "../init/init"
 import { createFiles, normalizeOptions } from "./lib"
-import { ensureDependencies } from "../../utils/ensure-dependencies"
-import { createTsConfig } from "../../utils/create-ts-config"
-import type { PackageJson } from "nx/src/utils/package-json"
+import { addJest } from "./lib/add-jest"
+import { addVitest } from "./lib/add-vitest"
+import type { ApplicationGeneratorOptions } from "./schema"
 
 export async function applicationGenerator(
   tree: Tree,

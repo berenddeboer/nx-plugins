@@ -1,4 +1,4 @@
-import { ExecutorContext } from "@nx/devkit"
+import type { ExecutorContext } from "@nx/devkit"
 
 export function mockExecutorContext(
   executorName: string,

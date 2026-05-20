@@ -1,9 +1,8 @@
-import * as path from "path"
-import { ExecutorContext } from "@nx/devkit"
-
-import { CdkExecutorSchema } from "./schema"
-import { createCommand, runCommandProcess, parseArgs } from "./lib/executor.util"
-import { ParsedExecutorInterface } from "./lib/parsed-executor.interface"
+import * as path from "node:path"
+import type { ExecutorContext } from "@nx/devkit"
+import { createCommand, parseArgs, runCommandProcess } from "./lib/executor.util"
+import type { ParsedExecutorInterface } from "./lib/parsed-executor.interface"
+import type { CdkExecutorSchema } from "./schema"
 
 export interface ParsedCdkExecutorOption extends ParsedExecutorInterface {
   command: string

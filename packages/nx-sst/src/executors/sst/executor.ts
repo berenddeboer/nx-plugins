@@ -1,8 +1,8 @@
-import * as path from "path"
-import { SSTRunExecutorSchema } from "./schema"
-import { ExecutorContext } from "@nx/devkit"
-import { createCommand, runCommandProcess, parseArgs } from "../../utils/executor.util"
-import { ParsedExecutorInterface } from "../../interfaces/parsed-executor.interface"
+import * as path from "node:path"
+import type { ExecutorContext } from "@nx/devkit"
+import type { ParsedExecutorInterface } from "../../interfaces/parsed-executor.interface"
+import { createCommand, parseArgs, runCommandProcess } from "../../utils/executor.util"
+import type { SSTRunExecutorSchema } from "./schema"
 
 export interface ParsedExecutorOption extends ParsedExecutorInterface {
   parseArgs?: Record<string, string>

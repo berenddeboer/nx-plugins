@@ -1,24 +1,24 @@
+import * as path from "node:path"
+import { join } from "node:path"
 import {
+  type GeneratorCallback,
+  type Tree,
   addProjectConfiguration,
   ensurePackage,
+  formatFiles,
   generateFiles,
-  GeneratorCallback,
   getWorkspaceLayout,
   joinPathFragments,
   names,
   offsetFromRoot,
-  formatFiles,
   runTasksInSerial,
-  Tree,
   writeJson,
 } from "@nx/devkit"
-import { nxVersion } from "../../utils/versions"
-import * as path from "path"
-import { AppGeneratorSchema } from "./schema"
-import initGenerator from "../init/init"
-import { SSTRunExecutorSchema } from "../../executors/sst/schema"
-import { join } from "path"
 import { Linter, lintProjectGenerator } from "@nx/eslint"
+import type { SSTRunExecutorSchema } from "../../executors/sst/schema"
+import { nxVersion } from "../../utils/versions"
+import initGenerator from "../init/init"
+import type { AppGeneratorSchema } from "./schema"
 
 interface NormalizedSchema extends AppGeneratorSchema {
   projectName: string
@@ -32,7 +32,7 @@ function normalizeOptions(host: Tree, options: AppGeneratorSchema): NormalizedSc
   const projectDirectory = options.directory
     ? `${names(options.directory).fileName}/${name}`
     : name
-  const projectName = projectDirectory.replace(new RegExp("/", "g"), "-")
+  const projectName = projectDirectory.replace(/\//g, "-")
   const projectRoot = `${getWorkspaceLayout(host).appsDir}/${projectDirectory}`
   const parsedTags = options.tags ? options.tags.split(",").map((s) => s.trim()) : []
 

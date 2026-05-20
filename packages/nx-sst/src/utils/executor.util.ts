@@ -1,8 +1,7 @@
-import { exec } from "child_process"
-
-import { SSTRunExecutorSchema } from "../executors/sst/schema"
-import { ParsedExecutorInterface } from "../interfaces/parsed-executor.interface"
+import { exec } from "node:child_process"
 import { logger, workspaceRoot } from "@nx/devkit"
+import type { SSTRunExecutorSchema } from "../executors/sst/schema"
+import type { ParsedExecutorInterface } from "../interfaces/parsed-executor.interface"
 
 export const executorPropKeys = ["stacks"]
 export const LARGE_BUFFER = 1024 * 1000000
@@ -11,14 +10,15 @@ export function parseArgs(options: SSTRunExecutorSchema): Record<string, string>
   const keys = Object.keys(options)
   return keys
     .filter((prop) => executorPropKeys.indexOf(prop) < 0)
-    .reduce<
-      Record<string, string>
-    >((acc, key) => ((acc[key] = String(options[key as keyof SSTRunExecutorSchema])), acc), {})
+    .reduce<Record<string, string>>((acc, key) => {
+      acc[key] = String(options[key as keyof SSTRunExecutorSchema])
+      return acc
+    }, {})
 }
 
 export function createCommand(command: string, options: ParsedExecutorInterface): string {
   let sst: string
-  if (options.polyfills && options.polyfills.length) {
+  if (options.polyfills?.length) {
     const a = ["node"]
     options.polyfills.forEach((pf) => {
       a.push(`-r ${pf}`)
@@ -34,7 +34,7 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
     commands.push(`--${arg} ${options.parseArgs[arg]}`)
   }
 
-  if (options.stacks && options.stacks.length) {
+  if (options.stacks?.length) {
     commands.push(options.stacks.join(" "))
   }
 

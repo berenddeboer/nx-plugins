@@ -1,4 +1,4 @@
-import * as childProcess from "child_process"
+import * as childProcess from "node:child_process"
 import type { ExecutorContext } from "@nx/devkit"
 import type { BiomeExecutorOptions } from "./schema"
 

@@ -1,4 +1,4 @@
-import { Tree } from "@nx/devkit"
+import type { Tree } from "@nx/devkit"
 
 export function updateGitIgnore(tree: Tree) {
   const contents = tree.read(".gitignore", "utf-8") ?? ""

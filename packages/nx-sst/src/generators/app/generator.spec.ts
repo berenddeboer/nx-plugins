@@ -1,8 +1,7 @@
+import { type Tree, readProjectConfiguration } from "@nx/devkit"
 import { createTreeWithEmptyWorkspace } from "@nx/devkit/testing"
-import { Tree, readProjectConfiguration } from "@nx/devkit"
-
 import generator from "./generator"
-import { AppGeneratorSchema } from "./schema"
+import type { AppGeneratorSchema } from "./schema"
 
 describe("sst generator", () => {
   let appTree: Tree
@@ -22,34 +21,34 @@ describe("sst generator", () => {
     await generator(appTree, options)
     const config = readProjectConfiguration(appTree, "test")
     expect(config).toBeDefined()
-    expect(config.targets!.lint).toBeDefined()
-    expect(config.targets!.lint!.options!.lintFilePatterns).toBeDefined()
-    expect(config.targets!.test).toBeUndefined()
+    expect(config.targets?.lint).toBeDefined()
+    expect(config.targets?.lint?.options?.lintFilePatterns).toBeDefined()
+    expect(config.targets?.test).toBeUndefined()
   })
 
   it("supports the jest test runner", async () => {
     await generator(appTree, { ...options, unitTestRunner: "jest" })
     const config = readProjectConfiguration(appTree, "test")
     expect(config).toBeDefined()
-    expect(config.targets!.lint).toBeDefined()
-    expect(config.targets!.lint!.options!.lintFilePatterns).toBeDefined()
-    expect(config.targets!.test!.executor).toBe("@nx/jest:jest")
+    expect(config.targets?.lint).toBeDefined()
+    expect(config.targets?.lint?.options?.lintFilePatterns).toBeDefined()
+    expect(config.targets?.test?.executor).toBe("@nx/jest:jest")
   })
 
   it("supports the vitest test runner", async () => {
     await generator(appTree, { ...options, unitTestRunner: "vitest" })
     const config = readProjectConfiguration(appTree, "test")
     expect(config).toBeDefined()
-    expect(config.targets!.lint).toBeDefined()
-    expect(config.targets!.lint!.executor).toBe("@nx/eslint:lint")
-    expect(config.targets!.lint!.options!.lintFilePatterns).toBeDefined()
-    expect(config.targets!.test!.executor).toBe("@nx/vitest:test")
+    expect(config.targets?.lint).toBeDefined()
+    expect(config.targets?.lint?.executor).toBe("@nx/eslint:lint")
+    expect(config.targets?.lint?.options?.lintFilePatterns).toBeDefined()
+    expect(config.targets?.test?.executor).toBe("@nx/vitest:test")
   })
 
   it("supports disabling the linter", async () => {
     await generator(appTree, { ...options, linter: "none" })
     const config = readProjectConfiguration(appTree, "test")
     expect(config).toBeDefined()
-    expect(config.targets!.lint).toBeUndefined()
+    expect(config.targets?.lint).toBeUndefined()
   })
 })

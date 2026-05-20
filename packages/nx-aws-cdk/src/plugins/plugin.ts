@@ -1,11 +1,11 @@
+import { existsSync, readdirSync } from "node:fs"
+import { dirname, join } from "node:path"
 import {
-  CreateNodesContextV2,
-  CreateNodesV2,
-  TargetConfiguration,
+  type CreateNodesContextV2,
+  type CreateNodesV2,
+  type TargetConfiguration,
   createNodesFromFiles,
 } from "@nx/devkit"
-import { readdirSync, existsSync } from "fs"
-import { dirname, join } from "path"
 
 // Expected format of the plugin options defined in nx.json
 export interface CdkPluginOptions {

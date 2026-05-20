@@ -6,7 +6,7 @@ import {
   CONSTRUCTS_VERSION,
   TS_NODE_VERSION,
 } from "../../../utils/versions"
-import { InitGeneratorOptions } from "../schema"
+import type { InitGeneratorOptions } from "../schema"
 
 export function addDependencies(
   tree: Tree,
