@@ -8,3 +8,5 @@
 
 .aider.chat.*
 pnpm-lock.yaml
+
+.nx/self-healing

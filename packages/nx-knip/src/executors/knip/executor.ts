@@ -1,4 +1,4 @@
-import { execFileSync, execSync } from "node:child_process"
+import * as childProcess from "child_process"
 import type { ExecutorContext } from "@nx/devkit"
 import type { KnipExecutorOptions } from "./schema"
 
@@ -22,7 +22,7 @@ export function resetBunCache(): void {
 export function isBunAvailable(): boolean {
   if (bunAvailableCache === undefined) {
     try {
-      execSync("bun --version", { stdio: "ignore" })
+      childProcess.execSync("bun --version", { stdio: "ignore" })
       bunAvailableCache = true
     } catch {
       bunAvailableCache = false
@@ -48,7 +48,7 @@ export default async function knipExecutor(
   const env = options.env ? { ...process.env, ...options.env } : process.env
 
   try {
-    execFileSync("npx", args, {
+    childProcess.execFileSync("npx", args, {
       stdio: "inherit",
       cwd: workspaceRoot,
       env,

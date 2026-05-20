@@ -7,13 +7,33 @@ import { CdkExecutorSchema } from "./schema"
 import { LARGE_BUFFER } from "./lib/executor.util"
 import { mockExecutorContext, cdk } from "./lib/testing"
 
+jest.mock("child_process")
+
+function mockExec() {
+  const childProcessMock = {
+    stdin: { write: jest.fn(), end: jest.fn() },
+    stdout: { on: jest.fn() },
+    stderr: { on: jest.fn() },
+    kill: jest.fn(),
+    on: jest.fn(),
+  }
+
+  childProcessMock.on.mockImplementation(
+    (event: string, listener: (code: number) => void) => {
+      if (event === "close") listener(0)
+      return childProcessMock
+    }
+  )
+  ;(childProcess.exec as unknown as jest.Mock).mockReturnValue(childProcessMock)
+}
+
 describe("nx-aws-cdk cdk deploy Executor", () => {
   const options: CdkExecutorSchema = { command: "deploy" }
   const context = mockExecutorContext("cdk")
 
   beforeEach(async () => {
     jest.spyOn(logger, "debug")
-    jest.spyOn(childProcess, "exec")
+    mockExec()
   })
 
   afterEach(() => jest.clearAllMocks())
@@ -80,7 +100,7 @@ describe("nx-aws-cdk cdk synth Executor", () => {
 
   beforeEach(async () => {
     jest.spyOn(logger, "debug")
-    jest.spyOn(childProcess, "exec")
+    mockExec()
   })
 
   afterEach(() => jest.clearAllMocks())
@@ -102,7 +122,10 @@ describe("nx-aws-cdk cdk synth Executor", () => {
   })
 
   it("run cdk synth command with an extra parameter", async () => {
-    const extra_options: CdkExecutorSchema = Object.assign({}, options)
+    const extra_options: CdkExecutorSchema & { validation?: boolean } = Object.assign(
+      {},
+      options
+    )
     extra_options["validation"] = true
     await executor(extra_options, context)
 

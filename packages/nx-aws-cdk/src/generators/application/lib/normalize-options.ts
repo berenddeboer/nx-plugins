@@ -28,7 +28,7 @@ export async function normalizeOptions(
   const appProjectName =
     !isUsingTsSolutionConfig || options.name ? projectName : importPath
 
-  const nxJson = readNxJson(tree)
+  const nxJson = readNxJson(tree) ?? {}
   const addPlugin =
     process.env.NX_ADD_PLUGINS !== "false" && nxJson.useInferencePlugins !== false
 

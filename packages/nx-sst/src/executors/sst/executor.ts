@@ -27,7 +27,10 @@ function runSst(
   options: ParsedExecutorInterface,
   context: ExecutorContext
 ) {
-  const projectRoot = context.projectsConfigurations.projects[context.projectName].root
+  const projectName = context.projectName
+  if (!projectName) throw new Error("No project name provided")
+
+  const projectRoot = context.projectsConfigurations.projects[projectName].root
   const command = createCommand(subcommand, options)
   return runCommandProcess(command, path.join(context.root, projectRoot))
 }
@@ -41,16 +44,18 @@ function normalizeOptions(
   delete otherArgs.command
   delete otherArgs.parameters
 
-  // eslint-disable-next-line no-unsafe-optional-chaining
+  const projectName = executor_context.projectName
+  if (!projectName) throw new Error("No project name provided")
+
   const { sourceRoot, root } =
-    executor_context.projectsConfigurations.projects[executor_context.projectName]
+    executor_context.projectsConfigurations.projects[projectName]
 
   return {
     ...options,
     parseArgs: otherArgs,
     stacks: parameters,
     polyfills: polyfills,
-    sourceRoot,
+    sourceRoot: sourceRoot ?? root,
     root,
   }
 }

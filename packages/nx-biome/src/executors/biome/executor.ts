@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process"
+import * as childProcess from "child_process"
 import type { ExecutorContext } from "@nx/devkit"
 import type { BiomeExecutorOptions } from "./schema"
 
@@ -13,7 +13,7 @@ export default async function biomeExecutor(
   const workspaceRoot = context.root
 
   try {
-    execSync(`biome check ${projectRoot}`, {
+    childProcess.execSync(`biome check ${projectRoot}`, {
       stdio: "inherit",
       cwd: workspaceRoot,
     })

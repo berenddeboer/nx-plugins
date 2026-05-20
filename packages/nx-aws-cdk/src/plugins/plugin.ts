@@ -9,13 +9,13 @@ import { dirname, join } from "path"
 
 // Expected format of the plugin options defined in nx.json
 export interface CdkPluginOptions {
-  cdkTargetName?: string
-  synthTargetName?: string
-  deployTargetName?: string
-  diffTargetName?: string
-  rollbackTargetName?: string
-  watchTargetName?: string
-  destroyTargetName?: string
+  cdkTargetName?: string | null
+  synthTargetName?: string | null
+  deployTargetName?: string | null
+  diffTargetName?: string | null
+  rollbackTargetName?: string | null
+  watchTargetName?: string | null
+  destroyTargetName?: string | null
 }
 
 // File glob to find all the configuration files for this plugin
@@ -26,7 +26,8 @@ export const createNodesV2: CreateNodesV2<CdkPluginOptions> = [
   cdkConfigGlob,
   async (configFiles, options, context) => {
     return await createNodesFromFiles(
-      (configFile, options, context) => createNodesInternal(configFile, options, context),
+      (configFile, options, context) =>
+        createNodesInternal(configFile, options ?? {}, context),
       configFiles,
       options,
       context
@@ -99,7 +100,7 @@ async function createNodesInternal(
   }
 
   // Project configuration to be merged into the rest of the Nx configuration
-  const targets = {}
+  const targets: Record<string, TargetConfiguration> = {}
 
   if (options.cdkTargetName) targets[options.cdkTargetName] = cdkTarget
   if (options.synthTargetName) targets[options.synthTargetName] = synthTarget

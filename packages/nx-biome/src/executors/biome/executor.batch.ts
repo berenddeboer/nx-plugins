@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process"
+import * as childProcess from "child_process"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
 import type { BiomeExecutorOptions } from "./schema"
 
@@ -6,6 +6,11 @@ type BatchExecutorTaskResult = {
   task: string
   success: boolean
   terminalOutput: string
+}
+
+type CommandError = Error & {
+  stdout?: unknown
+  stderr?: unknown
 }
 
 /**
@@ -37,7 +42,7 @@ export default async function biomeBatchExecutor(
 
   try {
     // Run biome check on all project directories at once
-    const output = execSync(`biome check ${args}`, {
+    const output = childProcess.execSync(`biome check ${args}`, {
       stdio: "pipe",
       cwd: workspaceRoot,
       encoding: "utf-8",
@@ -47,7 +52,8 @@ export default async function biomeBatchExecutor(
   } catch (error) {
     success = false
     if (error && typeof error === "object" && "stdout" in error) {
-      terminalOutput = String(error.stdout) + String(error.stderr || "")
+      const commandError = error as CommandError
+      terminalOutput = String(commandError.stdout) + String(commandError.stderr || "")
       console.log(terminalOutput)
     }
   }

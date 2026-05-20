@@ -12,7 +12,9 @@ export function parseArgs(options: CdkExecutorSchema): Record<string, string> {
   const keys = Object.keys(options)
   return keys
     .filter((prop) => executorPropKeys.indexOf(prop) < 0)
-    .reduce((acc, key) => ((acc[key] = options[key]), acc), {})
+    .reduce<
+      Record<string, string>
+    >((acc, key) => ((acc[key] = String(options[key as keyof CdkExecutorSchema])), acc), {})
 }
 
 export function createCommand(command: string, options: ParsedExecutorInterface): string {
@@ -36,8 +38,9 @@ export function createCommand(command: string, options: ParsedExecutorInterface)
     commands = commands.concat(options.stacks)
   }
   if (options.context) {
+    const context = options.context
     Object.keys(options.context).forEach((key) => {
-      commands.push(`--context ${key}=${options.context[key]}`)
+      commands.push(`--context ${key}=${context[key]}`)
     })
   }
 
@@ -64,15 +67,15 @@ export function runCommandProcess(command: string, cwd: string): Promise<boolean
     process.on("SIGTERM", processExitListener)
 
     process.stdin.on("data", (data) => {
-      childProcess.stdin.write(data)
-      childProcess.stdin.end()
+      childProcess.stdin?.write(data)
+      childProcess.stdin?.end()
     })
 
-    childProcess.stdout.on("data", (data) => {
+    childProcess.stdout?.on("data", (data) => {
       process.stdout.write(data)
     })
 
-    childProcess.stderr.on("data", (err) => {
+    childProcess.stderr?.on("data", (err) => {
       process.stderr.write(err)
     })
 

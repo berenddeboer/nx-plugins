@@ -5,6 +5,8 @@ import executor from "./executor"
 import batchExecutor from "./executor.batch"
 import type { BiomeExecutorOptions } from "./schema"
 
+jest.mock("child_process")
+
 function mockExecutorContext(executorName: string): ExecutorContext {
   return {
     root: "/root",

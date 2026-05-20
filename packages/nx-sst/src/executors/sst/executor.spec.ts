@@ -7,6 +7,26 @@ import { SSTRunExecutorSchema } from "./schema"
 import { LARGE_BUFFER } from "../../utils/executor.util"
 import { mockExecutorContext } from "../../utils/testing"
 
+jest.mock("child_process")
+
+function mockExec() {
+  const childProcessMock = {
+    stdin: { write: jest.fn(), end: jest.fn() },
+    stdout: { on: jest.fn() },
+    stderr: { on: jest.fn() },
+    kill: jest.fn(),
+    on: jest.fn(),
+  }
+
+  childProcessMock.on.mockImplementation(
+    (event: string, listener: (code: number) => void) => {
+      if (event === "close") listener(0)
+      return childProcessMock
+    }
+  )
+  ;(childProcess.exec as unknown as jest.Mock).mockReturnValue(childProcessMock)
+}
+
 const version: SSTRunExecutorSchema = {
   command: "version",
 }
@@ -40,7 +60,7 @@ describe("SST Run Executor", () => {
 
   beforeEach(async () => {
     jest.spyOn(logger, "debug")
-    jest.spyOn(childProcess, "exec")
+    mockExec()
   })
 
   afterEach(() => jest.clearAllMocks())

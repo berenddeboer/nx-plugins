@@ -1,12 +1,12 @@
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs"
 import { join } from "node:path"
 import { tmpdir } from "node:os"
-import type { CreateNodesContext } from "@nx/devkit"
+import type { CreateNodesContextV2 } from "@nx/devkit"
 import { createNodesV2 } from "./plugin"
 
 describe("@berenddeboer/nx-biome/plugin", () => {
   const createNodesFunction = createNodesV2[1]
-  let context: CreateNodesContext
+  let context: CreateNodesContextV2
   let tempDir: string
 
   beforeEach(() => {
@@ -14,7 +14,6 @@ describe("@berenddeboer/nx-biome/plugin", () => {
     context = {
       nxJsonConfiguration: {},
       workspaceRoot: tempDir,
-      configFiles: [],
     }
   })
 
@@ -37,19 +36,19 @@ describe("@berenddeboer/nx-biome/plugin", () => {
   it("should infer lint target for a project.json-based project", async () => {
     createProjectJson("packages/my-lib")
     const nodes = await createNodesFunction(["packages/my-lib/project.json"], {}, context)
-    const project = nodes[0][1].projects["packages/my-lib"]
+    const project = nodes[0]![1].projects!["packages/my-lib"]!
 
     expect(project.targets).toHaveProperty("lint")
-    expect(project.targets.lint.executor).toBe("@berenddeboer/nx-biome:biome")
+    expect(project.targets!.lint!.executor).toBe("@berenddeboer/nx-biome:biome")
   })
 
   it("should infer lint target for a package.json-inferred project", async () => {
     createPackageJson("packages/my-lib")
     const nodes = await createNodesFunction(["packages/my-lib/package.json"], {}, context)
-    const project = nodes[0][1].projects["packages/my-lib"]
+    const project = nodes[0]![1].projects!["packages/my-lib"]!
 
     expect(project.targets).toHaveProperty("lint")
-    expect(project.targets.lint.executor).toBe("@berenddeboer/nx-biome:biome")
+    expect(project.targets!.lint!.executor).toBe("@berenddeboer/nx-biome:biome")
   })
 
   it("should use custom target name for package.json-inferred project", async () => {
@@ -59,7 +58,7 @@ describe("@berenddeboer/nx-biome/plugin", () => {
       { targetName: "biome-lint" },
       context
     )
-    const project = nodes[0][1].projects["packages/my-lib"]
+    const project = nodes[0]![1].projects!["packages/my-lib"]!
 
     expect(project.targets).toHaveProperty("biome-lint")
     expect(project.targets).not.toHaveProperty("lint")
@@ -69,7 +68,7 @@ describe("@berenddeboer/nx-biome/plugin", () => {
     writeFileSync(join(tempDir, "package.json"), JSON.stringify({ name: "root" }))
     const nodes = await createNodesFunction(["package.json"], {}, context)
 
-    expect(nodes[0][1]).toEqual({})
+    expect(nodes[0]![1]).toEqual({})
   })
 
   it("should skip node_modules", async () => {
@@ -79,13 +78,13 @@ describe("@berenddeboer/nx-biome/plugin", () => {
       context
     )
 
-    expect(nodes[0][1]).toEqual({})
+    expect(nodes[0]![1]).toEqual({})
   })
 
   it("should set projectRoot in executor options for package.json-inferred project", async () => {
     createPackageJson("packages/my-lib")
     const nodes = await createNodesFunction(["packages/my-lib/package.json"], {}, context)
-    const target = nodes[0][1].projects["packages/my-lib"].targets.lint
+    const target = nodes[0]![1].projects!["packages/my-lib"]!.targets!.lint!
 
     expect(target.options.projectRoot).toBe("packages/my-lib")
   })

@@ -80,7 +80,7 @@ export async function applicationGeneratorInternal(
       projectRoot: options.appProjectRoot,
       rootProject: options.rootProject,
       unitTestRunner: options.unitTestRunner,
-      isUsingTsSolutionConfig: options.useTsSolution,
+      isUsingTsSolutionConfig: options.useTsSolution ?? false,
     },
     getRelativePathToRootTsConfig(tree, options.appProjectRoot)
   )
