@@ -31,8 +31,8 @@
         "useArrowFunction": "error"
       },
       "style": {
-        "useImportType": "warn",
-        "useNodejsImportProtocol": "warn"
+        "useImportType": "error",
+        "useNodejsImportProtocol": "error"
       }
     }
   },
