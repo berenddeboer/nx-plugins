@@ -49,6 +49,7 @@ describe("nx-knip executor", () => {
   const context = mockExecutorContext("knip")
 
   afterEach(() => {
+    jest.clearAllMocks()
     jest.restoreAllMocks()
     resetBunCache()
   })
@@ -213,6 +214,7 @@ describe("nx-knip batch executor", () => {
   }
 
   afterEach(() => {
+    jest.clearAllMocks()
     jest.restoreAllMocks()
     resetBunCache()
   })
@@ -260,7 +262,34 @@ describe("nx-knip batch executor", () => {
       )
     })
 
-    it("applies --strict if any task requests it", async () => {
+    it("deduplicates project roots only within an option group", async () => {
+      const { taskGraph, options } = makeTaskGraph([
+        { id: "projA:knip", options: { projectRoot: "packages/shared" } },
+        { id: "projB:knip", options: { projectRoot: "packages/shared" } },
+        {
+          id: "projC:knip",
+          options: { projectRoot: "packages/shared", strict: true },
+        },
+      ])
+
+      await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
+
+      expect(childProcess.execFileSync).toHaveBeenCalledTimes(2)
+      expect(childProcess.execFileSync).toHaveBeenNthCalledWith(
+        1,
+        "npx",
+        ["knip-bun", "--workspace", "packages/shared"],
+        expect.objectContaining({ stdio: "pipe" })
+      )
+      expect(childProcess.execFileSync).toHaveBeenNthCalledWith(
+        2,
+        "npx",
+        ["knip-bun", "--workspace", "packages/shared", "--strict"],
+        expect.objectContaining({ stdio: "pipe" })
+      )
+    })
+
+    it("runs strict and non-strict tasks in separate groups", async () => {
       const { taskGraph, options } = makeTaskGraph([
         { id: "projA:knip", options: { projectRoot: "packages/projA" } },
         { id: "projB:knip", options: { projectRoot: "packages/projB", strict: true } },
@@ -268,21 +297,41 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
+      expect(childProcess.execFileSync).toHaveBeenCalledTimes(2)
+      expect(childProcess.execFileSync).toHaveBeenNthCalledWith(
+        1,
         "npx",
-        [
-          "knip-bun",
-          "--workspace",
-          "packages/projA",
-          "--workspace",
-          "packages/projB",
-          "--strict",
-        ],
+        ["knip-bun", "--workspace", "packages/projA"],
+        expect.objectContaining({ stdio: "pipe" })
+      )
+      expect(childProcess.execFileSync).toHaveBeenNthCalledWith(
+        2,
+        "npx",
+        ["knip-bun", "--workspace", "packages/projB", "--strict"],
         expect.objectContaining({ stdio: "pipe" })
       )
     })
 
-    it("merges env vars from all tasks", async () => {
+    it("batches explicit and implicit non-strict tasks together", async () => {
+      const { taskGraph, options } = makeTaskGraph([
+        {
+          id: "projA:knip",
+          options: { projectRoot: "packages/projA", strict: false },
+        },
+        { id: "projB:knip", options: { projectRoot: "packages/projB" } },
+      ])
+
+      await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
+
+      expect(childProcess.execFileSync).toHaveBeenCalledTimes(1)
+      expect(childProcess.execFileSync).toHaveBeenCalledWith(
+        "npx",
+        ["knip-bun", "--workspace", "packages/projA", "--workspace", "packages/projB"],
+        expect.objectContaining({ stdio: "pipe" })
+      )
+    })
+
+    it("runs tasks with disjoint environments in separate groups", async () => {
       const { taskGraph, options } = makeTaskGraph([
         {
           id: "projA:knip",
@@ -296,11 +345,84 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
+      expect(childProcess.execFileSync).toHaveBeenCalledTimes(2)
+      expect(childProcess.execFileSync).toHaveBeenNthCalledWith(
+        1,
+        "npx",
+        ["knip-bun", "--workspace", "packages/projA"],
+        expect.objectContaining({
+          env: { ...process.env, VAR_A: "a" },
+        })
+      )
+      expect(childProcess.execFileSync).toHaveBeenNthCalledWith(
+        2,
+        "npx",
+        ["knip-bun", "--workspace", "packages/projB"],
+        expect.objectContaining({
+          env: { ...process.env, VAR_B: "b" },
+        })
+      )
+    })
+
+    it("batches equivalent environments regardless of key insertion order", async () => {
+      const { taskGraph, options } = makeTaskGraph([
+        {
+          id: "projA:knip",
+          options: {
+            projectRoot: "packages/projA",
+            env: { VAR_A: "a", VAR_B: "b" },
+          },
+        },
+        {
+          id: "projB:knip",
+          options: {
+            projectRoot: "packages/projB",
+            env: { VAR_B: "b", VAR_A: "a" },
+          },
+        },
+      ])
+
+      await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
+
+      expect(childProcess.execFileSync).toHaveBeenCalledTimes(1)
       expect(childProcess.execFileSync).toHaveBeenCalledWith(
         "npx",
-        expect.any(Array),
+        ["knip-bun", "--workspace", "packages/projA", "--workspace", "packages/projB"],
         expect.objectContaining({
           env: expect.objectContaining({ VAR_A: "a", VAR_B: "b" }),
+        })
+      )
+    })
+
+    it("runs conflicting environment values in separate groups", async () => {
+      const { taskGraph, options } = makeTaskGraph([
+        {
+          id: "projA:knip",
+          options: { projectRoot: "packages/projA", env: { MODE: "development" } },
+        },
+        {
+          id: "projB:knip",
+          options: { projectRoot: "packages/projB", env: { MODE: "production" } },
+        },
+      ])
+
+      await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
+
+      expect(childProcess.execFileSync).toHaveBeenCalledTimes(2)
+      expect(childProcess.execFileSync).toHaveBeenNthCalledWith(
+        1,
+        "npx",
+        ["knip-bun", "--workspace", "packages/projA"],
+        expect.objectContaining({
+          env: { ...process.env, MODE: "development" },
+        })
+      )
+      expect(childProcess.execFileSync).toHaveBeenNthCalledWith(
+        2,
+        "npx",
+        ["knip-bun", "--workspace", "packages/projB"],
+        expect.objectContaining({
+          env: { ...process.env, MODE: "production" },
         })
       )
     })
@@ -346,6 +468,27 @@ describe("nx-knip batch executor", () => {
     })
   })
 
+  it("returns no results without running Knip for an empty task graph", async () => {
+    const execSync = jest
+      .spyOn(childProcess, "execSync")
+      .mockImplementation(() => Buffer.from(""))
+    const execFileSync = jest
+      .spyOn(childProcess, "execFileSync")
+      .mockImplementation(() => "")
+    const { taskGraph, options } = makeTaskGraph([])
+
+    const results = await batchExecutor(
+      taskGraph,
+      options,
+      {} as KnipExecutorOptions,
+      context
+    )
+
+    expect(results).toEqual({})
+    expect(execSync).not.toHaveBeenCalled()
+    expect(execFileSync).not.toHaveBeenCalled()
+  })
+
   it("propagates failure to all tasks", async () => {
     jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
     jest.spyOn(childProcess, "execFileSync").mockImplementation(() => {
@@ -354,7 +497,7 @@ describe("nx-knip batch executor", () => {
       error.stderr = ""
       throw error
     })
-    jest.spyOn(console, "log").mockImplementation()
+    jest.spyOn(console, "error").mockImplementation()
 
     const { taskGraph, options } = makeTaskGraph([
       { id: "projA:knip", options: { projectRoot: "packages/projA" } },
@@ -371,5 +514,49 @@ describe("nx-knip batch executor", () => {
     expect(results["projA:knip"].success).toBe(false)
     expect(results["projB:knip"].success).toBe(false)
     expect(results["projA:knip"].terminalOutput).toContain("unused export found")
+  })
+
+  it("reports each option group's result only to its tasks", async () => {
+    jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
+    jest
+      .spyOn(childProcess, "execFileSync")
+      .mockImplementationOnce(() => {
+        const error = new Error("knip failed") as Error & {
+          stdout: string
+          stderr: string
+        }
+        error.stdout = "non-strict failure"
+        error.stderr = ""
+        throw error
+      })
+      .mockImplementationOnce(() => "strict output")
+    jest.spyOn(console, "error").mockImplementation()
+    jest.spyOn(console, "log").mockImplementation()
+
+    const { taskGraph, options } = makeTaskGraph([
+      { id: "projA:knip", options: { projectRoot: "packages/projA" } },
+      {
+        id: "projB:knip",
+        options: { projectRoot: "packages/projB", strict: true },
+      },
+    ])
+
+    const results = await batchExecutor(
+      taskGraph,
+      options,
+      {} as KnipExecutorOptions,
+      context
+    )
+
+    expect(results["projA:knip"]).toEqual({
+      task: "projA:knip",
+      success: false,
+      terminalOutput: "non-strict failure",
+    })
+    expect(results["projB:knip"]).toEqual({
+      task: "projB:knip",
+      success: true,
+      terminalOutput: "strict output",
+    })
   })
 })
