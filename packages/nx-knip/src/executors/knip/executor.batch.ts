@@ -1,6 +1,6 @@
-import * as childProcess from "node:child_process"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
 import { isBunAvailable } from "./executor"
+import { runKnip } from "./knip-cli"
 import type { KnipExecutorOptions } from "./schema"
 
 type BatchExecutorTaskResult = {
@@ -49,8 +49,8 @@ export default async function knipBatchExecutor(
     Object.keys(mergedEnv).length > 0 ? { ...process.env, ...mergedEnv } : process.env
 
   // Build args with --workspace flags
-  const bin = isBunAvailable() ? "knip-bun" : "knip"
-  const args = [bin]
+  const cli = isBunAvailable() ? "knip-bun" : "knip"
+  const args: string[] = []
   for (const r of uniqueRoots) {
     args.push("--workspace", r)
   }
@@ -60,11 +60,12 @@ export default async function knipBatchExecutor(
   let terminalOutput = ""
 
   try {
-    const output = childProcess.execFileSync("npx", args, {
-      stdio: "pipe",
-      cwd: workspaceRoot,
-      encoding: "utf-8",
+    const output = runKnip({
+      workspaceRoot,
+      cli,
+      args,
       env,
+      stdio: "pipe",
     })
     terminalOutput = output
     console.log(output)

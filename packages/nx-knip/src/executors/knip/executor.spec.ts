@@ -2,9 +2,13 @@ import * as childProcess from "node:child_process"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
 import executor, { resetBunCache } from "./executor"
 import batchExecutor from "./executor.batch"
+import { runKnip } from "./knip-cli"
 import type { KnipExecutorOptions } from "./schema"
 
 jest.mock("child_process")
+jest.mock("./knip-cli")
+
+const runKnipMock = jest.mocked(runKnip)
 
 function mockExecutorContext(executorName: string): ExecutorContext {
   return {
@@ -55,25 +59,24 @@ describe("nx-knip executor", () => {
 
   describe("when Bun is available", () => {
     beforeEach(() => {
-      jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
-      jest.spyOn(childProcess, "execFileSync").mockImplementation(() => Buffer.from(""))
+      jest.mocked(childProcess.execFileSync).mockReturnValue(Buffer.from(""))
+      runKnipMock.mockReturnValue("")
     })
 
     it("runs knip-bun with --workspace and --strict flags on project root", async () => {
       const result = await executor(options, context)
 
-      expect(childProcess.execSync).toHaveBeenCalledWith("bun --version", {
+      expect(childProcess.execFileSync).toHaveBeenCalledWith("bun", ["--version"], {
         stdio: "ignore",
+        windowsHide: true,
       })
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        ["knip-bun", "--workspace", "packages/proj", "--strict"],
-        {
-          stdio: "inherit",
-          cwd: context.root,
-          env: process.env,
-        }
-      )
+      expect(runKnipMock).toHaveBeenCalledWith({
+        workspaceRoot: context.root,
+        cli: "knip-bun",
+        args: ["--workspace", "packages/proj", "--strict"],
+        env: process.env,
+        stdio: "inherit",
+      })
       expect(result.success).toBe(true)
     })
 
@@ -82,15 +85,13 @@ describe("nx-knip executor", () => {
 
       await executor(emptyOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        ["knip-bun", "--workspace", "."],
-        {
-          stdio: "inherit",
-          cwd: context.root,
-          env: process.env,
-        }
-      )
+      expect(runKnipMock).toHaveBeenCalledWith({
+        workspaceRoot: context.root,
+        cli: "knip-bun",
+        args: ["--workspace", "."],
+        env: process.env,
+        stdio: "inherit",
+      })
     })
 
     it("omits --strict flag when strict is not set", async () => {
@@ -98,15 +99,13 @@ describe("nx-knip executor", () => {
 
       await executor(nonStrictOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        ["knip-bun", "--workspace", "packages/proj"],
-        {
-          stdio: "inherit",
-          cwd: context.root,
-          env: process.env,
-        }
-      )
+      expect(runKnipMock).toHaveBeenCalledWith({
+        workspaceRoot: context.root,
+        cli: "knip-bun",
+        args: ["--workspace", "packages/proj"],
+        env: process.env,
+        stdio: "inherit",
+      })
     })
 
     it("merges env option into process.env", async () => {
@@ -117,55 +116,52 @@ describe("nx-knip executor", () => {
 
       await executor(envOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        ["knip-bun", "--workspace", "packages/proj"],
-        {
-          stdio: "inherit",
-          cwd: context.root,
-          env: {
-            ...process.env,
-            SQLITE_DATABASE_PATH: "/tmp/knip-dummy.db",
-            PF_ORG: "examples/demo",
-          },
-        }
-      )
+      expect(runKnipMock).toHaveBeenCalledWith({
+        workspaceRoot: context.root,
+        cli: "knip-bun",
+        args: ["--workspace", "packages/proj"],
+        env: {
+          ...process.env,
+          SQLITE_DATABASE_PATH: "/tmp/knip-dummy.db",
+          PF_ORG: "examples/demo",
+        },
+        stdio: "inherit",
+      })
     })
   })
 
   describe("when Bun is not available", () => {
     beforeEach(() => {
-      jest.spyOn(childProcess, "execSync").mockImplementation((cmd: string) => {
-        if (cmd === "bun --version") {
+      jest.mocked(childProcess.execFileSync).mockImplementation((file: string) => {
+        if (file === "bun") {
           throw new Error("bun not found")
         }
         return Buffer.from("")
       })
-      jest.spyOn(childProcess, "execFileSync").mockImplementation(() => Buffer.from(""))
+      runKnipMock.mockReturnValue("")
     })
 
-    it("falls back to npx knip with --workspace and --strict flags", async () => {
+    it("runs knip with --workspace and --strict flags through Node", async () => {
       const result = await executor(options, context)
 
-      expect(childProcess.execSync).toHaveBeenCalledWith("bun --version", {
+      expect(childProcess.execFileSync).toHaveBeenCalledWith("bun", ["--version"], {
         stdio: "ignore",
+        windowsHide: true,
       })
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        ["knip", "--workspace", "packages/proj", "--strict"],
-        {
-          stdio: "inherit",
-          cwd: context.root,
-          env: process.env,
-        }
-      )
+      expect(runKnipMock).toHaveBeenCalledWith({
+        workspaceRoot: context.root,
+        cli: "knip",
+        args: ["--workspace", "packages/proj", "--strict"],
+        env: process.env,
+        stdio: "inherit",
+      })
       expect(result.success).toBe(true)
     })
   })
 
   it("returns failure and logs error when knip check fails", async () => {
-    jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
-    jest.spyOn(childProcess, "execFileSync").mockImplementation(() => {
+    jest.mocked(childProcess.execFileSync).mockReturnValue(Buffer.from(""))
+    runKnipMock.mockImplementation(() => {
       throw new Error("Knip check failed")
     })
     const consoleSpy = jest.spyOn(console, "error").mockImplementation()
@@ -219,8 +215,8 @@ describe("nx-knip batch executor", () => {
 
   describe("when Bun is available", () => {
     beforeEach(() => {
-      jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
-      jest.spyOn(childProcess, "execFileSync").mockImplementation(() => "")
+      jest.mocked(childProcess.execFileSync).mockReturnValue(Buffer.from(""))
+      runKnipMock.mockReturnValue("")
     })
 
     it("runs knip-bun with multiple --workspace flags", async () => {
@@ -236,11 +232,13 @@ describe("nx-knip batch executor", () => {
         context
       )
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        ["knip-bun", "--workspace", "packages/projA", "--workspace", "packages/projB"],
-        expect.objectContaining({ stdio: "pipe", cwd: context.root })
-      )
+      expect(runKnipMock).toHaveBeenCalledWith({
+        workspaceRoot: context.root,
+        cli: "knip-bun",
+        args: ["--workspace", "packages/projA", "--workspace", "packages/projB"],
+        env: process.env,
+        stdio: "pipe",
+      })
       expect(results["projA:knip"].success).toBe(true)
       expect(results["projB:knip"].success).toBe(true)
     })
@@ -253,10 +251,11 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        ["knip-bun", "--workspace", "packages/shared"],
-        expect.objectContaining({ stdio: "pipe" })
+      expect(runKnipMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          args: ["--workspace", "packages/shared"],
+          stdio: "pipe",
+        })
       )
     })
 
@@ -268,17 +267,17 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        [
-          "knip-bun",
-          "--workspace",
-          "packages/projA",
-          "--workspace",
-          "packages/projB",
-          "--strict",
-        ],
-        expect.objectContaining({ stdio: "pipe" })
+      expect(runKnipMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          args: [
+            "--workspace",
+            "packages/projA",
+            "--workspace",
+            "packages/projB",
+            "--strict",
+          ],
+          stdio: "pipe",
+        })
       )
     })
 
@@ -296,9 +295,7 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        expect.any(Array),
+      expect(runKnipMock).toHaveBeenCalledWith(
         expect.objectContaining({
           env: expect.objectContaining({ VAR_A: "a", VAR_B: "b" }),
         })
@@ -312,9 +309,7 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        expect.any(Array),
+      expect(runKnipMock).toHaveBeenCalledWith(
         expect.objectContaining({ env: process.env })
       )
     })
@@ -322,33 +317,35 @@ describe("nx-knip batch executor", () => {
 
   describe("when Bun is not available", () => {
     beforeEach(() => {
-      jest.spyOn(childProcess, "execSync").mockImplementation((cmd: string) => {
-        if (cmd === "bun --version") {
+      jest.mocked(childProcess.execFileSync).mockImplementation((file: string) => {
+        if (file === "bun") {
           throw new Error("bun not found")
         }
         return Buffer.from("")
       })
-      jest.spyOn(childProcess, "execFileSync").mockImplementation(() => "")
+      runKnipMock.mockReturnValue("")
     })
 
-    it("falls back to npx knip", async () => {
+    it("runs knip through Node", async () => {
       const { taskGraph, options } = makeTaskGraph([
         { id: "projA:knip", options: { projectRoot: "packages/projA" } },
       ])
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
-        "npx",
-        ["knip", "--workspace", "packages/projA"],
-        expect.objectContaining({ stdio: "pipe", cwd: context.root })
-      )
+      expect(runKnipMock).toHaveBeenCalledWith({
+        workspaceRoot: context.root,
+        cli: "knip",
+        args: ["--workspace", "packages/projA"],
+        env: process.env,
+        stdio: "pipe",
+      })
     })
   })
 
   it("propagates failure to all tasks", async () => {
-    jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
-    jest.spyOn(childProcess, "execFileSync").mockImplementation(() => {
+    jest.mocked(childProcess.execFileSync).mockReturnValue(Buffer.from(""))
+    runKnipMock.mockImplementation(() => {
       const error = new Error("knip failed") as Error & { stdout: string; stderr: string }
       error.stdout = "unused export found"
       error.stderr = ""
