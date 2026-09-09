@@ -85,6 +85,29 @@ nx run-many -t knip
 
 ## Executor Options
 
+### `runtime`
+
+Choose the runtime used by Knip. The default is `"node"`, which runs Knip's regular
+entry point. To use the Bun-optimized entry point, set `"runtime": "bun"` in the
+plugin options:
+
+```json
+{
+  "plugins": [
+    {
+      "plugin": "@berenddeboer/nx-knip",
+      "options": {
+        "targetName": "knip",
+        "runtime": "bun"
+      }
+    }
+  ]
+}
+```
+
+Bun must be available on `PATH` when selected. If it is unavailable, the executor
+fails with instructions to install Bun or switch back to the Node.js runtime.
+
 ### `strict`
 
 Enable [strict mode](https://knip.dev/features/production-mode#strict-mode) (implies `--production`). Defaults to `false`. When enabled, knip will:
@@ -168,7 +191,8 @@ This plugin runs `knip --workspace {projectRoot}` from the workspace root for ea
 
 1. It uses the `--workspace` flag to focus on a specific workspace
 2. The workspace root `knip.json` configuration is used
-3. If [Bun](https://bun.sh) is installed, the plugin automatically uses `knip-bun` for significantly better performance
+3. It uses the regular Node.js entry point by default, or `knip-bun` when the Bun
+   runtime is explicitly configured
 
 ## Learn More
 

@@ -77,6 +77,15 @@ describe("@berenddeboer/nx-knip/plugin", () => {
     expect(options).not.toHaveProperty("strict")
   })
 
+  it("should not include runtime in options by default", async () => {
+    createPackageJson("packages/my-lib")
+    const nodes = await createNodesFunction(["packages/my-lib/package.json"], {}, context)
+    const options = nodes[0]?.[1].projects?.["packages/my-lib"]?.targets?.knip?.options
+    if (!options) throw new Error("Options not found")
+
+    expect(options).not.toHaveProperty("runtime")
+  })
+
   it("should pass strict option when set to true", async () => {
     createPackageJson("packages/my-lib")
     const nodes = await createNodesFunction(
@@ -114,5 +123,18 @@ describe("@berenddeboer/nx-knip/plugin", () => {
     if (!options) throw new Error("Options not found")
 
     expect(options.env).toEqual({ DATABASE_URL: "postgres://localhost/dummy" })
+  })
+
+  it("should pass runtime option when provided", async () => {
+    createPackageJson("packages/my-lib")
+    const nodes = await createNodesFunction(
+      ["packages/my-lib/package.json"],
+      { runtime: "bun" },
+      context
+    )
+    const options = nodes[0]?.[1].projects?.["packages/my-lib"]?.targets?.knip?.options
+    if (!options) throw new Error("Options not found")
+
+    expect(options.runtime).toBe("bun")
   })
 })
