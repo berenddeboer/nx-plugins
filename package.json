@@ -22,6 +22,7 @@
     "build:aws-cdk": "nx build nx-aws-cdk",
     "link:aws-cdk": "cd dist/packages/nx-aws-cdk && npm link",
     "test:sst": "nx test nx-sst",
+    "test:knip-compatibility": "node packages/nx-knip/scripts/verify-compatibility.mjs",
     "build:sst": "nx build nx-sst",
     "link:sst": "cd dist/packages/nx-sst && npm link",
     "prepare": "husky"

@@ -46,6 +46,7 @@ jobs:
       # - run: pnpm exec nx-cloud record -- echo Hello World
       - run: pnpm exec biome ci
       - run: pnpm exec nx run-many -t test build typecheck
+      - run: pnpm run test:knip-compatibility
       # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
       - run: pnpm exec nx fix-ci
         if: always()
