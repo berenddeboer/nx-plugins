@@ -9,9 +9,38 @@ type BatchExecutorTaskResult = {
   terminalOutput: string
 }
 
-type CommandError = Error & {
-  stdout?: unknown
-  stderr?: unknown
+type ProcessResult = {
+  success: boolean
+  terminalOutput: string
+}
+
+function runKnip(
+  args: string[],
+  cwd: string,
+  env: NodeJS.ProcessEnv
+): Promise<ProcessResult> {
+  return new Promise((resolve, reject) => {
+    const outputChunks: Buffer[] = []
+    const child = childProcess.spawn("npx", args, {
+      cwd,
+      env,
+      shell: false,
+      stdio: ["ignore", "pipe", "pipe"],
+    })
+
+    const collectOutput = (chunk: Buffer | string) => {
+      outputChunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+    }
+    child.stdout.on("data", collectOutput)
+    child.stderr.on("data", collectOutput)
+    child.once("error", reject)
+    child.once("close", (code) => {
+      resolve({
+        success: code === 0,
+        terminalOutput: Buffer.concat(outputChunks).toString("utf8"),
+      })
+    })
+  })
 }
 
 /**
@@ -56,29 +85,16 @@ export default async function knipBatchExecutor(
   }
   if (strict) args.push("--strict")
 
-  let success = true
-  let terminalOutput = ""
+  let processResult: ProcessResult
 
   try {
-    const output = childProcess.execFileSync("npx", args, {
-      stdio: "pipe",
-      cwd: workspaceRoot,
-      encoding: "utf-8",
-      env,
-    })
-    terminalOutput = output
-    console.log(output)
+    processResult = await runKnip(args, workspaceRoot, env)
+    const log = processResult.success ? console.log : console.error
+    log(processResult.terminalOutput)
   } catch (error) {
-    success = false
-    if (error && typeof error === "object" && "stdout" in error) {
-      const commandError = error as CommandError
-      terminalOutput = String(commandError.stdout) + String(commandError.stderr || "")
-      console.error(terminalOutput)
-    } else {
-      const msg = error instanceof Error ? error.message : String(error)
-      terminalOutput = msg
-      console.error(msg)
-    }
+    const message = error instanceof Error ? error.message : String(error)
+    processResult = { success: false, terminalOutput: message }
+    console.error(message)
   }
 
   // Return same result for all tasks
@@ -86,8 +102,8 @@ export default async function knipBatchExecutor(
   for (const task of tasks) {
     results[task.id] = {
       task: task.id,
-      success,
-      terminalOutput,
+      success: processResult.success,
+      terminalOutput: processResult.terminalOutput,
     }
   }
 

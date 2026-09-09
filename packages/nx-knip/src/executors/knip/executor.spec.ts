@@ -1,10 +1,48 @@
+import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import * as childProcess from "node:child_process"
+import { EventEmitter } from "node:events"
+import { PassThrough } from "node:stream"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
 import executor, { resetBunCache } from "./executor"
 import batchExecutor from "./executor.batch"
 import type { KnipExecutorOptions } from "./schema"
 
 jest.mock("child_process")
+
+interface MockProcessResult {
+  stdout?: string | Buffer
+  stderr?: string | Buffer
+  code?: number | null
+  signal?: NodeJS.Signals | null
+  error?: Error
+}
+
+function mockSpawnResult(result: MockProcessResult): void {
+  jest.spyOn(childProcess, "spawn").mockImplementation(() => {
+    const child = new EventEmitter() as unknown as ChildProcessWithoutNullStreams
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    child.stdin = new PassThrough()
+    child.stdout = stdout
+    child.stderr = stderr
+
+    queueMicrotask(() => {
+      if (result.stdout !== undefined) stdout.write(result.stdout)
+      if (result.stderr !== undefined) stderr.write(result.stderr)
+      stdout.end()
+      stderr.end()
+
+      if (result.error) {
+        child.emit("error", result.error)
+      } else {
+        const code = result.code === undefined ? (result.signal ? null : 0) : result.code
+        child.emit("close", code, result.signal ?? null)
+      }
+    })
+
+    return child
+  })
+}
 
 function mockExecutorContext(executorName: string): ExecutorContext {
   return {
@@ -49,6 +87,7 @@ describe("nx-knip executor", () => {
   const context = mockExecutorContext("knip")
 
   afterEach(() => {
+    jest.clearAllMocks()
     jest.restoreAllMocks()
     resetBunCache()
   })
@@ -213,6 +252,7 @@ describe("nx-knip batch executor", () => {
   }
 
   afterEach(() => {
+    jest.clearAllMocks()
     jest.restoreAllMocks()
     resetBunCache()
   })
@@ -220,7 +260,7 @@ describe("nx-knip batch executor", () => {
   describe("when Bun is available", () => {
     beforeEach(() => {
       jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
-      jest.spyOn(childProcess, "execFileSync").mockImplementation(() => "")
+      mockSpawnResult({})
     })
 
     it("runs knip-bun with multiple --workspace flags", async () => {
@@ -236,10 +276,15 @@ describe("nx-knip batch executor", () => {
         context
       )
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
+      expect(childProcess.spawn).toHaveBeenCalledWith(
         "npx",
         ["knip-bun", "--workspace", "packages/projA", "--workspace", "packages/projB"],
-        expect.objectContaining({ stdio: "pipe", cwd: context.root })
+        {
+          cwd: context.root,
+          env: process.env,
+          shell: false,
+          stdio: ["ignore", "pipe", "pipe"],
+        }
       )
       expect(results["projA:knip"].success).toBe(true)
       expect(results["projB:knip"].success).toBe(true)
@@ -253,10 +298,10 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
+      expect(childProcess.spawn).toHaveBeenCalledWith(
         "npx",
         ["knip-bun", "--workspace", "packages/shared"],
-        expect.objectContaining({ stdio: "pipe" })
+        expect.objectContaining({ stdio: ["ignore", "pipe", "pipe"] })
       )
     })
 
@@ -268,7 +313,7 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
+      expect(childProcess.spawn).toHaveBeenCalledWith(
         "npx",
         [
           "knip-bun",
@@ -278,7 +323,7 @@ describe("nx-knip batch executor", () => {
           "packages/projB",
           "--strict",
         ],
-        expect.objectContaining({ stdio: "pipe" })
+        expect.objectContaining({ stdio: ["ignore", "pipe", "pipe"] })
       )
     })
 
@@ -296,7 +341,7 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
+      expect(childProcess.spawn).toHaveBeenCalledWith(
         "npx",
         expect.any(Array),
         expect.objectContaining({
@@ -312,11 +357,56 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
+      expect(childProcess.spawn).toHaveBeenCalledWith(
         "npx",
         expect.any(Array),
         expect.objectContaining({ env: process.env })
       )
+    })
+
+    it("returns output larger than the synchronous process buffer limit", async () => {
+      const terminalOutput = "x".repeat(1024 * 1024 + 1)
+      jest.spyOn(childProcess, "execFileSync").mockImplementation(() => {
+        throw new Error("stdout maxBuffer length exceeded")
+      })
+      mockSpawnResult({ stdout: terminalOutput })
+      jest.spyOn(console, "log").mockImplementation()
+      const { taskGraph, options } = makeTaskGraph([
+        { id: "projA:knip", options: { projectRoot: "packages/projA" } },
+      ])
+
+      const results = await batchExecutor(
+        taskGraph,
+        options,
+        {} as KnipExecutorOptions,
+        context
+      )
+
+      expect(results["projA:knip"]).toMatchObject({
+        task: "projA:knip",
+        success: true,
+      })
+      expect(results["projA:knip"].terminalOutput).toHaveLength(1024 * 1024 + 1)
+    })
+
+    it("retains stderr from a successful Knip process", async () => {
+      mockSpawnResult({ stderr: "configuration warning", code: 0 })
+      jest.spyOn(console, "log").mockImplementation()
+      const { taskGraph, options } = makeTaskGraph([
+        { id: "projA:knip", options: { projectRoot: "packages/projA" } },
+      ])
+
+      const results = await batchExecutor(
+        taskGraph,
+        options,
+        {} as KnipExecutorOptions,
+        context
+      )
+
+      expect(results["projA:knip"]).toMatchObject({
+        success: true,
+        terminalOutput: "configuration warning",
+      })
     })
   })
 
@@ -328,7 +418,7 @@ describe("nx-knip batch executor", () => {
         }
         return Buffer.from("")
       })
-      jest.spyOn(childProcess, "execFileSync").mockImplementation(() => "")
+      mockSpawnResult({})
     })
 
     it("falls back to npx knip", async () => {
@@ -338,23 +428,25 @@ describe("nx-knip batch executor", () => {
 
       await batchExecutor(taskGraph, options, {} as KnipExecutorOptions, context)
 
-      expect(childProcess.execFileSync).toHaveBeenCalledWith(
+      expect(childProcess.spawn).toHaveBeenCalledWith(
         "npx",
         ["knip", "--workspace", "packages/projA"],
-        expect.objectContaining({ stdio: "pipe", cwd: context.root })
+        expect.objectContaining({
+          stdio: ["ignore", "pipe", "pipe"],
+          cwd: context.root,
+        })
       )
     })
   })
 
-  it("propagates failure to all tasks", async () => {
+  it("returns mixed stdout and stderr for a failed Knip process", async () => {
     jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
-    jest.spyOn(childProcess, "execFileSync").mockImplementation(() => {
-      const error = new Error("knip failed") as Error & { stdout: string; stderr: string }
-      error.stdout = "unused export found"
-      error.stderr = ""
-      throw error
+    mockSpawnResult({
+      stdout: "unused export found\n",
+      stderr: "configuration warning\n",
+      code: 1,
     })
-    jest.spyOn(console, "log").mockImplementation()
+    jest.spyOn(console, "error").mockImplementation()
 
     const { taskGraph, options } = makeTaskGraph([
       { id: "projA:knip", options: { projectRoot: "packages/projA" } },
@@ -370,6 +462,74 @@ describe("nx-knip batch executor", () => {
 
     expect(results["projA:knip"].success).toBe(false)
     expect(results["projB:knip"].success).toBe(false)
-    expect(results["projA:knip"].terminalOutput).toContain("unused export found")
+    expect(results["projA:knip"].terminalOutput).toBe(
+      "unused export found\nconfiguration warning\n"
+    )
+  })
+
+  it("returns the spawn error when the Knip process cannot start", async () => {
+    jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
+    mockSpawnResult({ error: new Error("spawn npx ENOENT") })
+    jest.spyOn(console, "error").mockImplementation()
+    const { taskGraph, options } = makeTaskGraph([
+      { id: "projA:knip", options: { projectRoot: "packages/projA" } },
+    ])
+
+    const results = await batchExecutor(
+      taskGraph,
+      options,
+      {} as KnipExecutorOptions,
+      context
+    )
+
+    expect(results["projA:knip"]).toEqual({
+      task: "projA:knip",
+      success: false,
+      terminalOutput: "spawn npx ENOENT",
+    })
+  })
+
+  it("returns failure when the Knip process is terminated by a signal", async () => {
+    jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
+    mockSpawnResult({ signal: "SIGTERM" })
+    jest.spyOn(console, "error").mockImplementation()
+    const { taskGraph, options } = makeTaskGraph([
+      { id: "projA:knip", options: { projectRoot: "packages/projA" } },
+    ])
+
+    const results = await batchExecutor(
+      taskGraph,
+      options,
+      {} as KnipExecutorOptions,
+      context
+    )
+
+    expect(results["projA:knip"]).toEqual({
+      task: "projA:knip",
+      success: false,
+      terminalOutput: "",
+    })
+  })
+
+  it("returns an empty terminal output for a silent successful process", async () => {
+    jest.spyOn(childProcess, "execSync").mockImplementation(() => Buffer.from(""))
+    mockSpawnResult({ code: 0 })
+    jest.spyOn(console, "log").mockImplementation()
+    const { taskGraph, options } = makeTaskGraph([
+      { id: "projA:knip", options: { projectRoot: "packages/projA" } },
+    ])
+
+    const results = await batchExecutor(
+      taskGraph,
+      options,
+      {} as KnipExecutorOptions,
+      context
+    )
+
+    expect(results["projA:knip"]).toEqual({
+      task: "projA:knip",
+      success: true,
+      terminalOutput: "",
+    })
   })
 })
