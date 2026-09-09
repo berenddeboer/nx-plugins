@@ -1,5 +1,6 @@
 import * as childProcess from "node:child_process"
 import type { ExecutorContext } from "@nx/devkit"
+import { runKnip } from "./knip-cli"
 import type { KnipExecutorOptions } from "./schema"
 
 /**
@@ -22,7 +23,10 @@ export function resetBunCache(): void {
 export function isBunAvailable(): boolean {
   if (bunAvailableCache === undefined) {
     try {
-      childProcess.execSync("bun --version", { stdio: "ignore" })
+      childProcess.execFileSync("bun", ["--version"], {
+        stdio: "ignore",
+        windowsHide: true,
+      })
       bunAvailableCache = true
     } catch {
       bunAvailableCache = false
@@ -42,16 +46,19 @@ export default async function knipExecutor(
   const projectRoot = options.projectRoot || "."
   const workspaceRoot = context.root
 
-  const args = [isBunAvailable() ? "knip-bun" : "knip", "--workspace", projectRoot]
+  const cli = isBunAvailable() ? "knip-bun" : "knip"
+  const args = ["--workspace", projectRoot]
   if (options.strict) args.push("--strict")
 
   const env = options.env ? { ...process.env, ...options.env } : process.env
 
   try {
-    childProcess.execFileSync("npx", args, {
-      stdio: "inherit",
-      cwd: workspaceRoot,
+    runKnip({
+      workspaceRoot,
+      cli,
+      args,
       env,
+      stdio: "inherit",
     })
     return { success: true }
   } catch (error) {
