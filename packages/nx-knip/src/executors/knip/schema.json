@@ -9,6 +9,12 @@
       "type": "string",
       "description": "The root directory of the project to lint"
     },
+    "runtime": {
+      "type": "string",
+      "description": "Runtime used to execute Knip. Select bun explicitly to use knip-bun; otherwise the regular Node.js entry point is used.",
+      "enum": ["node", "bun"],
+      "default": "node"
+    },
     "strict": {
       "type": "boolean",
       "description": "Enable strict mode (implies --production). Verifies workspace dependency isolation, includes peerDependencies when finding unused or unlisted dependencies, and reports type-only imports listed in dependencies.",

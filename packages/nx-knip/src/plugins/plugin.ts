@@ -8,6 +8,7 @@ const projectConfigGlob = "**/package.json"
 
 export interface KnipPluginOptions {
   targetName?: string
+  runtime?: "node" | "bun"
   strict?: boolean
   env?: Record<string, string>
 }
@@ -68,6 +69,7 @@ export const createNodesV2: CreateNodesV2<KnipPluginOptions> = [
                     ...(pluginOptions?.strict != null && {
                       strict: pluginOptions.strict,
                     }),
+                    ...(pluginOptions?.runtime && { runtime: pluginOptions.runtime }),
                     ...(pluginOptions?.env && { env: pluginOptions.env }),
                   },
                   metadata: {

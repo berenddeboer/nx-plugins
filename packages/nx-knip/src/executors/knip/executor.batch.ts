@@ -1,6 +1,6 @@
 import * as childProcess from "node:child_process"
 import type { ExecutorContext, TaskGraph } from "@nx/devkit"
-import { isBunAvailable } from "./executor"
+import { BUN_UNAVAILABLE_ERROR, isBunAvailable } from "./executor"
 import type { KnipExecutorOptions } from "./schema"
 
 type BatchExecutorTaskResult = {
@@ -49,7 +49,23 @@ export default async function knipBatchExecutor(
     Object.keys(mergedEnv).length > 0 ? { ...process.env, ...mergedEnv } : process.env
 
   // Build args with --workspace flags
-  const bin = isBunAvailable() ? "knip-bun" : "knip"
+  const useBun = tasks.some((task) => options[task.id]?.runtime === "bun")
+  const bin = useBun ? "knip-bun" : "knip"
+
+  if (useBun && !isBunAvailable()) {
+    console.error(BUN_UNAVAILABLE_ERROR)
+    return Object.fromEntries(
+      tasks.map((task) => [
+        task.id,
+        {
+          task: task.id,
+          success: false,
+          terminalOutput: BUN_UNAVAILABLE_ERROR,
+        },
+      ])
+    )
+  }
+
   const args = [bin]
   for (const r of uniqueRoots) {
     args.push("--workspace", r)

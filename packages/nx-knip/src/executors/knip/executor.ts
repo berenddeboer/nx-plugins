@@ -2,38 +2,20 @@ import * as childProcess from "node:child_process"
 import type { ExecutorContext } from "@nx/devkit"
 import type { KnipExecutorOptions } from "./schema"
 
-/**
- * Cached result of Bun availability check.
- * undefined = not checked yet, boolean = cached result
- */
-let bunAvailableCache: boolean | undefined
+export const BUN_UNAVAILABLE_ERROR =
+  'Bun runtime requested but Bun is not available on PATH. Install Bun or set runtime to "node".'
 
-/**
- * Reset the Bun availability cache. Exported for testing purposes.
- */
-export function resetBunCache(): void {
-  bunAvailableCache = undefined
-}
-
-/**
- * Check if Bun is available on the system.
- * Result is cached since Bun availability won't change during a build.
- */
 export function isBunAvailable(): boolean {
-  if (bunAvailableCache === undefined) {
-    try {
-      childProcess.execSync("bun --version", { stdio: "ignore" })
-      bunAvailableCache = true
-    } catch {
-      bunAvailableCache = false
-    }
+  try {
+    childProcess.execFileSync("bun", ["--version"], { stdio: "ignore" })
+    return true
+  } catch {
+    return false
   }
-  return bunAvailableCache
 }
 
 /**
  * Executor - runs knip for a single project/workspace
- * Uses knip-bun if Bun is available for better performance, otherwise falls back to knip
  */
 export default async function knipExecutor(
   options: KnipExecutorOptions,
@@ -42,7 +24,13 @@ export default async function knipExecutor(
   const projectRoot = options.projectRoot || "."
   const workspaceRoot = context.root
 
-  const args = [isBunAvailable() ? "knip-bun" : "knip", "--workspace", projectRoot]
+  if (options.runtime === "bun" && !isBunAvailable()) {
+    console.error(BUN_UNAVAILABLE_ERROR)
+    return { success: false }
+  }
+
+  const bin = options.runtime === "bun" ? "knip-bun" : "knip"
+  const args = [bin, "--workspace", projectRoot]
   if (options.strict) args.push("--strict")
 
   const env = options.env ? { ...process.env, ...options.env } : process.env
