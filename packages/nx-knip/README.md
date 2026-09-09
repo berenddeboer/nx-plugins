@@ -2,6 +2,8 @@
 
 A self-inferring Nx plugin for [Knip](https://knip.dev/) - find unused dependencies, exports, and files in your JavaScript/TypeScript projects.
 
+Compatible with Knip 5 and Knip 6.
+
 ## Install
 
 Install both the plugin and knip:
